@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+src/bioagent.egg-info/PKG-INFO
+src/bioagent.egg-info/SOURCES.txt
+src/bioagent.egg-info/dependency_links.txt
+src/bioagent.egg-info/top_level.txt
+src/bioagent/agent/detector.py
+src/bioagent/utils/logger.py
+tests/test_detector.py

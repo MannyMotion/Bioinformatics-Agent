@@ -20,3 +20,4 @@ chroma_db/
 Thumbs.db
 *.env
 secrets.yaml
+bioagent.log

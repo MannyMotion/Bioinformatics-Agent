@@ -15,7 +15,6 @@ Date:    2026-04-22
 import logging
 import sys
 from pathlib import Path
-dine
 LOG_FILE = Path(__file__).parent.parent.parent.parent / "bioagent.log"
 LOG_FORMAT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
