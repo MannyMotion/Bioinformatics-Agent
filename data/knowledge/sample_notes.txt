@@ -1,0 +1,30 @@
+Introduction to DNA Sequencing
+
+DNA sequencing is the process of determining the precise order of nucleotides 
+within a DNA molecule. Modern sequencing technologies, particularly Next 
+Generation Sequencing (NGS), can sequence billions of base pairs in a single run.
+
+FASTQ File Format
+
+FASTQ files store both the nucleotide sequence and the corresponding quality 
+scores for each base. Each record consists of four lines: the sequence identifier 
+starting with @, the raw sequence, a separator line starting with +, and the 
+quality scores encoded in ASCII format.
+
+Quality scores use Phred encoding. A Phred score of 30 means there is a 1 in 
+1000 chance of an incorrect base call. A score of 20 means 1 in 100 chance. 
+Most analyses filter out bases with Phred scores below 20.
+
+GC Content Analysis
+
+GC content refers to the percentage of guanine and cytosine bases in a DNA 
+sequence. Different organisms have characteristic GC content ranges. Human 
+genome GC content is approximately 41 percent. High GC content can indicate 
+coding regions or CpG islands, which are often associated with gene promoters.
+
+RNA Sequencing
+
+RNA-seq measures gene expression by sequencing messenger RNA molecules. 
+Reads are aligned to a reference genome, counted per gene, and then compared 
+between conditions using statistical methods such as DESeq2 or edgeR to 
+identify differentially expressed genes.
