@@ -1,0 +1,174 @@
+	    
+What is Phylogenetics?
+Phylogenetics is the science of the evolutionary relationships between (and within) species, although the term  is now used to include a suite of broader issues, such as estimation of evolutionary rates, dating divergence times, reconstruction of ancestral character states and/or quantifying adaptation. While we have defined phylogenetics as applying to species, the same techniques can be applied to families of genes for example.
+Within this tutorial, we will be focusing primarily on  molecular phylogenetics, which is interested in how molecules such as DNA or proteins have changed temporally, allowing us to determine evolutionary relationships between groups (of organisms or families of genes). Observing these molecules under certain models of evolution, produces a  phylogeny  or  phylogenetic tree, which is a visual representation depicting a hypothesis about the evolutionary relationships between the taxa included.
+Phylogenetic Trees
+Phylogenetic trees represent the evolutionary relationships between a group of organisms, genes etc... The branching patterns within the tree represent how these elements evolved from a series of common ancestors.
+Fig. 1 
+Fig. 2 
+Fig. 3 
+
+Image Source:  Khan Academy
+ (Links to an external site.)
+In Fig. 1 we see a phylogenetic tree with five species (A, B, C, D & E), which are represented at the tips of the branches. Branches are connected at branch points, or nodes. These represent the most recent common ancestor between the two branches. We can think of these nodes as divergence events (from a single group into two groups). For example, in Fig. 2 we can see that the node connecting the branches leading to A and B represents their most recent common ancestor. In the same way, The node directly after the root represents the most recent common ancestor of all species in the tree. We can think about relatedness of any two given individuals in the tree in terms of how recent their most common ancestor is (i.e. their connecting node). We 'read' a phylogenetic tree backwards, and so in Fig. 3 you can see that the MRCA (most recent common ancestor) of species A & B is more recent than that of species B & C. This means A & B are more closely related. however based on the tree shown in Figs. 1-3 we cannot distinguish whether species A & B are more or less closely related than species C & D. The reason for this is that while the vertical axis of the tree represents evolutionary time, the horizontal axis doesn't represent time (at least not in a direct way).
+One slightly confusing element of phylogenetic tree interpretation is that the branches can freely rotate (i.e. the order that the species are represented at the branch tips is not fixed). This is illustrated nicely in Fig. 4.
+
+Fig. 4. Illustrates free node rotation. Despite the fact the species at the branch tips are in a different order in each of the phylogenetic trees, the trees are identical.
+Image Source: Khan Academy
+ (Links to an external site.)
+Algorithms used to infer phylogenies
+1. Distance-based Methods
+Distance-based methods compute an  evolutionary distance, which is the number of changes that have occurred between two species considered to diverge from a common ancestor. Distance based methods (i.e.  Neighbour-joining; NJ) suffer from lack of accuracy when dealing with large volumes of data and distant relationships (i.e. this can make it problematic for sequence data).
+2. Maximum Parsimony (MP) methods
+MP methods infer a tree that minimizes the total number of  mutations  required to explain the data. Under the maximum parsimony criterion, the shortest possible tree that explains the data is considered as the best tree. This best tree is known as the  most-parsimonious tree. Heuristic search is performed to quickly generate the most-parsimonious tree. Since this methods considers the shortest possible tree as the best tree, actual evolutionary changes that have occurred may be underestimated. Again, this can be problematic for sequence data.
+3. Probabilistic methods
+Probabilistic methods, such as  Maximum Likelihood (ML) and   Bayesian inference, attempt to find a tree that maximizes the conditional or posterior probability of observing the data. Phylogenetic studies at present, widely utilize Bayesian frameworks due to the possibility of account for the phylogenetic uncertainty, availability of efficient algorithms and their implementation as various computer programs.
+Because the aim of this tutorial is to get you familiar with dealing with phylogenetic trees in python, we will focus on NJ and MP trees. While I wouldn't encourage you to do this for your actual science, familiarising yourself with how we deal with this type of data is meaningful.
+Performing phylogenetic analysis
+There are many different way to perform phylogenetic analysis. As ever, deciding which option is best for your specific use case will depend on things like type and volume of data, methodology, format etc...
+1) Online resources such as  phyloT
+ (Links to an external site.)
+Online resources like this tend to have restricted memory usage (meaning that sequence number and length can be prohibitive) and limited optionality. That said, they are also typically very user-friendly. They are often a good first port of call for understanding the data quickly, but require too many manual steps to be incorporated into bioinformatic pipelines.
+2) Standalone phylogenetic programs
+These represent the greatest diversity of algorithm options, and are perhaps the best all round option for most applications. I don't have an exhaustive list of available standalone programs capable of performing phylogenetic analysis, but see  here 
+ (Links to an external site.)
+.
+3) Via biopython (or other python integrated modules)
+This is the methodology we will cover in this tutorial. Using biopython allows you to seamlessly integrate the parsing, handling and creating of alignment objects in one place, minimising redundant code.
+A note on biopython
+While this will not be your first exposure to biopython as a tool ensuring that you understand the basics is still important. Biopython is perhaps one of the most powerful available to computational biologists. I do like to remind you all "not to reinvent the wheel" buy rewriting scripts which have been written and implemented well by others. most of the time, I'll be referring to functionality within biopython. This tutorial is not going to cover the breadth of things biopython can do, so I'd encourage you all to really read the documentation, here .
+
+Producing a phylogenetic tree with an alignment
+The Bio.Phylo module of biopython has the ability to do a number of different things related to phylogenetic trees. Some of these will be covered here, and some of them you can find out more about in the 'Further reading' section.
+Here we will focus on taking an alignment of sequences, producing a phylogenetic tree, and understanding branch support through bootstrapping (read more about bootstrapping here
+Links to an external site.
+). We will focus on Neighbor-Joining (NJ; read more about NJ here
+Links to an external site.
+) trees in this walk-through.
+The first step is to import the modules we will need for this:
+from Bio import Phylo, SeqIO, AlignIO
+import matplotlib, networkx, pydot
+
+
+Note. matplotlib, networkx and pydot are required for drawing trees.
+The alignment file for this tutorial can be found here 
+Download here
+. It is a Phylip alignment of the gene AT5G42820. If you open the file, you will see that it has a very structured format. You can learn more about the format here
+Links to an external site.
+. One important component of Phylip files is the character limitation for sequence headers. You are limited to 10 characters, which can make life interesting for big sequence alignments...
+phylip_alignment_out = "~/phylo_test_align.phy"
+
+
+Parse the alignment using the Bio.AlignIO module:
+phylo = AlignIO.read(phylip_alignment_out, "phylip")
+
+
+With the alignment parsed, we can then calculate how different the sequences within the alignment are. This will form the basis of how we produce our phylogenetic tree, and in this case, we will do this by calculating a distance matrix. You can find out more about how distance matrices are used in phylogenetic tree construction here
+Links to an external site.
+.
+First, we select the method by which we intend to calculate the distance matrix. In this case, using the 'identity' model.
+calculator = DistanceCalculator('identity')
+
+
+We can then calculate and show the distance matrix using the following command:
+dm = calculator.get_distance(phylo)
+dm
+
+
+Which produces the following output.
+DistanceMatrix(names=['1_AT5G4282', '2_AT5G4282', '3_AT5G4282', '4_AT5G4282'], matrix=[[0], [0.009389671361502372, 0], [0.005868544600938996, 0.005868544600938996, 0], [0.0481220657276995, 0.045774647887323994, 0.04694835680751175, 0]])
+
+
+We can then use these distances, to create a phylogenetic tree.
+constructor = Phylo.TreeConstruction.DistanceTreeConstructor(calculator, 'nj')
+tree = constructor.build_tree(phylo)
+print(tree)
+
+
+In this case we are using the NJ model as the basis of the tree calculation. This gives us the following output.
+Tree(rooted=False)
+    Clade(branch_length=0, name='Inner2')
+        Clade(branch_length=0.00176056338028166, name='Inner1')
+            Clade(branch_length=0.0017605633802817156, name='3_AT5G4282')
+            Clade(branch_length=0.004107981220657281, name='1_AT5G4282')
+        Clade(branch_length=0.002934272300469526, name='2_AT5G4282')
+        Clade(branch_length=0.04284037558685447, name='4_AT5G4282')
+
+
+In essence, this is how biopython understands phylogenetic trees, but it isn't exactly what we were expecting (i.e. it isn't a drawn tree).
+We can get python to draw the tree for us from this code using the following command:
+Phylo.draw_ascii(tree)
+
+
+Which produces the following tree:
+ ___ 2_AT5G4282
+ |
+_|__________________________________________________________________ 4_AT5G4282
+ |
+ |    _ 3_AT5G4282
+ |___|
+     |_ 1_AT5G4282
+
+
+How do you interpret this figure? Which sequences are most closely related (share the most recent common ancestor?
+So we have a tree, is this the end of the story? Actually, there may be multiple possible trees that can be generated from an alignment. We need to understand which of the trees is most representative, and then understand more about how robust the branch relationships are (i.e. are two grouped species always together in a clade? Or only some of the time?).
+To do this, we will use a process call bootstrapping, where we generate a large number of trees, and then use all of those trees to construct a consensus tree which will tell us how well supported each of the nodes are.
+First we import the relevant modules:
+from Bio.Phylo.Consensus import *
+
+
+Then we generate the replicate alignments using bootstrap:
+phylos = bootstrap(phylo, 100)
+
+
+Note. You can see here that we are running the process we used about to create the first alignment, and repeating it 100 times.
+We then produce the trees:
+# Select model for distance calculator
+calculator = DistanceCalculator('blosum62')
+# Prep the calculator
+constructor = Phylo.TreeConstruction.DistanceTreeConstructor(calculator)
+# Run the bootsrapping process
+trees = bootstrap_trees(phylo, 100, constructor)
+
+
+The variable 'Trees' now contains a list of 100 phylogenetic trees. This lease us with the issue of how we compare each of these trees to understand which node relationships are most frequent, how frequent these relationships are etc...
+So, we can take this list of 100 replicate trees, and make a consensus tree. A tree which represents the majority character at every node. We do this in the following way:
+consensus_tree = bootstrap_consensus(phylo, 100, constructor, majority_consensus)
+
+
+Note. Here we give the initial alignment, 100 replicates, the variable 'constructor' which is our distance tree construction calculator, and tell it that we want the 'majority consensus' (read more here
+Links to an external site.
+).
+We can visualise this tree with the following command:
+Phylo.draw_ascii(consensus_tree)
+
+
+Which produces the following tree:
+ ___ 2_AT5G4282
+ |
+_|__________________________________________________________________ 4_AT5G4282
+ |
+ |    _ 3_AT5G4282
+ |___|
+     |_ 1_AT5G4282
+
+
+You can provide information on branch support in the following way:
+support_tree = get_support(consensus_tree, trees, len_trees = 100)
+
+
+And then visualise the tree using the 'draw' function, which produces a slightly more visually appealing tree:
+Phylo.draw(consensus_tree)
+
+
+Note. You can save the tree using the following commands:
+consensus_tree.ladderize()
+Phylo.draw(consensus_tree, do_show=False)
+pylab.axis("off")
+pylab.savefig("consensus_tree.png",format='png', bbox_inches='tight', dpi=300)
+
+
+This produces the following tree:
+
+What do the numbers at the nodes tell you about the relationships between the species at each branch?
+

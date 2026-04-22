@@ -1,0 +1,350 @@
+Transcriptomics workshop 3: downstream data analyses
+Dr. Craig Willis
+Assistant Professor in Bioinformatics
+1 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcriptomics schedule
+2 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Lecture
+Workshop
+Lecture
+Workshop
+Workshop
+Transcriptomic
+technologies
+RNA-seq:
+quality control
+RNA-seq:
+alignment
+RNA-seq:
+data analysis
+Downstream
+data analyses
+Session Learning Outcomes
+3 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Be able to perform and/or interpret results of:
+1. Principal component analysis
+2. Differential expression analysis
+3. Enrichment analysis
+4. Network analysis
+Simplified RNA-seq workflow
+4 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw reads
+(FASTQ Files)
+Quality
+Control
+Alignment +
+Quantification
+Visualisations
+Other downstream approaches
+• Enrichment analysis;
+Ø Gene Ontology
+Ø Pathways
+Ø Transcription factor targets
+Ø Drug targets
+• Gene prioritisation/ranking
+• (and many more)
+Network
+analysis
+Differential
+expression
+analysis
+Sequencer
+output
+Initial pre-processing Further pre-processing
+Feature filtering +
+normalisation if/as needed
+Analyses
+Normalisation
+5 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Needed (as appropriate) to:
+Ø Eliminate technical and experimental (but not biological) artifacts
+Ø Ensure data meet particular downstream statistical assumptions
+• Procedures to normalize raw counts focus on
+minimising systematic differences in:
+Ø Library size
+Ø Gene length
+Ø Sequence composition
+Ø Read depth
+Simplified RNA-seq workflow
+6 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw reads
+(FASTQ Files)
+Quality
+Control
+Alignment +
+Quantification
+Visualisations
+Other downstream approaches
+• Enrichment analysis;
+Ø Gene Ontology
+Ø Pathways
+Ø Transcription factor targets
+Ø Drug targets
+• Gene prioritisation/ranking
+• (and many more)
+Network
+analysis
+Differential
+expression
+analysis
+Sequencer
+output
+Initial pre-processing Further pre-processing
+Feature filtering +
+normalisation if/as needed
+Analyses
+Downstream analytical approaches
+7 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Principal component analysis (PCA)
+8 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+• Principal Components =
+handful of variables that
+‘summarise’ many genes
+• 1st Component captures
+most information then
+2nd Component, etc
+• Useful for looking at how
+well samples in the
+dataset cluster together
+based expression profile
+(technical)
+outlier?
+Downstream analytical approaches
+9 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Differential expression analysis
+10 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+• Per gene: determine if expression is different between conditions
+Two key aspects:
+1. Quantifying direction and magnitude of difference
+2. Defining ‘statistical significance’ of the difference
+Differential expression analysis
+11 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Interpreting (adjusted) P-values and log2 fold changes together:
+Spaceflight vs. ground example:
+Gene 1 Gene 2 Gene 3
+Ground Spaceflight Ground Spaceflight Ground Spaceflight
+7.5
+10.0
+12.5
+15.0
+Gene Expression
+• Adj P > threshold
+Not dysregulated
+by spaceflight
+Upregulated
+by spaceflight
+Downregulated
+by spaceflight
+• Adj P < threshold
+• LFC > 0
+• Adj P < threshold
+• LFC < 0
+Differential expression analysis
+12 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Ranking differentially expressed genes:
+• Help with selecting top ‘candidate’ genes
+Volcano plot: LFC vs. significance
+Could rank by:
+• Log2 fold change
+• Adjusted P-value
+• Combination of the above
+• Test statistic (e.g., t-score)
+Downstream analytical approaches
+13 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Network analysis
+14 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Ø Knowledge-based;
+§ Define interactions using existing info
+§ E.g., databases of known interactions
+Core concept:
+Edge (interaction) Node (gene)
+• Model interactions among genes in a transcriptomic dataset
+• Can be:
+Ø Data-driven;
+§ Define interactions using patterns in the dataset itself
+Network analysis
+15 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Co-expression network analysis:
+• Widely employed form of data-driven network analysis
+Network analysis
+16 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Network-driven gene prioritisation:
+• Likely essential to overall function of that module
+Module ‘hub’ genes:
+• Most highly connected genes in a module
+Undirected network Directed network
+Unsigned network Signed network
++
+-
++
++ +
+-
++ -
+-
++ - +
++
+-
++
++ +
+-
++ -
+-
++ - +
+Network hub nodes
+Hub Hub
+Downstream analytical approaches
+17 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Enrichment analysis
+18 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Ø Over-representation analysis (ORA);
+§ Focus on significant differentially expressed genes
+§ Focus on module genes
+Core concept:
+• Functional characterisation gene expression responses
+• Can be:
+Ø Gene set enrichment analysis (GSEA)
+§ Looks for global trends across all genes in the dataset
+Enrichment analysis
+19 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Key inputs for enrichment analysis:
+1. Genes in our data set
+2. Gene terms
+What is meant by a gene ‘term’?
+Enrichment analysis
+20 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Key inputs for enrichment analysis:
+• Gene term = a category that genes are assigned to
+• Many ways to categorise genes:
+Ø Gene Ontology categories
+Ø Pathway database categories
+Ø Transcription factor target categories
+Ø Drug target categories
+Enrichment analysis
+21 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Over-representation analysis (ORA):
+• Statistically tests if the amount of (e.g.) differentially expressed
+genes that map to a specific term is greater than expected by chance
+Cell adhesion genes
+n = 2,000
+750
+Upregulated:
+n = 1,000
+Not upregulated:
+n = 14,000
+250
+600
+650
+13,400
+75% of
+upregulated
+genes
+4% of not
+upregulated
+genes
+Enrichment analysis
+22 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Gene set enrichment analysis (GSEA):
+• Rank all genes in dataset (e.g., by LFC) and statistically
+cross-reference where genes are positioned in ranked list
+Cell adhesion genes Mitochondria genes
+Positive
+LFC
+Negative
+LFC
+• Distribution
+towards bottom
+• Trend for
+concordant
+downregulation
+• Randomly
+distributed
+throughout
+• No real trend
+for concordant
+change in either
+direction
+Ranked list Ranked list
+Downstream analytical approaches
+23 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Worksheet break
+24 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Complete all sections of worksheet
+Additional resources
+25 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Reading (available on Canvas page of associated lecture):
+Differential expression analysis:
+Ø Ritchie et al, 2015. Nucleic Acids Res, 43(7):e47
+Ø Love et al, 2014. Genome Biol, 15(12):550
+Network analysis:
+Ø Van Dam et al, 2018. Brief Bioinform, 19(4):575-592
+Ø Langfelder & Horvath, 2008. BMC Bioinformatics, 9:559
+Differential expression vs. network analysis:
+Ø Oldham, 2013, in The OMICs: Applications in Neuroscience
+Ø Langfelder et al, 2013. PLoS One, 8(4):e61505
+Enrichment analysis:
+Ø The Gene Ontology Consortium, 2000. Nat Genet, 25(1):25-29
+Ø Chicco & Agapito, 2022. PLoS Comput Biol, 18(8):e1010348
+Any questions?
+26 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare

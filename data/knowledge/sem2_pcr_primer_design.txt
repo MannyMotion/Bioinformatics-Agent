@@ -1,0 +1,237 @@
+Polymerase chain reaction (PCR) and primer design
+
+Double-stranded DNA
+Denaturing stage 94-95 degree
+Annealing Stage 50 - 56 degree 
+Extending Stage 72 degree
+
+1
+
+20 January, 2025
+
+PCR and primer design
+
+The central dogma
+
+Amplification of
+genomic DNA (gDNA)
+
+Conversion to cDNA
+by reverse transcription
+
+Quantification by
+quantitative PCR (qPCR)
+
+6
+
+20 January, 2025
+
+PCR and primer design
+
+DNA replication
+
+https://byjus.com/neet/dna-polymerases/
+
+7
+
+20 January, 2025
+
+PCR and primer design
+
+RNA transcription
+
+https://www.onlinebiologynotes.com/transcription-in-prokaryotes/
+
+8
+
+20 January, 2025
+
+PCR and primer design
+
+The central dogma
+
+https://youtu.be/QIZ8QH6JcC8
+
+9
+
+20 January, 2025
+
+PCR and primer design
+
+Why PCR?
+
+Enables the amplification of a DNA (or cDNA) sequence
+	- medicine (e.g. diagnostics)
+	- forensics (e.g. criminal)
+	- research (much of molecular biology)
+
+10
+
+20 January, 2025
+
+PCR and primer design
+
+Thermus aquaticus
+
+- identified in 1969
+
+- it’s enzymes are heat stable
+
+can withstand temperatures
+where hydrogen bonds break
+~95degC
+
+- Taq polymerase first used in the
+1980s for PCR
+
+11
+
+20 January, 2025
+
+PCR and primer design
+
+PCR is founded on the chemistry of DNA
+
+
+Hydrogen bonds break
+at moderate temperature
+
+Annealing of two DNA
+strands that are
+complementary
+
+
+Polymerases identify
+dsDNA 3’ ends and
+extend DNA strand
+
+12
+
+20 January, 2025
+
+PCR and primer design
+
+Outline of PCR steps
+
+Dissociation of double strand (ds) DNA
+	- 95degC
+Annealing of short oligonucleotide ‘primer’ to single-strand (ss) DNA
+	- ~55-65 degC
+Extension of dsDNA using a polymerase enzyme
+	- 72degC
+	- Thermo-stable polymerase from Thermus aquaticus (Taq)
+Repeat
+	- doubling of DNA of gene of interest in each ‘cycle’
+	- 1 billion copies after 30 cycles
+
+
+13
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+Two “primers” which are DNA fragments with complementarity to a desired DNA sequence
+	- one in forward orientation
+	- one in reverse orientation
+
+Size of ‘amplicon’ is determined by the distance between two primers
+
+Binding parameters of primer to DNA primarily determined by number of hydrogen bonds (A:T = 2; C:G = 3), primer length, and how many times the sequence appears in the genome
+
+15
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+How specific are primers?
+
+1 base pair		=	4^1 (4) possibilities
+2 base pairs	=	4^2 (16) possibilities
+3 base pairs	=	4^3 (64) possibilities
+…
+20 base pairs	=	4^20 (1 trillion possibilities)
+
+Human genome	=	3.2 billion nucleotides (haploid)
+By chance, a 20 bp sequence should only exist < once in the genome
+
+16
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+Caveats:
+
+1. Primer binding still occurs (as low efficiency) if not a perfect match
+	typically require >3bp different from any other region of the 	genome
+
+2. The sequence of genome is not random
+
+
+17
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+Retroviral elements are ubiquitous and highly repetitive
+
+https://www.cell.com/trends/molecular-medicine/comments/S1471-4914(18)30031-5
+
+18
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+Genome duplications, followed by gene loss in the ancestral vertebrate
+
+https://phys.org/news/2015-11-mysteries-bony-fish-genome-evolution.html
+
+19
+
+20 January, 2025
+
+PCR and primer design
+
+Primer design
+
+Easy tools for the design of primers:
+
+Primer3 is a software that designs primers optimised according to melt/binding properties
+
+Primer-BLAST uses Primer3 to design primers, and then searches the genome to identify if your primers are specific to your gene of interest (or not).
+
+
+20
+
+20 January, 2025
+
+PCR and primer design
+
+BLAST (Basic Local Alignment Search Tool)
+
+Query
+
+Subject
+
+https://www.ncbi.nlm.nih.gov/books/NBK62051/
+See also: Workshop 1 with Dr Tedder, BIS7022
+
+21
+
+20 January, 2025
+
+PCR and primer design

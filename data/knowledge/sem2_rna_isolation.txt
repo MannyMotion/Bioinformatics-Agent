@@ -1,0 +1,382 @@
+RNA Isolation
+
+Learning objectives:
+
+What is RNA (refresher)
+
+Why is RNA important in research
+
+Down stream applications
+
+Quality control
+
+MSc mini-project
+
+What is RNA……
+
+Similar to DNA, but major differences…
+
+Key molecule involved in gene expression
+
+Critical in translating genetic code of DNA into proteins
+
+
+Different types of RNA with different functions:
+
+Messenger RNA (mRNA): carries the genetic information from the DNA to the ribosome for protein synthesis
+
+Ribosomal RNA (rRNA): A structural component of the ribosome
+
+Transfer RNA (tRNA): Involved in the translation of mRNA into proteins
+
+Micro RNA (miRNA): Involved in the regulation of gene expression
+
+Why is RNA isolation so important?- Downstream applications
+
+4. Ribosome profiling (Ribo-Seq)
+Study translation and protein synthesis
+
+1. qPCR
+To quantify gene expression
+
+
+5. In Situ Hybridisation
+To detect specific RNA sequences in specific within tissues or cells
+
+2. Northern blotting
+Detect and characterise specific RNA molecules
+
+6. RNA interference
+Silencing of specific genes to study their function
+
+3. Microarray Analysis
+Study the expression levels of 1000’s of genes simultaneously
+
+Methods of Isolation…..
+
+Organic extraction: Uses phenol/chloroform 
+
+Inexpensive
+High quality RNA
+Toxic regents
+
+
+Silica-based Column purification: Commercial kits- silica membrane that selectively binds RNA
+
+Fast
+Expensive
+Low yields
+
+Magnetic bead isolation: Magnetic beads are coated with RNA-binding molecules
+
+Efficient on small scale
+High yields- High quality
+Expensive
+
+RNA degradation…..
+
+RNA degradation is an important and normal process…….
+
+3. Cellular Adaptation & Stress Response:
+Under stress conditions (e.g., nutrient deprivation, viral infection), cells selectively degrade specific RNAs to adjust metabolism and defence mechanisms
+In antiviral immunity, RNase L degrades viral RNA to limit replication.
+
+
+Controls gene expression: 
+controls levels of mRNA and prevents unnecessary protein translation
+Short-lived mRNAs allow rapid responses to stimuli
+
+2. Quality Control:
+Defective or misfolded RNAs (e.g., those with premature stop codons)
+RNases remove improperly processed or non-functional RNAs.
+
+
+4. RNA Turnover & Recycling: 
+RNA breakdown products (nucleotides) can be recycled for new RNA synthesis, conserving cellular resources
+
+RNA degradation…..
+
+Ribonucleases (RNases) degrade RNA by catalysing the cleavage of phosphodiester bonds between nucleotides
+
+Classes of RNases:
+
+1. Exoribonucleases – These degrade RNA by removing nucleotides one at a time from either the 5' or 3' end.
+
+
+5' → 3' exoribonucleases (e.g., Xrn1) start degradation at the 5' end after decapping.
+
+
+3' → 5' exoribonucleases (e.g., the exosome complex) degrade RNA from the 3' end.
+
+RNA degradation…..
+
+Classes of RNases:
+
+
+2. Endoribonucleases – These cleave RNA at internal sites, generating fragments that can be further degraded by exoribonucleases.
+
+Examples include
+RNase A- which cleaves after pyrimidines (C, U)
+RNase III- which recognises double-stranded RNA
+RNase T1- Cleaves after guanine residues
+
+RNA degradation…..
+
+3. RNases with Specific Functions:
+
+
+RNase P – Processes precursor tRNA by cleaving its 5' leader sequence.
+
+
+RNase H – Degrades RNA in RNA-DNA hybrids, important for removing Okazaki fragments in DNA replication.
+
+
+RNase L – Degrades viral and cellular RNA in response to interferon signalling.
+
+
+Degradation can occur in both normal RNA turnover (e.g., mRNA decay) and in response to stress or infection. 
+
+RNA degradation in research…… 
+
+Extracted RNA is highly susceptible to degradation due to its unstable nature and the ubiquitous presence of RNases…….
+
+RNase contamination:
+Environmental- skin, dust, on lab surfaces
+Endogenous- Released from cells
+
+Improper storage:
+RNA is temperature sensitive
+Freeze thaw cycles can break down molecules
+
+Poor Technique:
+Incomplete RNase inactivation
+Inadequate lysis or purification
+Contaminated reagents or equipment
+
+Quality Control….
+
+After isolating RNA, it is essential to assess its concentration and quality 
+
+BioDrop:
+
+Concentration- ng/µl
+
+A260/280: 
+Very pure- ~2.1 
+Acceptable- 1.8
+Not acceptable- <1.8
+Likely contaminated with DNA or protein
+
+A260/230
+Ratio should be >2.0
+
+Anything lower is a poor quality sample- Likely contaminated with phenol
+
+Introduction to mini-project
+
+Ischaemic Stroke
+
+Hypoxia- Insufficient oxygen
+Replicate ischaemic stroke
+Using two enzymatic reactions
+
+
+Glucose Oxidase  (GOx) reaction:
+Glucose Oxidation: Glucose oxidase oxidises glucose in the presence of molecular oxygen, producing gluconic acid and hydrogen peroxide.
+
+Oxygen Consumption: The reaction consumes oxygen, and as a result, local oxygen levels decrease in the vicinity of the enzyme's action.
+
+
+Catalase reaction: 
+Catalase is an enzyme that breaks down hydrogen peroxide (H₂O₂) into water (H₂O) and oxygen (O₂)
+
+Catalase offers limited oxygen recovery- still net decrease
+
+RNA extraction
+
+First step in gene expression analysis
+
+PureLink RNA mini-kit:
+
+Column-based kit
+Isolates total RNA
+Fast isolation
+Non-toxic reagents (no phenol or chloroform)
+
+
+RNA extraction
+
+Repeat until all cell lysate/ethanol mixture is used
+
+Scrape cells from surface of well
+
+Centrifuge 1 min at 10000g
+
+Remove media and wash with PBS
+
+Add 200µl of lysis buffer to each well
+
+Put the cell/LB mix into a new tube AND add 600µl ethanol
+
+Waste
+
+RNA
+
+Centrifuge and discard flow through in the sink
+
+Centrifuge and discard flow through in the sink
+
+X2!!
+
+Put spin column into RNase/DNase free tube
+Add 25µl water
+Incubate for 1 minute
+Centrifuge
+
+
+Centrifuge empty tube- to dry membrane
+
+New collection tube
+
+500µl Wash Buffer II
+
+700µl wash buffer I
+
+Quality Control….
+
+After isolating RNA, it is essential to assess its concentration and quality 
+
+BioDrop:
+
+Concentration- ng/µl
+
+A260/280: 
+Very pure- ~2.1 
+Acceptable- 1.8
+Not acceptable- <1.8
+Likely contaminated with DNA or protein
+
+A260/230
+Ratio should be >2.0
+
+
+Anything lower is a poor quality sample- Likely contaminated with phenol
+
+Calculate volume of RNA containing 500ng
+
+Complementary DNA (cDNA) Synthesis
+
+Crucial molecular biological technique used to create a DNA copy of RNA 
+
+Reverse Transcription:
+
+An oligo(dT) fragment is used as a primer at the 3’ Poly A tail
+
+Reverse transcriptase used the RNA as a template to synthesis cDNA by adding dNTPs
+
+This results in first strand synthesis
+
+High temperatures are then used to separate the RNA and cDNA strand (single-stranded cDNA is used for some downstream applications)
+
+A specific primer can anneal to the cDNA and Taq polymerase will add nucleotides to form ds-cDNA
+
+Quantitative PCR
+
+Powerful molecular biology technique used to amplify and quantify nucleic acids
+
+Monitors DNA amplification in real-time using fluorescence
+
+Principles of qPCR:
+Denaturation (95°C): DNA strands separate.
+Annealing (50-65°C): Primers bind to the target DNA.
+Extension (72°C): DNA polymerase synthesises new DNA strands.
+
+
+
+fluorescent dye or probe is used to monitor DNA amplification after each cycle.
+The fluorescence intensity correlates with the amount of amplified DNA.
+
+Fluorescence Detection Methods
+
+
+Two main strategies are used to detect DNA amplification in qPCR:
+
+
+SYBR Green Dye-Based qPCR
+
+SYBR Green is a fluorescent dye that binds to double-stranded DNA (dsDNA).
+Fluorescence increases as more dsDNA is produced.
+Advantages: Simple and cost-effective.
+Disadvantages: Non-specific binding can lead to false signals.
+
+
+2. Probe-Based qPCR (TaqMan Probes)
+
+Uses a fluorescently labelled probe (e.g., TaqMan) that binds to the target DNA sequence.
+The 5′ nuclease activity of Taq polymerase cleaves the probe during amplification, releasing fluorescence.
+Advantages: High specificity and multiplexing capability.
+Disadvantages: More expensive than SYBR Green.
+
+Types of qPCR Analysis
+
+Absolute Quantification:
+Measures exact DNA copy numbers using a standard curve.
+Used in viral load testing, bacterial quantification, and plasmid copy number analysis.
+
+
+Relative Quantification:
+Compares gene expression levels relative to a reference gene.
+Common in gene expression studies (e.g., cancer research, drug response).
+
+Key qPCR Parameters
+
+
+Relative quantification/ Livak method
+
+Threshold Cycle (Ct or Cq): The cycle number at which fluorescence exceeds the background level.
+Lower Cq → Higher initial DNA concentration.
+Higher Cq → Lower initial DNA concentration.
+
+2. ΔCq Method: Used for relative quantification:
+ΔCq= Cq target− Cq reference
+
+3. Δ Δ Cq Method: Used for normalisation against reference gene:
+Δ Δ Cq= Cq Sample− Cq control
+
+Expression changes are calculated using fold change (2^(-ΔΔCt)).
+
+Genes:
+
+VEGFA: Vascular Endothelial growth factor A
+
+Growth factor that regulates blood vessel formation and tissue repair
+Regulated by Hypoxia-inducible factor-1 (HIF-1)
+
+
+ADAMTS1: A Disintegrin And Metalloproteinase with Thrombospondin Motifs 1
+
+Enzyme belonging to the ADAMTS protease family
+Role in extracellular matrix (ECM) remodelling
+
+
+Not well characterised
+Less published information
+
+What role does this gene have during a stroke event………
+Based on their function would you expect up or down regulation in response to hypoxia?
+
+Assessment…..
+
+Laboratory report: ~2000 words (excluding refs, figure legends)
+
+Include:
+Abstract- provide overview of the work- including results gained
+Introduction- Provide ALL necessary background information, aim, and hypothesis
+Methods- Cover all methods (Cell culture, gene, and protein labs)
+Results- Present only analysed results
+Discussion- State what YOU found and discuss this in comparison to published work
+Conclusion- Concisely summarise findings
+
+Do NOT include:
+Method of primer design
+Raw/unanalysed/pointless data

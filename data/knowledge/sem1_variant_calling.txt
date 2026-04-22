@@ -1,0 +1,196 @@
+An Introduction to Variant Calling
+
+Dr Andrew Tedder
+@DrATedder
+
+Up-front acknowledgments
+
+Many figures/slides come from: 
+◦ GATK Workshop slides: www.broadinstitute.org
+ Mayo-illinois Computational Genomics workshop:   	www.veda.cs.uiuc.edu
+◦ IGV Workshop slides: www.lanyrd.com
+◦ Denis Bauer (CSIRO): www.allpower.de
+◦ Many varied publications
+
+Background
+
+Variant calling and use cases
+Errors vs. actual variants
+Experimental design
+Brief outline of the Galaxy workshop
+
+Variant Calling
+
+As the name implies, we’re looking for differences (variations) 
+	◦ Reference – reference genome (hg19, b37)
+	◦ Sample(s) – one or more comparative samples
+
+Start with raw sequence data
+End with a human ‘diff’ file, recording the variants
+Additional information added downstream: 
+	◦ Filters (quality of the calls)
+	◦ Functional annotation
+
+Variations
+
+Difference between 2 individuals : 1 every 1000 bp 
+	◦ ~ 2.7 million differences
+Small (<50 bp)
+	◦ SNV – single nucleotide
+	◦ Small insertions or deletions (‘indels’)
+Large (structural variations) 
+	◦ Indels > 50 bp
+	◦ Copy Number Variations
+	◦ Inversions
+	◦ Translocations
+    Mainly focus on diploid organisms
+Human:
+	◦ 22 pairs of autosomal chromosomes
+		◦ One from mother, one from father
+	◦ 2 sex chromosomes (female XX, male XY)
+		◦ One from mother, one from father
+	◦ Mitochondrial genome (generally maternally 			inherited)
+		◦ 100-10,000 copies per cell
+    Variation can be in
+One chromosome (heterozygous, or ‘het’)
+Both chromosomes (homozygous, or ‘hom’)
+
+Use Cases
+
+Medicine
+Hereditary or genetic diseases, genetic predisposition to disease
+Normal vs. tumor analyses 
+Heteroplasmy
+Population genetics
+
+Population Genetics
+
+The full 1000 Genomes Project data
+1,100 samples early 2011: 2,500 samples 2011/12
+
+Cancer
+
+Diagnosis: Multiple leukemic clones present
+Clinical remission: loss of most leukemic clones
+Relapse: Acquisition of new mutations in a pre-existing clone
+from E. Mardis, Current Opinion in Genetics & Development 2012, 22:245–250
+
+Variants vs. Errors
+
+Must distinguish between actual variation (real change) and errors (artifacts) introduced into the analysis
+Errors can creep in on various levels:
+PCR artifacts (amplification of errors)
+Sequencing (errors in base calling)
+Alignment (misalignment, mis-gapped alignments)
+Variant calling (low depth of coverage, few samples) 
+Genotyping (poor annotation)
+Try to control for these when possible to reduce false positives w/o incurring (worse) false negatives
+
+Sequence Quality
+
+Different technologies have different errors, error rates
+454 – homopolymer track errors
+Illumina – substitution errors
+PacBio – indels. Lots and lots of ‘em.
+
+Sequence Quality
+Represented as a quality score (Phred)
+Q = -10log10(e)
+So 10 Phred Quality Score = 10 = probability of incorrect base call is 1 in 10 = Base call accuracy is 90% = very low Phred score < 10 
+So 20 Phred Quality Score = 20 = probability of incorrect base call is 1 in 100 = Base call accuracy is 99% = low Phred score < 20
+So 30 Phred Quality Score = 30 = probability of incorrect base call is 1 in 1000 = Base call accuracy is 99.90% = High quality reads, Phred score > 30
+So 40 Phred Quality Score = 40 = probability of incorrect base call is 1 in 10000 = Base call accuracy is 90.99% = very high quality reads, Phred score > 40
+So 50 Phred Quality Score = 50 = probability of incorrect base call is 1 in 100000 = Base call accuracy is ~100.00% = 100% quality reads, Phred score > 50
+
+Single vs. multi-sample analysis
+
+Deep single-sample 
+Higher sensitivity for variants in the sample 
+More accurate genotyping per sample 
+Cost: no information about  other samples
+Tend to be lesser variants total
+
+Shallower multi-sample
+Sensitivity dependent on  frequency of variation 
+Worse genotyping 
+More total variants discovered 
+Tend to be more variants total
+
+High-pass sequencing design
+
+Excellent sensitivity for hetero- and homozygotes
+High depth allows excellent genotype calling 
+
+Data requirements per sample 
+Target bases = 3Gb
+Coverage = Avg. 30x
+# sequenced bases = 100gb
+# per lane (HiSeq 4000) = ~1
+
+Variant detection among multiple samples
+Variant found per sample = ~3-5M
+Percent of variation in genome = >99%
+Pr{singleton discovery} = >99%
+Pr{common allele discovery} = >99%
+
+Low-pass sequencing design
+
+Heterozygotes can be mistaken for homozygous due to sampling 
+Varients missed by sampling 
+significantly better power to detect homozygous sites
+
+Data requirements per sample
+Target bases = 3Gb
+Coverage = Avg. 4x
+# sequenced bases = 20gb
+# per lane (HiSeq 4000) = ~6
+
+Variant detection among multiple samples
+Variant found per sample = ~3M
+Percent of variation in genome = ~90%
+Pr{singleton discovery} = <50%
+Pr{common allele discovery} = ~99%
+
+Variant calling with Galaxy#
+Data Pre-processing
+    Raw reads (FASTQ)
+    Reads quality check
+    Mapping algorithm
+        BWA
+        and/or
+        Bowtie2
+    Remove PCR duplicates and sort
+    Ready reads (BAM)
+Variant calling
+    Calling algorithm
+    Filter
+    Merge VCFs and annotation wiht SnpEff
+    Final VCF
+Post-processing and variant analysis
+    Gemini
+        load final VCF file to Gemini database 
+            autosomal
+            Interactions
+            Pathways
+            Comp_hets
+            Query
+
+Calling variants
+Variant calling - identification of positions where the sequenced sample is different from the reference sequence 
+Genotype calling - identifying individual’s genotype at variable sites
+
+Typical steps
+Mapping reads against the reference genome
+Thresholding BAM datasets by, for example, retaining paired, properly mapped reads
+Performing quality score recalibration
+Performing realignment
+Performing variant calling/genotype assignment
+Performing filtering and genotype quality score recalibration
+Annotating variants and performing downstream analyses
+
+Variant calling with FreeBayes
+◦ Indel realignment is accomplished internally using a read-independent method, and issues resulting from discordant alignments are dramatically reduced through the direct detection of haplotypes
+◦ The need for base quality recalibration is avoided through the direct detection of haplotypes. Sequencing platform errors tend to cluster (e.g. at the ends of reads), and generate unique, non-repeating haplotypes at a given locus
+◦ Variant quality recalibration is avoided by incorporating a number of metrics, such as read placement bias and allele balance, directly into the Bayesian model
+◦ Ability to incorporate non-diploid cases such as pooled datasets or data from polyploid samples.
+

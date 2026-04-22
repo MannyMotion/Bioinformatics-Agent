@@ -1,0 +1,167 @@
+  
+Why BLAST?
+BLAST is one of the fundamentals of computational biology. At it's heart, it is a database searching tool, that gives us the ability to recognise and quantify sequence homology (with statistical support!) for either nucleotides or amino acides. This is incredibly useful for a wide range of applications, for example BLAST can be used to infer functional and evolutionary relationships between sequences as well as help identify members of gene families.
+There are several distinct ways to run Blast depending on your intended use:
+1) BLAST online 
+ (Links to an external site.)
+via the NCBI repository.
+This is perhaps the simplest way to run BLAST. That said, it requires a lot of manual steps, and so for large numbers of samples (or integration and reproducibility) it isn't ideal.
+2) Standalone BLAST - See here 
+ (Links to an external site.)
+for more information about installing BLAST locally.
+This option allows you to interact with BLAST via your commandline shell. This is useful because it allows for both integration and reproducibility. There are two principle ways that standalone BLAST works. You can either create your own database to BLAST against, or download specific BLAST databases. These can be large though.
+3) API BLAST.
+This option allows you to interact with BLAST's online databases through either your commandline shell, or, as we will learn in this tutorial, through Biopython.
+A note on biopython.
+While this will not be your first exposure to biopython as a tool ensuring that you understand the basics is still important. Biopython is perhaps one of the most powerful available to computational biologists. I do like to remind you all "not to reinvent the wheel" buy rewriting scripts which have been written and implemented well by others. most of the time, I'll be referring to functionality within biopython. This tutorial is not going to cover the breadth of things biopython can do, so I'd encourage you all to really read the documentation, here .
+
+
+Installing Biopython 
+Installing biopython.
+If you don't already have biopython installed on your machine, there are several ways you can install it. For example via your package manager (i.e. Anaconda), or via direct download from the biopython website 
+ (Links to an external site.)
+.
+Perhaps the easiest way however is to install it via 'pip' (the package installer that ships with Python):
+pip install biopython
+
+
+Note. The above code assumes you have only a single version of python on your system. Depending on your user profile privileges, you may need to use the 'sudo' command (to grant root access).
+You can then test whether the install worked correctly by importing the module into a python session:
+import Bio
+
+
+Assuming that you don't get an error here, biopython should be installed correctly.
+ 
+
+
+Importing sequences through biopython.
+We have spent a lot of time in our workshops writing functions that will parse, amongst other things, FASTA and FASTQ files. We have done it this way, because it is essential that you understand how to do it. In the 'real world', you will probably do it via biopython (mainly because it's really well implemented).
+So to import (or parse correctly) a sequence through biopython, you need to do the following steps:
+1) Import the specific functions from biopython.
+from Bio import SeqIO
+
+
+2) Use the function ('SeqIO') to parse a file containing sequences.
+for record in SeqIO.parse(open(file, "r"), "fasta"):
+    print(record.id, record.seq)
+
+
+Note. The above code is a little different from the way we have done things in the past (i.e. opens the file as part of the 'for loop' statement. It works exactly the same way. Chose the way you feel most comfortable.
+The output of this code (the print command), should look something like the example below:
+('AT1G04130.1_pop1_+_m', Seq('ATGGCGCTATGGATGGACGCTGGAGCGACGCCTACAACGGAGAACGAAAAGGCT...TAG', SingleLetterAlphabet()))
+
+
+You will notice that unlike the method by which we have been returning sequences, the 'seq' element contains slightly more data than simply the sequence. If you want to return the actual sequence, you could amend the code to the following:
+print(record.id, str(record.seq))
+
+
+This will print the sequence as a string in the way we familiar with.
+Importing and running BLAST via biopython.
+3) Import the function to call BLAST.
+from Bio.Blast import NCBIWWW
+
+
+4) Perform the BLAST on the sequence.
+result_handle = NCBIWWW.qblast("blastn", "nt", str(record.seq))
+blast_result = result_handle.read()
+print(blast_result)
+
+
+This produces an XML file that looks similar to the one below. Note. The excerpt below contains only a single hit. This may not be the case for your files.
+<?xml version="1.0"?>
+<!DOCTYPE BlastOutput PUBLIC "-//NCBI//NCBI BlastOutput/EN" "http://www.ncbi.nlm.nih.gov/dtd/NCBI_BlastOutput.dtd">
+<BlastOutput>
+  <BlastOutput_program>blastn</BlastOutput_program>
+  <BlastOutput_version>BLASTN 2.10.0+</BlastOutput_version>
+  <BlastOutput_reference>Stephen F. Altschul, Thomas L. Madden, Alejandro A. Sch&amp;auml;ffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J. Lipman (1997), &quot;Gapped BLAST and PSI-BLAST: a new generation of protein database search programs&quot;, Nucleic Acids Res. 25:3389-3402.</BlastOutput_reference>
+  <BlastOutput_db>nt</BlastOutput_db>
+  <BlastOutput_query-ID>Query_44503</BlastOutput_query-ID>
+  <BlastOutput_query-def>No definition line</BlastOutput_query-def>
+  <BlastOutput_query-len>1083</BlastOutput_query-len>
+  <BlastOutput_param>
+    <Parameters>
+      <Parameters_expect>10</Parameters_expect>
+      <Parameters_sc-match>2</Parameters_sc-match>
+      <Parameters_sc-mismatch>-3</Parameters_sc-mismatch>
+      <Parameters_gap-open>5</Parameters_gap-open>
+      <Parameters_gap-extend>2</Parameters_gap-extend>
+      <Parameters_filter>L;m;</Parameters_filter>
+    </Parameters>
+  </BlastOutput_param>
+<BlastOutput_iterations>
+<Iteration>
+  <Iteration_iter-num>1</Iteration_iter-num>
+  <Iteration_query-ID>Query_44503</Iteration_query-ID>
+  <Iteration_query-def>No definition line</Iteration_query-def>
+  <Iteration_query-len>1083</Iteration_query-len>
+<Iteration_hits>
+<Hit>
+  <Hit_num>1</Hit_num>
+  <Hit_id>gi|1190956125|ref|XM_021014938.1|</Hit_id>
+  <Hit_def>PREDICTED: Arabidopsis lyrata subsp. lyrata tetratricopeptide repeat protein 4 homolog (LOC9328261), mRNA</Hit_def>
+  <Hit_accession>XM_021014938</Hit_accession>
+  <Hit_len>1470</Hit_len>
+  <Hit_hsps>
+    <Hsp>
+      <Hsp_num>1</Hsp_num>
+      <Hsp_bit-score>1853.35</Hsp_bit-score>
+      <Hsp_score>2054</Hsp_score>
+      <Hsp_evalue>0</Hsp_evalue>
+      <Hsp_query-from>1</Hsp_query-from>
+      <Hsp_query-to>1082</Hsp_query-to>
+      <Hsp_hit-from>186</Hsp_hit-from>
+      <Hsp_hit-to>1267</Hsp_hit-to>
+      <Hsp_query-frame>1</Hsp_query-frame>
+      <Hsp_hit-frame>1</Hsp_hit-frame>
+      <Hsp_identity>1060</Hsp_identity>
+      <Hsp_positive>1060</Hsp_positive>
+      <Hsp_gaps>0</Hsp_gaps>
+      <Hsp_align-len>1082</Hsp_align-len>
+      <Hsp_qseq>ATGGCGCTATGGATGGACGCTGGAGCGACGCCTACAACGGAGAACGAAAAGGCTGATCTTGAAGCTATTTCTGCTCTCAAAGAATCCGCCGCCATCGAATTCAAAGAACAGGGCAATGAATGTGTGAGGAAAGGGAAAAGGCATTACTCCGAGGCGATTGATTGTTACACGAAAGCCATTAATCAGGGAGTTCTAAGTGACTCAGAGACCTCAATTTTGTTCTCGAATCGATCCCATGTTAATCTACTCTTAGGCAACTATCGGCGTGCCCTCACGGATGCTGAGGAATCAATGAGGTTATGTCCTCATAACGTTAAGGCGGTGTATCGAGCTGCAAAGGCATCAATGTCATTGGATTTGCTGAACGAAGCAAAGTCTTATTGTGAAAAGGGAATTGAGAATGATCCCAATAATGAGGACATGAAGAAGCTTTTGAAACTGGTGAATTCAAAGAAGCAAGAGAAAGAACAACACGAGGCTCAAGTCTCAAGGGCTGTGGTTGAAGCCAAGGCTTGTCTCTCTGCGATCGAGAACAGAGGAGTGAAGATTGGCAAAGCAATGTACCGAGAACTCACGGGTTTGAAGAAGCCAATGTTAGATAAAAACAACATCCTTCATTGGCCTGTCCTGCTTCTTTACGCTGAGGCCATGACAAGTGACTTTGTCGAGGACTTTTGTGAAACAGACATGTTTGCAACTCATCTTGATATGATGTTTTCAGAGGACAGCCCGCCGCTGCCATGGGATATAAACAACGAATACTCGCGGGATGTTATTGAGCTTTACTATGAGGCGAGTTCAGGAACTCCATTGCCTAGGAGTAGAGTTCTCCAGTATCTTCTAGAAGGTACAAAAGGTTCTCAAGCTGAAACTACCGGTGAAGAGGACACAAGTGTAACCAAAACACCCTCCTACATGAAAGGTTCTTCGGGTATGGTTAAAGTGAACGAGAGAAGAACATTGCATGACGTGTTGAAAGAACCTAAGTTTGTCATCCCTGAGATTCCAGTCTTCTACATCGTATCAAAGAGGTCTAAATTGTACAAGGACTTTATCGCTGGAAAATGGAGTCCACCAAATTA</Hsp_qseq>
+      <Hsp_hseq>ATGGCGCTATGGATGGACGCTGGAGCGACGCCGATCACGGAGAACGAAAAGGCTGATCTTGAAGCTATTTCTGCTCTCAAAGAATCCGCCGCCATCGAATTCAAAGAACAGGGCAATGACTGTGTAAGGAAAGGGAAAAAGCATTACTCCGAGGCGATTGATTGTTACACGAAAGCCATTAATCAGGGAGTTCTAAGTGACTCAGAGACCTCAATTTTGTTCTCGAATCGATCCCATGTTAATCTACTCTTAGGCAACTATCGGCGTGCCCTCACGGATGCTGAGGAATCAATGAGGTTATGTCCTCATAACGTTAAGGCGGTGTATCGAGCTGCTAAGGCATCAATGTCATTGGATTTGCTGAACGAAGCAAAGTCTTATTGCGAAAAGGGAATCGAGAATGATCCAAGTAATGAGGACATGAAGAAGCTTTTAAAACTGGTGAATTCAAAGAAGCAAGAGAAAGAACAACATGAGGCTCAAGTCTCAAGGGCTGTGGTTGAAGCCAAGGCTTGTCTCTCTGCGATCGAGAACAGAGGAGTGAAGATTGGCAAAGCAATGTACCGAGAACTCACAGGTCTGAAGAAGCCAATGTTAGATAAAAACAACATTCTTCATTGGCCTGTCCTGCTTCTTTACGCTGAGGCCATGACAAGTGACTTTGTCGAGGACTTTTGTGAAACAGACATGTTTGCAACTCATCTTGATATGATGTTTTCAGAGGACAGCCCGCCGCTGCCATGGGATAAAAACAACGAATACTCGCGGGATGTTATCGAGCTTTACTACGAGGCGAGTTCAGGAACTCCATTGCCTAGGAGTAGAGTTCTCCAGTATCTTCTAGAAAGTACAAAAGGTTCTCAAGCTGAAACTACCGGTGAAGAGGACACAAGTGTAACCAAAACACCCTCCTACATGAAAGGTTCTTCGGGTATGGTTAAAGTGAACGAGAGAAGAACATTGCATGACGTGTTGAAAGAACCTAAGTTTGTCATCCCTGAGATTCCAGTCTTCTACATCTTATCAAAGAGGTCTAAATTCTACAAGGACTTTATCGCTGGAAAATGGAGTCCACCAAATTA</Hsp_hseq>
+      <Hsp_midline>|||||||||||||||||||||||||||||||| |  ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||||| ||||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||| ||||||||||| | |||||||||||||||||||||||| |||||||||||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||| ||||||||||||||||||||||||||||||| |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||||||||||||||||||| ||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| ||||||||||||||||||| |||||||||||||||||||||||||||||||||||||||||</Hsp_midline>
+    </Hsp>
+  </Hit_hsps>
+</Hit>
+<Hit>
+
+
+As you can probably see, the file contains a variety of information pertinent to the alignment BLAST has created. Try to think about the information that will be most useful to your use case.
+5) Save the output to an XML file.
+Printing the XML BLAST output to your stdout is perhaps not so useful when we think about reproducibility and robustness. You can modify your code to save the output in the following way.
+with open("Blast_output.xml", "w") as f_out:
+    result_handle = NCBIWWW.qblast("blastn", "nt", str(record.seq))
+    blast_result = result_handle.read()
+    f_out.write(blast_result)
+
+
+Note. Producing output files like this is super useful when dealing with multifasta files containing lots of sequences. Be aware though, accessing BLAST online like this can be time consuming depending on connection speed and server load. It might take a while for this code to generate results.
+6) Import the function for parsing the XML file.
+When you have created files (and this will work for files created via standalone BLAST or BLAST online), you can parse them back into biopython.
+from Bio.Blast import NCBIXML                
+
+
+7) Parse the XML file, and assess the 'hits'.
+with open(input_xml, "r") as f_in:
+    for records in NCBIXML.parse(f_in):
+                
+
+
+8) You can then do 'something' with the data...
+for alignments in records.alignments:
+    for hsp in alignments.hsps:
+        if hsp.expect > 0.01:
+            print(str(alignments).split(">")[0].strip(), str(hsp))                 
+                
+
+
+ 
+1) What elements of the XML file is the above script accessing?
+2) Think about the elements of the BLAST return that could be useful to you. How might you adapt this code to use those elements?
+This gives the following output:
+('gi|1375842016|ref|XR_002980209.1| PREDICTED: Populus trichocarpa tetratricopeptide repeat protein 4 homolog (LOC7461481), transcript variant X1, misc_RNA\n           Length = 1603', 'Score 54 (49 bits), expectation 2.5e-01, alignment length 95\nQuery:     936 GGTTAAAGTGAACGAGAGAAGAA--CATTGCATGACGTGTTGAAA...AAA 1028\n               ||| ||||| || || |  ||||  | |||  ||| || ||||||...|||\nSbjct:    1490 GGTAAAAGTAAATGAAAAGAGAATGCTTTG--TGATGTTTTGAAA...AAA 1582')
+('gi|1666242375|ref|XM_025790102.2| PREDICTED: Arachis hypogaea tetratricopeptide repeat protein 4 homolog (LOC112741213), transcript variant X1, mRNA\n           Length = 1612', 'Score 56 (51 bits), expectation 7.1e-02, alignment length 148\nQuery:     934 ATGGTT-AAAGTGAACGAGAGAAGAACAT--TGCATGACGTGTTG...CAA 1078\n               |||| | ||||| || ||||  |||| ||  | || ||  |  | ...|||\nSbjct:    1078 ATGGATCAAAGTAAATGAGA--AGAAAATGCTCCAAGATATCCTC...CAA 1223')                           
+ 
+1) How many results are returned?
+2) Why?
+

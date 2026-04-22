@@ -1,0 +1,427 @@
+Introduction to transcriptomics: downstream data analyses
+Dr. Craig Willis
+Assistant Professor in Bioinformatics
+1 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcriptomics schedule
+2 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Lecture
+Workshop
+Lecture
+Workshop
+Workshop
+Transcriptomic
+technologies
+RNA-seq:
+quality control
+RNA-seq:
+alignment
+RNA-seq:
+data analysis
+Downstream
+data analyses
+Session Learning Outcomes
+3 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+1. Understand what differential expression analysis is
+2. Understand what network analysis is
+3. Understand what enrichment analysis is
+Recap: what is transcriptomics?
+4 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Study of an organism’s transcriptome: the sum of its RNA molecules
+Recap: why use transcriptomics?
+5 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Link between genome and proteome (and thus cellular phenotype)
+• Non-coding RNA’s have important biological functions
+• Well-developed technologies
+• Biomarker discovery in health and disease
+• Expression in pooled cell populations
+• Microarray
+• RNA-sequencing (RNA-seq)
+Recap: transcriptomic techniques
+6 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Bulk
+Single cell
+Spatial
+• Expression in individual cell populations
+• Single cell RNA-sequencing
+• Single nucleus RNA-sequencing
+• Location of expression in tissue section
+• Spatial transcriptomics
+• Expression in pooled cell populations
+• Microarray
+• RNA-sequencing (RNA-seq)
+Recap: transcriptomic techniques
+7 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Bulk
+• Lecture will contextualise downstream
+analytical approaches in terms of
+conventional RNA-seq/microarray data
+• However: many (if not all) approaches
+extend to single cell and spatial
+transcriptomic data
+From raw data to gene expression
+8 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw data files • Microarray = scanner files, RNA-seq = FastQ
+Pre-processing • Alignments; feature filtering; normalisation; etc
+Gene
+expression
+Where do we
+go from here?
+Downstream analytical approaches
+9 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+Principal component analysis (PCA)
+10 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+• Principal Components =
+handful of variables that
+‘summarise’ many genes
+• 1st Component captures
+most information then
+2nd Component, etc
+• Useful for looking at how
+well samples in the
+dataset cluster together
+based expression profile
+(technical)
+outlier?
+Downstream analytical approaches
+11 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+Differential expression analysis
+12 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+• Per gene: determine if expression is different between conditions
+Two key aspects:
+1. Quantifying direction and magnitude of difference
+2. Defining ‘statistical significance’ of the difference
+Gene 1 Gene 2 Gene 3
+Ground Spaceflight Ground Spaceflight Ground Spaceflight
+7.5
+10.0
+12.5
+15.0
+Gene Expression
+Differential expression analysis
+13 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Quantifying direction and magnitude of difference:
+• Using log2 fold-change
+Sample 1
+Sample 2
+Sample 3
+6.78
+5.88
+Ground
+6.00
+Expr
+Sample 4
+Sample 5
+Sample 6
+15.33
+14.14
+13.86
+Flight
+Log2 fold-change of gene 2:
+=	log2 𝐦𝐞𝐚𝐧 𝐨𝐟 𝟏𝟓.𝟑𝟑, 𝟏𝟒.𝟏𝟒, 𝟏𝟑.𝟖𝟔
+𝐦𝐞𝐚𝐧 𝐨𝐟 𝟔.𝟕𝟖, 𝟓.𝟖𝟖, 𝟔.𝟎𝟎
+=	log2 𝟏𝟒.𝟒𝟒
+𝟔.𝟐𝟐
+Gene 2 Gene 3
+light Ground Spaceflight Ground Spaceflight
+=	log2 𝐠𝐞𝐧𝐞 𝟐 𝐬𝐩𝐚𝐜𝐞𝐟𝐥𝐢𝐠𝐡𝐭 𝐞𝐱𝐩𝐫𝐞𝐬𝐬𝐢𝐨𝐧
+𝐠𝐞𝐧𝐞 𝟐 𝐠𝐫𝐨𝐮𝐧𝐝 𝐞𝐱𝐩𝐫𝐞𝐬𝐬𝐢𝐨𝐧
+Not already on log2 scale =	1.21
+Differential expression analysis
+14 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Quantifying direction and magnitude of difference:
+What if my data is already on the log2 scale?
+log2 𝐁
+𝐀 Rule of logs: =			log2 𝐁 - log2 𝐀
+If data already on log2 scale:
+• Log2 fold-change flight vs. ground = flight expr – ground expr
+Differential expression analysis
+15 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Defining ‘statistical significance’ of the difference:
+What do I mean by ‘statistical significance’?
+• Calculate a P-value associated with difference in expression
+For each gene:
+• Significant difference when P-value < threshold (e.g., 0.05)
+• ↓ P-value = ↑ likelihood there is a ‘real’ difference
+Differential expression analysis
+16 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Defining ‘statistical significance’ of the difference:
+• Thousands of genes = thousands of statistical tests
+Does this present any problems?
+• Inflates chance of incorrectly concluding there is a difference
+• Need to adjust raw P-values to minimise number of ‘false’ discoveries
+Differential expression analysis
+17 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Interpreting (adjusted) P-values and log2 fold changes together:
+Spaceflight vs. ground example:
+Gene 1 Gene 2 Gene 3
+Ground Spaceflight Ground Spaceflight Ground Spaceflight
+7.5
+10.0
+12.5
+15.0
+Gene Expression
+• Adj P > threshold
+Not dysregulated
+by spaceflight
+Upregulated
+by spaceflight
+Downregulated
+by spaceflight
+• Adj P < threshold
+• LFC > 0
+• Adj P < threshold
+• LFC < 0
+Differential expression analysis
+18 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Ranking differentially expressed genes:
+• Help with selecting top ‘candidate’ genes
+Volcano plot: LFC vs. significance
+Could rank by:
+• Log2 fold change
+• Adjusted P-value
+• Combination of the above
+• Test statistic (e.g., t-score)
+Differential expression analysis
+19 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overlooks molecular complexity of biological system
+• Involves testing thousands of molecular changes in isolation…
+Any limitations to differential gene expression analysis?
+Downstream analytical approaches
+20 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+Ø Knowledge-based;
+§ Define interactions using existing info
+§ E.g., databases of known interactions
+Network analysis
+21 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+Edge (interaction) Node (gene)
+• Model interactions among genes in a transcriptomic dataset
+• Can be:
+Ø Data-driven;
+§ Define interactions using patterns in the dataset itself
+Network analysis
+22 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Co-expression network analysis:
+• Widely employed form of data-driven network analysis
+Network analysis
+23 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Weighted co-expression network construction:
+Divide network into modules
+(Group genes with similar expression) Detect network ‘modules’
+Construct a gene-gene similarity
+network Build the network
+Gene_Name Sample 1 Sample 2 Sample 3
+G1 4.501 1.302 18.661
+G2 10.847 5.773 18.389
+G3 9.882 7.914 9.195
+G4 12.147 3.066 3.553
+G5 11.795 16.445 17.039
+G6 16.256 19.193 15.644
+G7 13.351 17.326 16.814
+G8 12.631 10.053 12.021
+G9 2.190 12.426 15.174
+G10 10.472 16.919 15.601
+G11 18.196 7.600 3.127
+G12 14.159 1.224 18.582
+Gene expression data
+Samples
+Expression level
+Determine how similar the
+expression patterns are
+between each pair of genes
+Network analysis
+24 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Summarising co-expression network modules:
+Gene Expression
+Gene Expression
+Gene 1
+Gene 2
+Gene 3
+Gene 4
+Gene 5
+work into modules
+es with similar expression)
+Gene Expression
+Gene 1
+Gene 2
+Gene 3
+Gene 4
+Gene 5
+Gene Expression
+'Summary' gene
+Control Treated Control Treated
+• Can apply classic differential expression testing to ‘summary’ gene
+• Can correlate ‘summary’ gene with external traits
+• Greatly alleviates multiple testing issue + more biologically motivated
+Network analysis
+25 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Network-driven gene prioritisation:
+• Likely essential to overall function of that module
+Undirected network Directed network
+Unsigned network Signed network
++
+-
++
++ +
+-
++ -
+-
++ - +
++
+-
++
++ +
+-
++ -
+-
++ - +
+Network hub nodes
+Hub Hub
+Module ‘hub’ genes:
+• Most highly connected genes in a module
+Downstream analytical approaches
+26 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Ø Over-representation analysis (ORA);
+§ Focus on significant differentially expressed genes
+§ Focus on module genes
+Enrichment analysis
+27 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Core concept:
+• Functional characterisation gene expression responses
+• Can be:
+Ø Gene set enrichment analysis (GSEA)
+§ Looks for global trends across all genes in the dataset
+Enrichment analysis
+28 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Key inputs for enrichment analysis:
+1. Genes in our data set
+2. Gene terms
+What is meant by a gene ‘term’?
+Enrichment analysis
+29 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Key inputs for enrichment analysis:
+• Gene term = a category that genes are assigned to
+• Many ways to categorise genes:
+Ø Gene Ontology categories
+Ø Pathway database categories
+Ø Transcription factor target categories
+Ø Drug target categories
+Enrichment analysis
+30 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Over-representation analysis (ORA):
+• Statistically tests if the amount of (e.g.) differentially expressed
+genes that map to a specific term is greater than expected by chance
+Cell adhesion genes
+n = 2,000
+750
+Upregulated:
+n = 1,000
+Not upregulated:
+n = 14,000
+250
+600
+650
+13,400
+75% of
+upregulated
+genes
+4% of not
+upregulated
+genes
+Enrichment analysis
+31 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Gene set enrichment analysis (GSEA):
+• Rank all genes in dataset (e.g., by LFC) and statistically
+cross-reference where genes are positioned in ranked list
+Cell adhesion genes Mitochondria genes
+Positive
+LFC
+Negative
+LFC
+• Distribution
+towards bottom
+• Trend for
+concordant
+downregulation
+• Randomly
+distributed
+throughout
+• No real trend
+for concordant
+change in either
+direction
+Ranked list Ranked list
+Downstream analytical approaches
+32 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overarching goal:
+Expression of thousands of genes across
+different experimental conditions
+Important genes, their known biological
+roles, and top candidate targets
+Useful approaches:
+Narrow
+down
+• Principal component analysis
+• Differential expression analysis
+• Network analysis
+• Enrichment analysis
+Suggested further reading
+33 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Differential expression analysis:
+Ø Ritchie et al, 2015. Nucleic Acids Res, 43(7):e47
+Ø Love et al, 2014. Genome Biol, 15(12):550
+Network analysis:
+Ø Van Dam et al, 2018. Brief Bioinform, 19(4):575-592
+Ø Langfelder & Horvath, 2008. BMC Bioinformatics, 9:559
+Differential expression vs. network analysis:
+Ø Oldham, 2013, in The OMICs: Applications in Neuroscience
+Ø Langfelder et al, 2013. PLoS One, 8(4):e61505
+Enrichment analysis:
+Ø The Gene Ontology Consortium, 2000. Nat Genet, 25(1):25-29
+Ø Chicco & Agapito, 2022. PLoS Comput Biol, 18(8):e1010348
+Any questions?
+34 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare

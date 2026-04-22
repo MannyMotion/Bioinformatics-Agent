@@ -1,0 +1,258 @@
+Transcriptomics workshop 1: quality control of RNA-seq data
+Dr. Craig Willis
+Assistant Professor in Bioinformatics
+1 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcriptomics schedule
+2 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Lecture
+Workshop
+Lecture
+Workshop
+Workshop
+Transcriptomic
+technologies
+RNA-seq:
+quality control
+RNA-seq:
+alignment
+RNA-seq:
+data analysis
+Downstream
+data analyses
+Session Learning Outcomes
+3 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+1. Identify key steps of a typical RNA-seq workflow
+2. Understand how RNA-seq output files are formatted
+3. Know how to assess raw RNA-seq data quality
+‘Bulk’ transcriptomics
+4 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Expression in pooled cell populations
+• ‘Conventional’ transcriptomic methods:
+Ø Microarray
+Ø RNA-sequencing (RNA-seq)
+Tissue sample
+RNA from all
+cell populations
+Average expression
+from all cells
+‘Bulk’ transcriptomics: RNA-seq
+5 SEM1 24/25
+RNA-seq core principle:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+FastQ file
+Simplified RNA-seq workflow
+6 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw reads
+(FASTQ Files)
+Quality
+Control
+Alignment +
+Quantification
+Visualisations
+Other downstream approaches
+• Enrichment analysis;
+Ø Gene Ontology
+Ø Pathways
+Ø Transcription factor targets
+Ø Drug targets
+• Gene prioritisation/ranking
+• (and many more)
+Network
+analysis
+Differential
+expression
+analysis
+Sequencer
+output
+Initial pre-processing Further pre-processing
+Feature filtering +
+normalisation if/as needed
+Analyses
+RNA-seq raw output files
+7 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+How are raw sequenced reads normally stored?
+FASTQ FASTQ file format
+RNA-seq FASTQ files
+8 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overview:
+• Special text files that contain:
+1. The reads from a sequencer run
+2. A ‘quality score’ per base of each read
+• Have .fastq or .fq extension (.fastq.gz or .fq.gz if compressed)
+FASTQ
+• Paired-end = 2 FASTQ files per sample
+RNA-seq FASTQ files
+9 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Key components in a FASTQ file:
+1) Read name
+2) Sequenced bases
+3) ‘+’
+4) Base qualities
+1) Read name
+2) Sequenced bases
+3) ‘+’
+4) Base qualities
+1) Read name
+2) Sequenced bases
+3) ‘+’
+4) Base qualities
+RNA-seq FASTQ files
+10 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Base quality scores:
+• Probability of a base call made by the sequencer being incorrect
+• ASCII character → Quality (Q) score → probability of erroneous base call
+ASCII_BASE 33 (most widely used quality scoring system)
+Probability of error = 0.1 → 10% probability of error → base call accuracy of 90%
+RNA-seq FASTQ files
+11 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+FASTQ file integrity:
+• FASTQ files often very large (> 2 GB per file in size)
+• Important to check file integrity upon downloading/transferring
+• Can verify integrity via a file’s ‘hash’ (checksum) – a sequence of
+letters and/or numbers (theoretically) unique to that file
+• Several hash generating algorithms (MD5, SHA-2, CRC32, etc)
+File Original MD5 checksum of file MD5 checksum of downloaded file
+File1.fq
+File2.fq
+2bfa07f21539c82384aa92097a3af67d 2bfa07f21539c82384aa92097a3af67d
+1ffcd00068a28df9e0eb5ee4eefda761 2c6fc322940ab1cc5d415998a3b6ec1d
+Match?
+✓
+✕
+Worksheet break
+12 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Work through section ‘1. FASTQ Files’
+Simplified RNA-seq workflow
+13 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw reads
+(FASTQ Files)
+Quality
+Control
+Alignment +
+Quantification
+Visualisations
+Other downstream approaches
+• Enrichment analysis;
+Ø Gene Ontology
+Ø Pathways
+Ø Transcription factor targets
+Ø Drug targets
+• Gene prioritisation/ranking
+• (and many more)
+Network
+analysis
+Differential
+expression
+analysis
+Sequencer
+output
+Initial pre-processing Further pre-processing
+Feature filtering +
+normalisation if/as needed
+Analyses
+Quality control of RNA-seq reads
+14 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Rationale:
+• Important to screen initial quality of raw RNA-seq read files
+• Helps identify potential issues and/or points of remedy
+FASTQ
+Quality control of RNA-seq reads
+15 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Tools for assessing RNA-seq read quality:
+• Major tool for checking RNA-seq read quality is FastQC software
+• Encompasses a range of quality check metrics (‘modules’)
+• Can be utilised in several ways:
+Ø Through terminal/ command prompt
+Ø Downloadable application with graphical user interface
+Ø Using its corresponding R package (fastqcr)
+Ø Using Galaxy webserver
+Quality control of RNA-seq reads
+16 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+FastQC ‘modules’ for RNA-seq data:
+1. Basic statistics
+2. Per base sequence quality
+3. Per sequence quality scores
+4. Per base sequence content
+5. Per sequence GC content
+6. Per base N content
+7. Sequence length distribution
+8. Sequence duplication levels
+9. Overrepresented sequences
+10. Adapter content
+FastQC operates a
+‘traffic light’ system
+Pass
+Warn
+Fail
+Focus of this session (others
+explored more in further
+learning material on Canvas)
+Quality control of RNA-seq reads
+17 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Important notes when using FastQC:
+• FastQC provides an indication of what’s going on
+• Should interpret in context of ‘typical’ behavior for your library
+• E.g., WARN/FAIL in some modules may be normal for RNA-seq
+• Use flags as guides rather than definitive barriers to progress
+Quality control of RNA-seq reads
+18 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Using FastQC - GUI:
+• Homepage
+Quality control of RNA-seq reads
+19 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Using FastQC - GUI:
+• Report screen
+(html link to full
+report also
+generated for
+each FASTQ file)
+Quality control of RNA-seq reads
+20 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Using FastQC – ‘fastqcr’ R package:
+• Facilitates batch running of FastQC (package available via CRAN)
+# Load library
+library(fastqcr)
+# Run fastQC on all samples in specified directory
+fastqc(fq.dir = ‘path/to/FASTQ/files’,
+qc.dir = ‘path/to/save/directory’,
+fastqc.path = ‘path/to/fastqc/tool’)
+# Combine output results of all samples
+qc.agg <- qc_aggregate(qc.dir = qc.dir = ‘path/to/save/directory’)
+Worksheet break
+21 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Work through section ‘2. FastQC’
+Quality control of RNA-seq reads
+22 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Can we do anything about the presence of
+poor-quality reads or adaptor sequences?
+Quality control of RNA-seq reads
+23 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Filtering and trimming:
+• Can help increase number of reads aligner is able to successfully use
+• Several tools exist that enable us to be able to:
+1. Trim/cut/mask sequences:
+a) From low quality score regions
+b) Beginning/end of sequence
+c) Removing adapters
+2. Filter sequences:
+a) With low mean quality score
+b) That are too short
+c) With too many unidentified (N) bases
+Quality control of RNA-seq reads
+24 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Filtering and trimming:
+• (Some) tools for filtering and/or trimming:
+Ø Cutadapt
+Ø SOAPnuke
+Ø Trim Galore!
+• Should re-run FastQC on trimmed/filtered reads
+Additional resources
+25 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Worksheet tasks:
+• ‘Section 3: additional tasks’ – practice using FastQC
+Further reading (available on Canvas):
+• Resources related to FastQC modules
+• Galaxy resource on quality control of NGS data
+• Resources related to read trimming/filtering
+Any questions?
+26 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare

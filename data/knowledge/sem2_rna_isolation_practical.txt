@@ -1,0 +1,217 @@
+RNA Isolation and cDNA synthesis Lab
+
+Practical Molecular Biology
+
+Dr Katie Hanna
+
+qPCR lab
+
+Aim: Induce hypoxia and extract RNA, to be used in qPCR
+
+Work in pairs (one person extracts RNA from Control, one from Treated)
+
+Using tissue-marker specific primers (designed with Dr Nicholls), you will measure changes in expression of ADAMTS1 and VEGFa
+
+Lab safety!
+
+Minimum PPE to Enter Lab
+Hair Tied Back
+safety Glasses
+Lab coat 
+Gloves
+Long Pants
+CLosed-Toe Shoes
+
+Why isolate RNA?
+
+Isolating high-quality RNA is crucial for many downstream experimental techniques……..
+
+Cloning
+
+Reverse transcription for cDNA synthesis
+
+PCR
+
+RNA-sequencing
+
+RNA- similar to DNA but with several key differences
+
+Made up of a repeating strand of nucleotides, contains all 3 components similar to DNA (phosphate, sugar and nitrogen base) 
+
+Sugar in RNA is RIBOSE
+
+Contain nitrogen base Uracil (U) instead of Thymine (T). Uracil binds to Adenine 
+
+RNA is single stranded
+
+There are three types of RNA
+Messenger RNA (mRNA)
+Transfer RNA (tRNA)
+Ribosomal RNA (rRNA)
+
+Hypoxia- Insufficient oxygen
+Replicate ischaemic stroke
+Using two enzymatic reactions
+
+
+Glucose Oxidase  (GOx) reaction:
+Glucose Oxidation: Glucose oxidase oxidises glucose in the presence of molecular oxygen, producing gluconic acid and hydrogen peroxide.
+
+Oxygen Consumption: The reaction consumes oxygen, and as a result, local oxygen levels decrease in the vicinity of the enzyme's action.
+
+
+Catalase reaction: 
+Catalase is an enzyme that breaks down hydrogen peroxide (H₂O₂) into water (H₂O) and oxygen (O₂)
+
+Catalase offers limited oxygen recovery- still net decrease
+
+Gox/Cat-induced Hypoxia
+
+Induces a hypoxic state within minutes (you decide the length of time)
+
+You have:
+1000 U/mL of Glucose Oxidase
+12,000 U/mL of Catalase
+
+You want:
+Total 20 mL total volume:
+2 U/mL of Glucose Oxidase
+120 U/mL of Catalase
+
+
+RNA extraction
+
+Repeat until all cell lysate/ethanol mixture is used
+
+Scrape cells from surface of well
+
+Centrifuge 1 min at 10000g
+
+Remove media and wash with PBS
+
+Add 200µl of lysis buffer to each well
+
+Put the cell/LB mix into a new tube AND add 600µl ethanol
+
+Waste
+
+RNA
+
+Centrifuge and discard flow through in the sink
+
+Centrifuge and discard flow through in the sink
+
+X2!!
+
+Put spin column into RNase/DNase free tube
+Add 25µl water
+Incubate for 1 minute
+Centrifuge
+
+
+Centrifuge empty tube- to dry membrane
+
+New collection tube
+
+500µl Wash Buffer II
+
+700µl wash buffer I
+
+Protocol:
+
+Spin cartridge
+(you need this for the entire lab- do not throw away)
+
+Place spin cartridge into collection tube
+
+RNase/DNase Free Tube
+Collects RNA
+
+Collection Tube (x2)
+collects liquid that passes through the column
+
+BioDrop
+
+Nanodrop rules:
+Add your bench number to the list- go back to bench
+Wait to be called by the demonstrators
+
+Do not look over peoples shoulder whilst they’re using the nanodrop!!
+
+Quantity and Quality of RNA
+
+Measures: ng/ul
+
+Whilst you wait to use the NanoDrop:
+
+Put samples on ice
+
+Prepare a table to record results e.g
+
+
+
+A260/280: 
+Very pure- ~2.1 
+Acceptable- 1.8
+Not acceptable- <1.8
+
+ Concentration
+ 
+A260/A280
+ 
+A260/230
+ 
+
+A260/230
+Ratio should be >2.0
+
+
+Anything lower is a poor quality sample
+Likely contaminated with phenol
+
+cDNA synthesis:
+
+1. Calculate volume of RNA required for 500ng total RNA
+
+2. Prep the following in 0.2ml tube
+
+
+3. Briefly spin down using microfuge 
+
+
+Component
+5x cDNA synthesis Mix
+20x RTase
+Note: Add before total RNA as RNase inhibitor is blended with RTase
+Total RNA (500ng)
+DEPC-treated water (nuclease-free water)
+Total Volume
+
+Amount
+4µl
+1µl
+?µl
+?µl (make up to 20µl)
+20µl
+
+What you want/what you have
+
+4.  Run in thermal cycler
+ 42°C for 30 mins
+85°C for 10 mins
+4°C  ∞
+
+5. Store at -20°C in preparation for next lab
+
+Gox/Cat calculation
+
+Glucose oxidase: 40 µL of 1000 U/mL 
+Catalase: 200 µL if 12,000 U/mL
+Media: 19.76 mL
+
+Mix all components together in a 50 mL tube and add 2 mL to the cells immediately. 
+Leave to incubate for desired amount of time
+
+https://www.physiologyweb.com/calculators/dilution_calculator_units_per_volume.html
+
+

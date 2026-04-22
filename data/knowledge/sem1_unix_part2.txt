@@ -1,0 +1,650 @@
+Further UNIX commands: Workshop lecture 2
+
+Dr Andrew Tedder
+@DrATedder
+
+
+1
+
+23 September 2020
+
+‘Further UNIX commands’
+
+What’s covered today
+
+Standard streams
+Sort
+Uniq
+Pipes
+Cut
+Grep
+Bash scripts
+Workshop exercises
+
+2
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Standard Streams
+
+Standard streams are preconnected input and output channels between a computer program and its environment (typically a text terminal) when it begins execution.
+
+0. standard input (stdin)
+standard output (stdout)
+standard error (stderr)
+
+3
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Sort
+
+The sort utility functions with text and binary files. It has two principle functions, namely to sort and to merge records.
+
+Typical usage:
+
+Usage: sort [-bcCdfigMmnrsuz] [-kPOS1[,POS2] ... ] [+POS1 [-POS2]] [-S memsize] [-T tmpdir] [-t separator] [-o outfile] [--batch-size size] [--files0-from file] [--heapsort] [--mergesort] [--radixsort] [--qsort] [--mmap] [--human-numeric-sort] [--version-sort] [--random-sort [--random-source file]] [--compress-program program] [file ...]
+
+4
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Sort examples
+
+The demonstrate the power of sort, I will use new_data_file with four lines of text as follows:
+
+Using the sort command with the default parameters prints the following sorted output to stdout:
+
+Test 10
+Try 3
+Never 59
+Sort 1
+
+$ sort new_data_file 
+
+Never 59
+Sort 1
+Test 10
+Try 3
+
+5
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Sort examples
+
+Alternatively, as the data file has two columns, it is possible to sort it using the characters/values in column two:
+
+As you can see, sort will numerically sort either alphabetic or numeric characters, depending on what it encounters.
+
+$ sort –k2 new_data_file 
+
+Sort 1
+Try 3
+Test 10
+Never 59
+
+6
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Sort examples
+
+However, if it encounters a mixture of alphabetic and numeric characters in a given column, its sorting behaviour will alter. For examples:
+
+Using the same sort command as previously:
+
+Test 10
+Try three
+Never 59
+Sort 1
+
+$ sort –k2 new_data_file 
+
+Try three
+Sort 1
+Test 10
+Never 59
+
+7
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Useful Sort options
+
+Numerical sorting (sorts either alphabetically or numerically depending on type):
+
+Reverse sorting:
+
+$ sort –n new_data_file 
+
+Never 59
+Sort 1
+Test 10
+Try 3
+
+$ sort –r new_data_file 
+
+Try 3
+Test 10
+Sort 1
+Never 59
+
+8
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Useful Sort options
+
+Sort also allows you to specify an output file to write the sorted data to, rather than have it print to stdout:
+
+As with all programs, before you use it for the first time, it is worth checking out the manual:
+
+$ sort new_data_file –o new_data_file_sorted 
+
+$ man sort
+
+9
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq
+
+Removing duplicate entries in a file can be achieved using the Uniq utility. The program compares adjacent lines within the input files, and writes a single copy of each entry to the output.
+
+Note. Repeated lines in the input are only detected if they are adjacent. For this reason, Uniq is often paired with sort.
+
+Typical usage:
+
+Usage: uniq [-c | -d | -u] [-i] [-f num] [-s chars] 
+[input_file [output_file]]
+
+10
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq examples
+
+To demonstrate Uniq, I modified new_data_file in the following way:
+
+Test 10
+Test 10
+Test 3
+Try three
+Never 59
+Sort 1
+Test 10
+
+$ uniq new_data_file 
+
+Test 10
+Test 3
+Try three
+Never 59
+Sort 1
+Test 10
+
+11
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq examples
+
+As you can see, Uniq removed the incidences of adjacent duplicates but did not remove duplicates which were not adjacent.
+
+To remove all duplicates, we should combine the sort and uniq commands. We could potentially do this in multiple ways.
+
+Test 10
+Test 3
+Try three
+Never 59
+Sort 1
+Test 10
+
+12
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq examples
+
+The first uses multiple commands, and requires the generation of a sorted data file:
+
+As a bioinformatic solution it is sub-optimal for several reasons:
+Less commands represent a better solution (all things being equal)
+We generate potentially unnecessary files (e.g. sorted file)
+
+$ sort new_data_file –o new_data_file_sorted
+$ uniq new_data_file_sorted
+
+
+Never 59
+Sort 1
+Test 10
+Test 3
+Try three
+
+13
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Pipes
+
+A potentially better solution, uses Pipes. A Pipe in UNIX is a one-way system of passing information from one program to another.
+
+Here, we pipe the sort output from the stdout into Uniq. This produces the same output as using two commands, but doesn’t create additional files.
+
+$ sort new_data_file | uniq
+
+Never 59
+Sort 1
+Test 10
+Test 3
+Try three
+
+14
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq examples
+
+Other useful optionality with Uniq:
+Precede each output line with a count of the input line occurrence:
+
+
+Suppress the writing of lines not repeated in the input:
+
+$ sort new_data_file | uniq -c
+
+	1 Never 59
+	1 Sort 1
+	3 Test 10
+	1 Test 3
+	1 Try three
+
+$ sort new_data_file | uniq -d
+
+Test 10
+
+15
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq examples
+
+Avoid comparing the first N fields (‘-f’) or characters (‘-s’) on each input line:
+
+Suppress the writing of lines are repeated in the input:
+
+$ sort new_data_file | uniq –s 1
+
+$ sort new_data_file | uniq -u
+
+Never 59
+Sort 1
+Test 3
+Try three
+
+16
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Uniq further information
+
+Uniq has multiple use cases, including being able to handle both numeric and alphabet characters, and columns. As before, to learn more about Uniq, see the manual:
+
+$ man uniq
+
+17
+
+23 September 2020
+
+‘Further UNIX commands’
+
+WC
+
+The WC utility provides count data for various parameters associated with files. For example:
+Newline count
+Word count
+Byte count
+Total number of lines if more than one file is selected 
+
+Typical usage:
+
+Example:
+
+$ Usage: usage: wc [-clmw] [file ...]
+
+$ wc new_dta_file
+
+ 7      14      57 new_data_file
+
+18
+
+23 September 2020
+
+‘Further UNIX commands’
+
+WC optionality
+
+The WC utility doesn’t have a huge amount of optionality. It’s options tend to relate to which information it gives.
+
+So, to count only the number of bytes:
+
+or the number of lines:
+
+For more details:
+
+$ wc -c new_dta_file
+
+57 new_data_file
+
+$ wc –l new_dta_file
+
+7 new_data_file
+
+$ man wc
+
+19
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Cut
+
+The Cut utility is capable of extracting parts of lines from each file to the stdout. The location of the cut section can be defined by:
+
+Bytes (‘-b’)
+Characters (‘-c’)
+A delimiter (‘-d’)
+Field (‘-f’)
+
+usage: cut -b list [-n] [file ...]
+       cut -c list [file ...]
+       cut -f list [-s] [-d delim] [file ...]
+
+$ man cut
+
+20
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Cut optionality
+
+For each of the cut flag options, a range must be specified.
+
+N	Nth byte, character or field counted from 1
+N-	From Nth byte, character or field to end of line
+N-M	From Nth to Mth (included) byte, character or field
+-M	From first to Mth (included) byte, character of field
+
+For example, to selected the first 5 characters per line one can use:
+
+$ cut –c -5 new_data_file
+
+Test 
+Test 
+Test 
+Try t
+Never
+Sort 
+Test 
+
+21
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Cut examples
+
+Alternatively, one may want to select columns within a file. There is no direct way to do this, however we can use the delimiter (‘-d’) optionality to achieve it.
+
+In our cases, columns are separated by ‘ ‘ (blank spaces), so o choose the second column we could use: 
+
+$ cut –d‘ ‘ 2 new_data_file
+
+10
+10
+3
+three
+59
+1
+10
+
+22
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Grep
+
+Grep: General regular expression parser
+
+The grep utility functions as a search command for UNIX, and can be used to search for text strings and regular expressions within files.
+
+As ever, it is really important to read the manual before using:
+
+Usage: usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] 
+	[-B num] [-C[num]][-e pattern] [-f file] 
+	[--binary-files=value] [--color=when][--context[=num]] 
+	[--directories=action] [--label] [--line-buffered]
+	[--null] [pattern] [file ...]
+
+$ man grep
+
+23
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Command grep commands
+
+Grep offers the optionality to report a wide range of parameters after a successful search. For example:
+Display the number of matched lines (‘-n’)
+
+Ignore case sensitivity (‘-i’)
+
+$ grep –n Test new_data_file
+
+1: Test 10
+2: Test 10
+3: Test 3
+7: Test 10
+
+$ grep –i TEST new_data_file
+
+Test 10
+Test 10
+Test 3
+Test 10
+
+25
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Command grep commands
+
+Display all lines which do not match (‘-v’)
+
+Display only the number of matched lines (‘-c’)
+
+$ grep –v Test new_data_file
+
+Try three
+Never 59
+Sort 1
+
+$ grep –c Test new_data_file
+
+4
+
+26
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Combining flags in grep
+
+Option flags can be combined within grep (and other programmes/commands) to allow you to get the exact optionality you want. For example, you may want to know how many lines do not feature a non-case sensitive regex. This involves combining the following:
+‘-c’	display the number of matched lines
+‘-i’	ignore case sensitivity
+‘-v’	display lines which do not match
+
+$ grep –civ test new_data_file
+
+3
+
+27
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Combining flags in grep
+
+Be careful though, some optionality may not be compatible. For example, with the ‘-H’ flag, grep will give the file name: 
+
+However when combined with the ‘-h’ flag which displays matched lines, but not the file name:
+
+This may seem a bizarre example, but when working with many files rather than a single file, it may become more apparent.
+
+$ grep –Hciv test new_data_file
+
+new_data_file:3
+
+$ grep –Hcivh test new_data_file
+
+3
+
+28
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Using grep on directories
+
+Grep is a very powerful tool. Not only can it search within large text files to find your regex, but it can also search directories and find any file which contain it.
+
+Be careful with such a broad search (i.e. ‘*’ – everything). Depending on the directory you are currently in, it could take a long time to finish! You may also see a lot of the following error message:
+
+$ grep –l Test *
+
+new_data_file
+
+grep: /Users/andrew/Applications: Is a directory
+
+29
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Grep and regular expressions
+
+^ (caret) – match expression at the start of a line
+
+
+$ - match expression at the end of a line
+
+
+\ - turn off the characters special meaning (i.e. to search for a $)
+
+
+[] – match any one of the enclosed characters
+
+
+[0-9] – use a ‘-’ to indicate a range
+
+$ grep ^Test new_data_file
+
+$ grep Test$ new_data_file
+
+$ grep \$ new_data_file
+
+$ grep [aeiou] new_data_file
+
+$ grep [1-5] new_data_file
+
+30
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Basic bash scripts
+
+Scripts allow you to run multiple commands at a time, or allow you to re-run the same commands multiple times - saving huge amounts of time and ensuring reproducibility!
+
+Then run the script with the following command:
+
+$ nano sequence_count_script.sh
+
+grep “^>“ *.fasta | wc -l
+
+$ bash sequence_count_script.sh
+
+33
+
+23 September 2020
+
+‘Further UNIX commands’
+
+Making the script into a program
+
+To make the script into a program (i.e. not have to tell the computer how to run it), you need to do the following:
+Look at the current permissions
+
+Change the permissions to make it executable
+
+$ ls –l sequence_count_script.sh
+
+-rw-r--r--  1 andrew  staff  sequence_count_script.sh
+
+$ chmod +x sequence_count_script.sh
+
+$ ls –l sequence_count_script.sh
+
+-rwxr-xr-x  1 andrew  staff  sequence_count_script.sh
+
+Run the program
+
+It should produce exactly the same results as the first time.

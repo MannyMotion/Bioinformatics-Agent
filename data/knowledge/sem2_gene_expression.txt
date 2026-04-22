@@ -1,0 +1,275 @@
+Analysis of Gene expression
+Practical Molecular biology
+
+Learning outcomes:
+
+Structure of eukaryotic genes
+
+Control of gene expression
+
+Storage of genetic material
+
+Histones
+
+Structure of chromatin
+
+Structure of eukaryotic genes
+
+Almost all human genes possess a set of similar characteristics:
+
+Promoter
+
+Transcriptional ‘start’ and ‘stop’ signal
+
+Exons and Introns
+
+Upstream regulatory regions
+
+Things to remember:
+
+Nucleosome wrapping provides a barrier to transcription
+
+Eukaryotic genes are monocistronic
+
+Eukaryotic genes are not continuous- split into coding/non-coding regions
+
+Transcription
+
+RNA is made by Transcription
+
+Transcription
+Three classes of proteins are involved in the activation of transcription
+
+
+Transcription is (in part) controlled by proteins that bind to DNA
+
+Begins at the TATA box
+Within core promoter region
+5’-TATAAA-3’
+General transcription factor proteins bind
+Histones proteins bind
+
+RNA polymerase binds to the TATA box
+~50bp upstream of the start codon
+Gives rise to 5’ UTR
+Contains regulatory elements
+
+RNA polymerase II
+
+Transcribes all protein-coding genes and many RNA non-coding RNAs
+
+12-subunit complex
+
+Complex but cannot initiate transcription
+
+To execute essential functions:
+Pol II must bind with an array of protein/protein complexes
+
+General Transcription factors
+
+Govern initiation
+
+Pre-initiation complex
+
+Roles:
+Positions RNA pol II at transcription start site
+
+Denatures DNA
+
+Ensure the DNA is in the Active site of the RNA pol II
+
+Most simple complex
+
+Preinitiation complex PIC (general Transcription factors)
+Consists of 8 factors
+
+TFIIF:
+Binds unbound RNA pol II to prevent it binding to non-promoter DNA 
+
+TFIIB:
+Stabilises the TBP-DNA complex 
+Recruits DNA pol II
+
+TFIIE:
+Has a role in the transition from initiation to elongation 
+Facilitates enzymatic function of TFIID
+Has a role in DNA denaturation
+
+TFIID:
+Includes TATA-binding protein TBP, and TBP-associated factors
+Responsible for binding to DNA sequence
+
+
+ 
+
+TFIIH:
+Subunit XPB enable ATP-dependent opening of the promoter at the transcription start site
+
+TFIIA:
+Interacts with TBP to stabilise the PIC
+TFIIA-TBP prevents repressor binding
+ 
+
+Mediator:
+Co-activator of initiation
+Does not interact with DNA, but GTFs and activators
+Stabilise PIC 
+
+Only basal rate of transcription is driven by PIC- other proteins including activators and repressors drive rate of transcription 
+
+Distal control Elements play a role in fine-tuning regulation. Sometimes they can be located 1000’s of base pairs away
+
+
+Distal control elements:
+
+Located far away from promoter region- helps with controlling gene expression by interacting with TFs and reg proteins
+
+Enhancers (Gene Activators):
+
+
+Needed for maximal gene transcription
+
+Binding sites for Activator protein
+
+
+Silencers (Gene Repressors):
+
+Decrease or prevent transcription
+
+Binding site for repressor proteins
+
+Activators: Mechanism of action
+
+1. The activator can bind via the DNA-binding domain (DBD) to either linker DNA or to nucleosome bound DNA 
+
+2. The activation domain (ACT) then recruits chromatin modifying and remodelling complexes
+
+3. The activator then recruits an RNA polymerase II holoenzyme complex
+
+RNA polymerase II holoenzyme: in simple terms is the complete and active form of RNA polymerase. The holoenzyme is made up of a core enzyme (which dies the actual RNA synthesis) and a sigma factor (which helps to recognise the starting point of the gene on the DNA). This holoenzyme is important because the core enzyme can transcribe the DNA into RNA but can not recognise the starting point on the DNA sequence- it is the sigma factor that directs the RNA polymerase to the correct place which is the promoter region- once transcription begins the sigma factor detaches leaving just the core enzyme to continue transcribing RNA.   
+
+The activator recruits one, or more remodelling complex……
+
+1. Chromatin Modifying complexes:
+
+Histone tails
+
+Chromatin modifying complexes occur via modification of the histone tails, also known as the amino terminal tails. The histone tails can be modified by phosphorylation (P), Acetylation (Ac), or methylation (Me) at either the serine (S) or Lysine (K) residues. The number listed underneath refers to the amino acid positions within each protein.
+Additionally, Histones H2A and H2B can be ubiquitinated (Ub) at their carboxyl-terminal end. 
+The modification that is most common studied and discussed is acetylation- This is the addition of acetyl groups to lysine residues. The addition of acetyl groups to the histone tails causes the their positive charge and loose affinity for the DNA sequence, thus allowing transcription to occur more readily. 
+
+The activator recruits one, or more remodelling complex……
+
+2. Chromatin-remodelling complexes:
+
+SWI/SNF complex 
+
+The Switch-Sniff protein complex use energy derived from ATP to move nucleosomes. The precise mechanism of action is unclear, but its thought that the complex functions as an ATP driven motor that move along the DNA and disrupt protein-DNA interactions. 
+
+Eukaryotic DNA exists in a very compact form
+
+Each base pair is approx. 3.4 Å (angstrom) or 0.34nm
+
+The length of DNA in a single cells is approx. 2 metres
+
+The body has 37 trillion cells- total length of DNA is 74 billion kilometres!!!
+Stretch from earth to the sun and back 250 x
+
+
+
+
+
+How does the cell achieve this?
+
+DNA associates with several proteins to form chromatin
+
+These proteins also increase or decrease the compaction of chromatin for gene expression
+
+Different levels of Chromosome structure exist
+
+Nucleosomes are the basic unit of chromosome structure
+
+
+Nucleosomes
+
+Chromosomes are composed of nucleosomes
+
+Human DNA is wrapped around a core of 8 histones (octomer)
+
+DNA wraps around a histone octomer 1.65 times and 147bp in length
+
+Region between nucleosomes is linker DNA and can vary in length
+
+Nucleosomes generate bead-on-a-string structure
+
+Histones
+
+Positively charged, small proteins (11-22kDa) that assemble into a disc-like structure in the presence of DNA. 
+
+The histone core is composed of two copies of each core histone: H2A, H2B, H3 and H4.
+
+Histone H1 binds to linker DNA and is sometimes called the linker histone. 
+
+Histones
+
+
+The histone tails are not needed for histone to bind to DNA.
+
+Histone tails undergo extensive post-translational modification (methylation, acetylation, phosphorylation).
+
+HOWEVER these modifications are very important in the control of gene expression (and other ‘open’ and ‘closed’ chromatin). 
+
+Higher order chromatin
+
+If you observe chromatin in chromosomes via light microscopy it is 
+evident that two distinct forms exist:
+
+
+Heterochromatin has a condensed appearance and gene expression is ‘off’.
+Euchromatin has a relatively open structure and gene expression is ‘on’.
+
+How the nucleosomes are packaged determines whether the chromosome is hetero- or euchromatic in structure. 
+
+This packaging is regulated in part by the linker histone, H1.
+
+Histone acetylation
+
+Histone Acetyl-Transferases:
+
+HATs are recruited to chromatin upon activator binding and acetylate the amino acid terminal tails of core histones
+
+The acetyl group neutralises the +ve charge of the lysine- the more acetyl groups added the more the +ve histone lose affinity for –ve DNA
+
+The chromatin structure loses H1 linkers, and changes from 30nm to 10nm structure
+
+This exposes the promoter region ready for gene transcription
+
+This can be reversed by HDACs
+
+Nucleosome remodelling complexes
+
+A single cell contain many nucleosome remodelling complexes
+
+Slide: moves the nucleosome along the DNA strand to allow access of transcription factors
+
+Restructure: can  change the composition of the nucleosome
+
+Transfer: Move the nucleosome from one DNA molecule to another
+
+qPCR Analysis ddCq (delta delta Cq)
+ Steps
+Equation 
+Answer gained
+1.
+Mean Cq of gene control - mean Cq of Housekeeping control
+Mean Cq of  Gene Treated- mean Cq of Housekeeping Treated
+Delta Cq (dCq)
+2
+dCq of Control –dCq of Control  (answer here should be 0)
+dCq of Treated – dCq of Control
+ Delta Delta Cq (ddCq)
+3
+=2^- ddCq Control (answer here should be 1)
+=2^- ddCq Treated
+Final result
+

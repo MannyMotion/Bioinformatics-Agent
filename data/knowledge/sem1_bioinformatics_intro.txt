@@ -1,0 +1,189 @@
+
+Introduction to BIS7017-B:  Principles of Bioinformatics 
+
+Dr. Craig Willis 
+Assistant Professor in Bioinformatics 
+1 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Session Learning Outcomes 1. Know the overall structure of this module 
+2. Understand the methods of assessment for this module 3. Recognise how best to approach this module 
+2 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+What is Bioinformatics? Informatics 
+
+Biology 
+Study of living things and  their vital processes 
+Study, design and development of  information technology that generates,  stores, processes, and presents information 
+
+Bioinformatics 
+Using computer technology to collect, store, analyse and disseminate  biological data and information (e.g., DNA and amino acid sequences) 
+3 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+What about Computational Biology?  • Large overlap with bioinformatics – terms often used interchangeably 
+Bioinformatics Computational  Biology 
+Applies principles of information sciences and  
+Uses mathematical and computational  
+technologies to make vast, diverse and complex  
+approaches to address theoretical and  
+biological data more understandable and useful 
+experimental questions in biology 
+4 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+
+Why use/study bioinformatics?  
+What are your motivations for studying Bioinformatics? 5 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+
+Why use/study bioinformatics?  
+Driving discovery and  
+strategy in modern day  
+healthcare/medicine 
+6 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+
+Why use/study bioinformatics?  • A booming area within research and industry… 
+Keyword retrieved entries from Pubmed: Bioinformatics market size (USD Billion): (Source: Abdurakhmonov 2015, DOI: 10.5772/63817) (Source: PRECEDENCE RESEARCH) 
+
+7 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+
+Why use/study bioinformatics?  
+• Subject-specific and transferable skills development… 8 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+
+Overarching purpose of this module 1. Introduce you to the fundamental basics of bioinformatics 
+2. Help you begin to develop core skills for applying bioinformatics 
+BIS7017-B = key precursor/complementary to other core modules… 
+BIS7017-B – Principles  
+of Bioinformatics 
+
+BIS7018-B – Advanced  Bioinformatics 
+BIS7026-E – 
+Research Project 
+BIS7019-B – ‘Omics’ Techniques  in Biology and Healthcare 
+
+9 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Meet the module team 
+Dr. Craig Willis 
+• BIS7017-B module lead 
+• Broad interests: bioinformatics applications in biology and healthcare • Specific interests: skeletal muscle adaptations throughout the life course • Email: c.r.g.willis@bradford.ac.uk 
+Dr. Andrew Tedder 
+• Programme lead for MSc Bioinformatics 
+• Broad interests: bioinformatics applications in biology and healthcare • Specific interests: evolutionary ecology, population genomics 
+• Email: a.tedder@bradford.ac.uk  
+Both CW and AT have active computational research profiles: 
+• CW Google Scholar: https://scholar.google.com/citations?hl=en&user=NFCYE1oAAAAJ • AT Google Scholar: https://scholar.google.com/citations?user=nPx20lMAAAAJ&hl=en 
+10 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Delivery of module content 
+Formal teaching will consist of:  
+• Lectures 
+• Workshops 
+• Tutorials 
+Where necessary, sessions will include some pre-session activities and/or  resources, and may also include follow-up activities and/or resources 
+11 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Accessing module content / info 
+BIS7017-B  
+Canvas homepage 
+12 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Week-by-week module structure 
+* May be subject to minor modification
+13 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Example: R workshop 1 
+Clickable links to  pre-session, in-session  and post-session  learning resources
+14 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Week-by-week module structure 
+* May be subject to minor modification 
+15 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Accessing module content / info 
+BIS7017-B  
+Canvas homepage 
+16 SEM1 24/25 BIS7017-B - Principles of Bioinformatics
+
+Module assessments 
+Module mark determined by two summative (graded) bits of work: 
+• E-Portfolio deadline = Monday 9th December 2024 
+• Computer-based assessment = Wednesday 15th January 2025 
+Links to  
+dedicated  
+F&Q pages
+17 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+E-Portfolio assessment 
+Documented work-through of a transcriptomic analysis pipeline using R,  applied to a dataset from a select list of available options… 
+
+By Wednesday  2nd October 2024 
+By Friday 25th October 2024 
+By Monday 9th December 2024 
+Email me your top 10 dataset choices in order of preference (will be assigned on 'first come first served' basis, taking into account your preferences) 
+Submit formative plan (2-pages of bullet points) outlining your ideas for things such as overall pipeline, R package choices, intended content for each required section, etc 
+Submit final version of your E-Portfolio assessment, produced using RMarkdown (dedicated workshop on RMarkdown in week 4 of semester 1) 
+
+* Additional guidance provided at regular intervals throughout the course of this module
+18 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+E-Portfolio dataset choices 
+1. Ageing and the skeletal muscle transcriptome (GSE159217) 
+2. Spaceflight and the liver transcriptome (OSD-48) 
+3. Gestational diabetes and the placental transcriptome (GSE203346) 4. Coronary artery disease and the blood transcriptome (GSE42148) 5. Inactivity and the skeletal muscle transcriptome (GSE24215) 
+6. Alzheimer’s disease and the blood transcriptome (GSE97760) 7. Cystic fibrosis and the lung fibroblast transcriptome (GSE141535)  8. Amyotrophic Lateral Sclerosis and the fibroblast transcriptome (GSE234991) 9. High-intensity interval training and the skeletal muscle transcriptome (GSE221894) 10. COPD and the peripheral blood monocyte transcriptome (GSE146560) 11. Osteoarthritis and the synovium connective tissue transcriptome (GSE206848) 12. Parkinson’s disease and the brain putamen transcriptome (GSE205450) 13. Type 2 diabetes and the adipocyte transcriptome (GSE133099) 14. Duchenne Muscular Dystrophy and the skeletal muscle transcriptome (GSE38417) 15. Pancreatic cancer and the blood transcriptome (GSE125158)
+19 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Computer-based assessment 
+• 2-hour computer assessment comprising short answer questions • Mix of theory, coding and interpretation across the module content  
+
+Between 10th and  17th December 2023 
+On Wednesday 15th January 2024 
+Opportunity to complete a practice ungraded ('formative’) version of the computer-based assessment 
+Summative (‘assessed’) computer-based assessment (you will be able to undertake the assessment during any two consecutive hours on this day)
+
+20 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Additional in-module support 
+Tutorials: 
+1 
+• Regular tutorials throughout the semester 
+• Run as catch-up / Q&A sessions 
+Online ‘post it’ wall: 
+2 
+• Dedicated Padlet web-page for BIS7017-B 
+• Post questions on the Padlet web-page for the  
+module teaching team to comment on with answers
+21 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Module online ‘post it’ wall 
+BIS7017-B  
+Canvas homepage 
+Link available on  
+Canvas homepage
+22 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Module online ‘post it’ wall 
+Click ‘+’ symbol next to  appropriate topic to ask a  question related to that topic
+23 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Module online ‘post it’ wall 
+3. Click submit
+1. Give very brief subject title 
+2. Type question here 
+24 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Module online ‘post it’ wall 
+Submitted ‘post it’ question for  teaching team to offer answer to
+25 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+Top tips for success in this module 1. Engage fully with module content 
+2. Don’t be afraid to ask questions 
+3. Master the basics first 
+4. Use module resources as a basis for inquiry – self-directed study  is expected (module only touches tip of bioinformatics iceberg!)
+26 SEM1 24/25 BIS7017-B - Principles of Bioinformatics 
+
+
+Any questions? 
+27 SEM1 24/25 BIS7017-B - Principles of Bioinformatics

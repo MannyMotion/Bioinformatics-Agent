@@ -1,0 +1,254 @@
+Introduction to UNIX
+
+Dr Andrew Tedder
+@DrATedder
+
+What’s covered today
+
+◦ What is a shell & why we should use one
+◦ Navigating through directories
+◦ Home & Root directories
+◦ Listing
+◦ Creating new files & Directories
+◦ Viewing files
+◦ Permissions
+◦ Shortcuts
+
+What is a shell and why should I care?
+
+A shell is a computer program that presents a command line interface which allows you to control your computer using commands entered with a keyboard instead of controlling graphical user interfaces (GUIs) with a mouse/keyboard combination.
+
+On a Mac or Linux machine, you can access a shell through a program called Terminal, which is already available on your computer.
+
+Why use a shell?
+
+◦ Many bioinformatics tools can only be used through a command line interface, or have extra capabilities in the command line version that are not available in the GUI. 
+
+◦ To make life less boring by automating repetitive tasks!
+
+◦ The shell makes your work less error-prone. When humans do the same thing a hundred different times (or even ten times), they’re likely to make a mistake. Your computer never makes a mistake.
+
+◦ The shell makes your work more reproducible. When you carry out your work in the command-line (rather than a GUI), your computer keeps a record of every step that you’ve carried out, which you can use to re-do your work when you need to. It also gives you a way to communicate unambiguously what you’ve done, so that others can check your work or apply your process to new data.
+
+◦ Many bioinformatic tasks require large amounts of computing power and can’t realistically be run on your own machine. These tasks are best performed using remote computers or cloud computing, which can only be accessed through a shell.
+
+Command prompt
+
+After opening the shell (Terminal) you will see your command prompt, mine looks like this:
+
+If you would prefer not to have the information before the prompt, you can clear it for your session using the following command:
+
+Working directory
+
+At any moment, our current working directory is our current default directory, i.e., the directory that the computer assumes we want to run commands in unless we explicitly specify something else.
+
+To identify your current working directory:
+
+Typically, one doesn’t work in their home directory, but rather in specific 
+subdirectories created specifically for a given purpose.
+
+Navigating through directories
+To change locations in your file system, you use the change directory command. This command allows you to mover to explicit locations, step backwards (one or multiple steps) or revert back to home. 
+
+Navigate to an explicit location:
+$ cd /destination/folder
+
+Step backwards a single directory:
+$ cd ../..
+
+Step backwards multiple directories:
+$ cd ../..
+
+Step back to your home directory (Note the space “cd “):
+$ cd 
+
+Navigating through directories
+
+If you intend to move between two distant directories multiple times (particularly when path names are long), you can use the pushd command.
+
+To save the current location:
+$ pushd .
+
+To jump back to it from another location:
+$ pushd
+
+Navigational Shortcuts
+
+The tilde character, ~, is a shortcut for your home directory. You can use this character as a navigational shortcut. For example to list files in the home directory when you are elsewhere:
+$ ls ~
+
+Or as part of a location path:
+$ cd ~/Documents
+
+Listing files & directories
+Navigating through files and directories requires you to know where your desired file or location is. Obviously, this won’t always be the case. For this reason, it is useful to be able to list the content of directories using the listing command.
+
+Basic use (Note. lists can be VERY long, and often contain non-human readable data):
+$ ls
+
+To find out more about the optionality of listing, or of any standard UNIX command, use the manual function:
+$ man ls
+
+Useful listing commands
+In addition to the basic use case, there are some specific use cases that give valuable information or functionality.
+
+List in long format with file sizes:
+$ ls -l
+
+List in long format with human readable file sizes:
+$ ls -lh
+
+List with indication of pathname function (e.g. “/” after directories or “*” after executable files):
+$ ls -F
+
+List only files with a specific extension (in this case, python scripts):
+$ ls *.py
+
+Creating new directories
+Creating new directories can be done using the make directory command:
+$ mkdir new_directory_name
+
+Note. It is important within UNIX to not put spaces into file or directory names as these are interpreted incorrectly by the system.
+
+You can also use this command from a different location, if you include the path:
+$ mkdir /path/to/new_directory_name
+
+Creating new files
+Creating a new data file requires the use of an editor. There are many editors available, some installed as standard on your system. Here we will use nano. To learn more about nano read the manual with the following command:
+
+
+
+Creating a data file with nano is simple:
+
+
+Note. You can use any type of file extension you choose, in the above example, I have used ‘.txt’
+
+Performing this command opens the nano editor with a blank file. You can then add the data you intend to use. This is particularly useful for writing short shell scripts to run batch commands.
+
+To exit nano, press “ctrl X”
+
+Creating and moving files
+You can create the new file in a different location in the same way you created a new directory in a new location:
+
+Alternatively, if you have already created a file you can move it with the move command:
+
+Note. I only give the new location, and do not include the file name. 
+Files can be renamed in the same way, also using the move command:
+
+Renaming and/or moving the file in this way removes the original.
+
+Copying a file to a new location
+You can copy a file in the same folder while maintaining the original file using the copy command:
+
+Or you can make a copy into a new location using the file path:
+
+Removing files & folders
+Removing files and directories on the command line can dangerous. There is no back up or recovery function! Always read the manual before using this function and ensure you understand the command you are giving.
+
+To remove a single file either in the current location, or in a different location use the remove command as follows:
+
+One can remove files that share common naming elements, for example using a wild card:
+
+The above command will rm files in the current location that begin with “new_” but have any combination of characters after. Note. in this case “*” zero or more characters.
+
+Alternatively, you may decide to rm all files from the current location which have a certain extension type:
+
+In this case, all files with the “txt” extension will be deleted. Obviously, both of these commands will also work with location paths as before.
+
+Directories can be removed in the same way as files, but only if they are empty.
+
+Be very careful if you choose to us the remove command with the recursive flag (‘-r’). This can lead to significant loss of files if your search terms are too broad.
+
+Shortcut: Tab completion
+
+Up to present we have used simple sample names, but when working with real data, you will likely have names that are much more complex. This means that typing names can be time consuming and often lead to mistakes (typos). We can use tab complete as a shortcut. This involves typing enough letters that the system can recognise a unique directory or file, and then pressing the tab key:
+
+The shell fills in the rest of the directory name.
+
+If however you do not give enough characters to unambiguously identify the file or directory, you can use tab twice to get a list of files which currently fit the pattern you have entered:
+
+Tab completion can also fill in the names of programs:
+
+Home vs. Root
+
+The “/” character is another navigational shortcut and refers to your root directory. The root directory is the highest level directory in your file system and contains files that are important for your computer to perform its daily work, but which you usually won’t have to interact with directly. In our case, the root directory is two levels above our home directory, so:
+
+Is equivalent to:
+
+While you will be using the root at the beginning of your absolute paths, it is important that you avoid working with data in these higher-level directories, as your commands can permanently alter files that the operating system needs to function. In many cases, trying to run commands in root directories will require special permissions, so it’s best to avoid it and work within your home directory.
+
+Command History
+If you want to repeat a command that you’ve run recently, you can access previous commands using the up arrow on your keyboard to go back to the most recent command. Likewise, the down arrow takes you forward in the command history.
+
+A few more useful shortcuts:
+
+Ctrl  + C     will cancel the command you are writing, and give a fresh prompt.
+Ctrl  + R     will do a reverse-search through your command history.
+Ctrl  + L     will clear your screen.
+
+You can also review your recent commands with the history command:
+
+Viewing files
+There are several ways to view text files through the shell. For example using cat, which concatenates and prints files to standard output:
+
+However, most of the data files (typically fasta files) we will use are very big, limiting the utility of cat. In these cases, less is far more useful, as it opens the file as read only, and lets you navigate.
+
+For full optionality on less or cat, use the man command, e.g. 
+
+Useful commands in less
+Some useful commands to navigate through files in less:
+
+Keys : Action 
+Space : to go forward
+b : to go backwards
+g : to go to the beginning
+G : to go to the end
+q : to quit 
+
+Less also has a search function:
+      
+  / , search term, then entere
+
+Looking at parts of files
+Both cat and less are useful, but in come cases, you may only want to look at certain parts of a file, for example the first 10 lines to check formatting, or sequence name if the file is a FASTA file.
+
+To look at either the beginning or the end of a file, you can use the head and tail commands, respectively.
+
+File Permissions
+Under certain circumstances, you may need to alter the permissions associated with a file. We do this with the change mode command. First, the list command can give an overview of permissions:  
+In this case, because we created the file, we have both read & write permissions. 
+
+We can remove or add a given permission using change mode:  
+
+In this example, we have subtracted (“-”) the write permission (“-w”). If you then attempt to remove this file, you will be asked if you want to override this permission:
+
+Superuser File Permissions
+Under certain circumstances, you may find yourself with insufficient permissions to conduct a given activity, for example installing a given program to root. Under these conditions, you may need to use the superuser do command:
+The sudo command will prompt you for your password:
+
+Downloading & Installing packages 
+The shell offers a huge potential for interacting with files in a many different ways. In order to take advantage of most of them, you will likely need to download and install various packages. There are numerous ways to do this, but one is by using apt-get. 
+
+As usual, check out the manual for more details on it’s usage:
+
+Keyboard Shortcut Keys
+
+Key : Function
+Ctrl + B : Moves cursor backwards one character.
+Ctrl + C : Cancels the currently running command.
+Ctrl + D : Logs out of current session.
+Ctrl + F : Moves cursor forwards one character.
+Ctrl + H : Erases one character. Similar to backspace.
+Ctrl + P : Paste previous line(s).
+Ctrl + S : Stops all output on-screen (XOFF).
+Ctrl + Q : Turns all output stopped on-screen back on (XON).
+
+Key : Function
+Ctrl + U : Erases the complete line.
+Ctrl + W : Deletes the last word typed.
+Ctrl + Z : Cancels current operation.
+~ : Moves to users Home directory.
+!! : Repeats the last line entered in shell.
+!$ : Repeats the last argument for last used command.
+reset : Resets the terminal.
+Shutdown –h now : Remotely or locally shuts the system down.

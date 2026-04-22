@@ -1,0 +1,466 @@
+Further Python functionality
+
+Dr Andrew Tedder
+@DrATedder
+
+
+1
+
+14 February 2019
+
+‘Further Python functionality’
+
+What’s covered today
+
+Importing modules
+Overview of functions
+Writing functions
+Return vs. print
+
+
+
+
+
+2
+
+15 February 2019
+
+‘Further Python functionality’
+
+Functions – the basics
+
+Functions are global “store and reuse” code that can be called at any time (or at any point within your code) to perform a predefined action.
+
+There are two types of functions within Python:
+
+Built-in functions that are provided either as part of Python (i.e. print(); float(); str() etc...) or distributed for import into Python (i.e. BioPython)
+
+Functions that we define ourselves and then use
+
+
+Note. names associated with built-in functions should not be used as variable names. 
+
+
+3
+
+15 February 2019
+
+‘Further Python functionality’
+
+Functions – the basics
+
+Functions act a little like a subprogram inside your main code. They comprise a sequence of statements that can be executed (invoked) at any time within your main code, simply by referring to the function name.
+
+We have already been using some of Pythons built-in functions, but to use a built-in like function for Python that does not ship with the original distribution, we have to install and import it.
+
+There are multiple ways to do that, but perhaps the easiest is with pip:
+
+
+
+This command will:
+Call pip
+Collect and install a given module (in this case, datetime)
+
+ 
+
+$ pip install datetime 
+
+4
+
+15 February 2019
+
+‘Further Python functionality’
+
+Importing functionality
+
+Within Python (or iPython etc) one can then import the module, and the proceed to use the functions as normal:
+
+
+
+
+
+
+
+Or, if we wanted to return a string:
+
+In [1]: import datetime
+
+In [2]: datetime.date.today()
+
+Out[2]: datetime.date(2019, 2, 15)
+
+In [3]: print(datetime.date.today())
+
+Out[3]: 2019-02-15
+
+5
+
+15 February 2019
+
+‘Further Python functionality’
+
+Alternate ways to import
+
+Importing with a variable name:
+
+
+
+
+
+
+
+
+As with almost all aspects of Python, you can assign a variable name to an imported module. This can be useful for several reasons, but in most cases it allows you to shorten or simplify long module names.
+
+In [1]: import datetime as dt
+
+In [2]: print(dt.date.today())
+
+Out[2]: 2019-02-15
+
+6
+
+15 February 2019
+
+‘Further Python functionality’
+
+Alternate ways to import
+
+Importing specific functionality from within a module:
+
+
+
+
+
+
+
+
+Using ‘from’ to import the specific function you require simplifies the way in which you invoke the function.
+
+This can be particularly useful when importing from large modules such as BioPython.
+
+In [1]: from datetime import date
+
+In [2]: print(date.today())
+
+Out[2]: 2019-02-15
+
+7
+
+15 February 2019
+
+‘Further Python functionality’
+
+Importing functionality
+
+There is a huge amount of functionality available though community driven Python based modules.
+
+It is worth spending a little bit of time searching for specific functions before attempting to write them yourself!
+
+There are no exhaustive lists available, but some good places to start if you know what you are searching for would be:
+
+See here: wiki.python.org
+
+Or here: github.com/git
+
+8
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+A simple function, in this case to convert Celsius to Fahrenheit, contains the following components: 
+
+def convert_to_fahrenheit(temp):
+    return ((temp * 1.8) + 32)
+
+def statement
+
+name
+
+parameter names
+
+def convert_to_fahrenheit(temp):
+    return ((temp * 1.8) + 32)
+
+body
+
+return
+statement
+
+return value
+
+9
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+To then use the function, we could do something like:
+
+
+
+
+
+or within a loop for example:
+
+In [1]: print("30C in f is {0}".format(convert_to_fahrenheit(30)))
+
+Out[1]: 30C in f is 86.0
+
+In [1]: for x in range(0, 50, 10):
+
+In [2]:     print(int(convert_to_fahrenheit(x)))
+
+32
+50
+68
+86
+104
+
+10
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+It is also possible to use a function within a function:
+
+
+
+
+
+
+
+
+
+
+The function kelvin_to_fahr() uses both our original function (celsius_to_fahrenheit()) and kelvin_to_celcius() by simply calling those functions when required.
+
+def kelvin_to_celcius(temp):
+    return (temp – 273.15)
+
+def kelvin_to_fahr(temp_k):
+    temp_c = kelvin_to_celcius(temp_k)
+    temp_f = celcius_to_fahrenheit(temp_c)    
+    return temp_f
+
+11
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+Documenting (or annotating) your function is an essential part of writing good quality code. We can do this in several ways: 
+
+standard annotation
+
+## converts temperatures from Kelvin to Fahrenheit
+def kelvin_to_fahr(temp_k):
+    temp_c = kelvin_to_celcius(temp_k)
+    temp_f = celcius_to_fahrenheit(temp_c)    
+    return temp_f
+
+12
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+formal documentation
+
+If the first line within a function is a string which isn’t assigned to a variable, this string is attached to the function as documentation. 
+
+def kelvin_to_fahr(temp_k):
+    ‘’’ Converts Kelvin into Fahrenheit, returning
+        a float value.’’’
+    temp_c = kelvin_to_celcius(temp_k)
+    temp_f = celcius_to_fahrenheit(temp_c)    
+    return temp_f
+
+13
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+def kelvin_to_fahr(temp_k):
+    ‘’’ Converts Kelvin into Fahrenheit, returning
+        a float value.’’’
+    temp_c = kelvin_to_celcius(temp_k)
+    temp_f = celcius_to_fahrenheit(temp_c)    
+    return temp_f
+
+Using formal documentation is the preferred option, because it allows Python’s built-in help system to show us the documentation on the function.
+
+In [1]: help(kelvin_to_fahr)
+
+Help on function kelvin_to_fahr in module __main__:
+
+kelvin_to_fahr(temp_k)
+    Converts Kelvin into Fahrenheit, returning
+    a float value.
+
+14
+
+15 February 2019
+
+‘Further Python functionality’
+
+Writing a function
+
+def kelvin_to_fahr(temp_k):
+    ‘’’ Converts Kelvin into Fahrenheit, returning
+        a float value.’’’
+    temp_c = kelvin_to_celcius(temp_k)
+    temp_f = celcius_to_fahrenheit(temp_c)    
+    return temp_f
+
+
+A string like this is known as docstring. Using triple quotes (or triple comma’s) isn’t essential, however it allows you to split the text up over multiple lines, something which aids formatting and readability.
+
+15
+
+15 February 2019
+
+‘Further Python functionality’
+
+Return vs. Print
+
+It is important to note that within a function return and print are not interchangeable.
+
+return makes a statement visible to the program.
+
+print makes a statement visible to the users.
+
+For example:
+
+def multiply(a, b):
+    return (a * b)
+
+In [1]: A = multiply(15, 27)
+
+In [2]: print(A)
+
+Out[2]: 405
+
+16
+
+15 February 2019
+
+‘Further Python functionality’
+
+Return vs. Print
+
+
+
+
+
+
+
+
+
+
+
+
+The print function prints the output, but as you can see, no value is returned for the variable “A”, and so a value of “None” is assigned.
+
+def multiply(a, b):
+    print (a * b)
+
+In [1]: A = multiply(15, 27)
+
+Out[1]: 405
+
+In [2]: print(A)
+
+Out[2]: None
+
+17
+
+15 February 2019
+
+‘Further Python functionality’
+
+Readable, understandable code
+
+When you write quick code to achieve something for your use only, it can be tempting to cut corners, namely: ambiguous variable names, no annotation, inefficient etc...
+
+For example, what is the following code doing:
+
+
+
+def s(p):
+    a = 0
+    for v in p:
+        a += v
+    m = a / len(p)
+    d += (v – m) * (v-m)
+    return numpy.sqrt(d / (len(p) – 1))
+
+18
+
+15 February 2019
+
+‘Further Python functionality’
+
+Readable, understandable code
+
+Adequate variable labelling however makes it much easier to understand!
+
+
+
+
+
+
+
+
+
+
+Both of these functions have exactly the same functionality, but to the human reader they look quite different. Ensuring your code is readable makes sense for your own use, and for others!
+
+
+
+def std_dev(sample):
+    sample_sum = 0
+    for value in sample:
+        sample_sum += value
+    sample_mean = sample_sum / len(sample)
+    sum_squared_devs += (value – sample_mean) * (value – sample_mean)
+    return numpy.sqrt(sum_squared_dev / (len(sample) – 1))
+
+19
+
+15 February 2019
+
+‘Further Python functionality’
+
+Further reading & practice
+
+Functions can be very simple (as we have seen), or very complicated. They can be difficult to get the hang of.
+
+For this reason, further reading and practice can help:
+
+Software carpentry pages.
+
+DataCamp
+
+
+
+20
+
+15 February 2019
+
+‘Further Python functionality’

@@ -1,0 +1,1077 @@
+Biopython and other useful modules
+
+Dr Andrew Tedder
+@DrATedder
+
+1
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+What’s covered today
+
+Recap – installing & importing modules
+os module
+subprocess module
+sys module
+getopt module
+Biopython
+
+2
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+Installing & importing modules - Recap
+
+We have already been using some of Pythons built-in functions, but to use a built-in like function for Python that does not ship with the original distribution, we have to install and import it.
+
+There are multiple ways to do that, but perhaps the easiest is with pip:
+
+This command will:
+Call pip
+Collect and install a given module (in this case, datetime)
+
+Note. If you have multiple versions of Python on your system, you may also have multiple versions of Pip! Ensure you use the correct version of Pip for your installs! 
+
+
+$ pip install datetime 
+
+3
+
+13 March 2019
+
+‘Further Python functionality’
+
+Importing functionality - Recap
+
+Within Python (or iPython etc) one can then import the module, and the proceed to use the functions as normal:
+
+
+In essence, to use a function in this way, we are importing a ‘file’ (‘datetime’) containing functions (including ‘date’). All of the functions within ‘datetime’ are imported when we import in this way but to access them, we must include this name.
+
+In [1]: import datetime
+
+In [2]: datetime.date.today()
+
+Out[2]: datetime.date(2019, 2, 15)
+
+4
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+Alternate ways to import - Recap
+
+Importing with a variable name:
+
+As with almost all aspects of Python, you can assign a variable name to an imported module. This can be useful for several reasons, but in most cases it allows you to shorten or simplify long module names.
+
+In [1]: import datetime as dt
+
+In [2]: print(dt.date.today())
+
+Out[2]: 2019-02-15
+
+5
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+Alternate ways to import - Recap
+
+Importing specific functionality from within a module:
+
+
+Using ‘from’ to import the specific function you require simplifies the way in which you invoke the function.
+
+This can be particularly useful when importing from large modules such as BioPython.
+
+In [1]: from datetime import date
+
+In [2]: print(date.today())
+
+Out[2]: 2019-02-15
+
+6
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module
+
+This module offers a portable way of using operating system dependent functionality within your python code. For example, to change directories, manipulate file paths or to run a programme.
+
+For full details of the optionality available, please see here.
+
+In [1]: import os
+
+7
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – common usage
+
+Identifying your current working directory:
+
+This command returns a string representing the current working directory. Thus one could also attach this to a variable, and use that variable to set a path destination. For example:
+
+
+In [1]: os.getcwd()
+
+Out[1]: /Users/andrew
+
+In [2]: cwd = os.getcwd()
+
+In [3]: f_out = cwd + “/output.txt“
+
+In [4]: f_out
+
+Out[4]: /Users/andrew/output.txt
+
+8
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – common usage
+
+Changing your current directory:
+
+This optionality allows you to search for, or save files in different locations. This could be particularly useful if you wanted to create a new directory to store results from some analysis generated through python.
+
+In [1]: os.chdir(“/Users/andrew/Documents“)
+
+In [2]: os.getcwd()
+
+Out[2]: /Users/andrew/Documents
+
+9
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – common usage
+
+Checking if a directory exists:
+
+
+
+
+
+Creating a directory:
+
+
+
+
+
+In [1]: os.path.exists(“/Users/andrew/Documents“)
+
+Out[1]: True
+
+In [1]: os.mkdir(“/Users/andrew/Documents/Lecture_8“)
+
+10
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – manipulating file names
+
+Associate a file path with a variable:
+
+
+
+isolate just the file name (i.e. drop the path)
+
+
+
+
+
+split the file extension from the file name:
+
+In [1]: file = “/Users/andrew/Documents/filename.txt“
+
+In [2]: os.path.basename(file)
+
+Out[2]: filename.txt
+
+In [3]: os.path.splitext(file)
+
+Out[3]: (““/Users/andrew/Documents/filename“
+, “.txt”)
+
+11
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – manipulating file names
+
+split the file extension from the file name:
+
+
+
+
+
+
+As you can perhaps see, this is producing a tuple containing the path and file name and the file extension. These are indexed in the standard way.
+
+In [3]: os.path.splitext(file)
+
+Out[3]: (“/Users/andrew/Documents/filename“
+, “.txt”)
+
+In [4]: os.path.splitext(file)[0]
+
+Out[4]: “/Users/andrew/Documents/filename“
+
+12
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+OS module – execute system commands
+
+The os.system() command can interact with the file system and execute commands:
+
+
+
+
+
+
+
+
+
+Note. This system works, however if the command generates any output it is sent to the interpreters standard output stream (i.e. you cannot associate that output with a variable as we attempt to do above.
+
+In [1]: cmd = “git --version“
+
+In [2]: returned_value = os.system(cmd)
+
+In [3]: print(“returned value:“, returned_value)
+
+git version 2.14.3 (Apple Git-98)
+Out[3]: returned value: 0
+
+13
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+Subprocess module – execute system commands
+
+While os.system() will allow execution of system commands, it isn’t the recommended way to do it. subprocess is the recommended way to do it.
+
+
+
+
+For more detailed explanations of the functions associated with subprocess, please see further information here.
+
+
+
+In [1]: import subprocess
+
+14
+
+13 March 2019
+
+‘Biopython and other useful modules’
+
+Subprocess module – execute system commands
+
+We can use subprocess in a similar way to to os.system() to execute system commands, for example:
+
+
+
+
+
+
+
+
+Used in this way, it will provide exactly the same response as we saw fro os.system(). However...
+
+
+
+In [2]: returned_value = subprocess.call(cmd, shell=True)
+
+In [3]: print(“returned value:“, returned_value)
+
+git version 2.14.3 (Apple Git-98)
+Out[3]: returned value: 0
+
+15
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Subprocess module – execute system commands
+
+Using subprocess there is a way that we can store and manipulate the output of a shell command.
+
+
+
+
+
+
+
+As you can see, with the subprocess.check_output() command we can store the output as a variable. This output is stored as a byte string which means to use it in a way we are familiar with, we need to convert it using the “.decode()” command.
+
+
+
+In [2]: returned_value = subprocess.check_output(cmd, shell=True)
+
+In [3]: print(“returned value:“, returned_value.decode(“utf-8“)
+
+Out[3]: returned value: git version 2.14.3 (Apple Git-98)
+
+16
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+sys module
+
+System-specific parameters and functions. This module provides access to some variables used or maintained by the interpreter and to functions that interact strongly with the interpreter..
+
+
+
+
+For full details of the functionality offered by sys, please read the documentation here.
+
+
+In [1]: import sys
+
+17
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+sys module
+
+Sys has a number of very useful functions, but I will only cover two today. The first, sys.argv[]. This command allows a script user to input a file of their choosing rather than have all file names hardcoded:
+
+
+
+
+
+
+or:  
+
+
+In [1]: import sys
+
+In [2]: file = sys.argv[1]
+
+In [3]: with open(file, “r“) as f_in:
+
+In [2]: with open(sys.argv[1], “r“) as f_in:
+
+18
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+sys module
+
+sys.argv[] options are taken by python directly from the terminal. For example:
+
+
+
+In this example, we are invoking python through terminal to run the script “script.py”. In this case, “script.py” represents sys.argv[0], and the fasta file immediately after it (“workshop_data.fasta”) represents sys.argv[1].
+
+So, item in the execute command (separated by whitespace) can be used in your code as a sys.argv[] argument. 
+
+Note. When using sys.argv[], it makes sense to have some sort of ‘help’ function or menu to tell users what order files should be given to the code, and what type of files are required...
+
+$ python script.py workshop_data.fasta
+
+19
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+sys module
+
+The second useful command I will briefly discuss is sys.exit():
+
+
+
+
+
+
+
+In this case, we use the sys.exit() command as part of a loop. We also use the sys.stderr.write() command. This will print the error message given to the terminal (as opposed to a file that you may be working on).
+
+In [1]: if int(variable) != 1:
+
+In [2]:     sys.stderr.write(“Variable doesn‘t equal 1“)
+
+In [3]:     sys.exit()
+
+20
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+getopt module
+
+Very briefly, getopt can be used in conjunction with sys to make a meaningful help menu and means of inputting files into a process.
+
+
+
+For full details on how this module works, please read here.
+
+I gave you some examples of the use of getopt in the tutorial in week 2 (example scripts).
+
+These may come in handy for your CW1 problems... 
+
+In [1]: import getopt
+
+21
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+
+The Biopython Project is an international association of developers of freely available Python tools for computational molecular biology.
+
+“The goal of Biopython is to make it as easy as possible to use Python for bioinformatics by creating high-quality, reusable modules and classes.”
+
+“Biopython features include parsers for various Bioinformatics file formats (BLAST, Clustalw, FASTA, Genbank,...), access to online services (NCBI, Expasy,...), interfaces to common and not-so-common programs (Clustalw, DSSP, MSMS...), a standard sequence class, various clustering modules...”
+
+22
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+
+For detailed documentation, examples and full feature lists, the following resources are available:
+
+Biopython website: here
+
+Biopython tutorial and cookbook: here
+
+Biopython modules: here
+
+Introduction to SeqIO: here
+
+Original article: here
+
+23
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+
+To install Biopython, the standard method uses Pip (just like with other modules):
+
+
+
+You may find you have multiple versions of python on your system (2.x & 3.x). If so, you will need to ensure you install Biopython for the correct version (or both):
+
+
+
+or:
+
+
+Note. Replace the version number in “python2.7” (i.e. 2.7) with ypur specific version number
+
+$ pip install biopython
+
+$ pip3 install biopython
+
+$ python2.7 –m pip install biopython
+
+24
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+
+If you installed python via conda (i.e. using miniconda or anaconda) then you can use conda to install Biopython:
+
+
+
+For specific systems, there may be alternate ways to install Biopython. Platform specific details of how to do that can be found here.
+
+$ conda install –c conda-forge biopython
+
+25
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqIO
+
+Bio.SeqIO is Biopythons standard sequence input/output interface.
+
+Bio.SeqIO provides a simple uniform interface to input and output assorted sequence file formats (including multiple sequence alignments), but will only deal with sequences as SeqRecord objects. There is a sister interface Bio.AlignIO for working directly with sequence alignment files as Alignment objects.
+
+Importing SeqIO:
+
+
+
+In [1]: from Bio import SeqIO
+
+26
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqIO
+
+Parsing fasta files with SeqIO can happen in the normal ways, for example:
+
+
+
+or:
+
+
+
+Both of these methods produce SeqRecord objects for each sequence within the fasta file. 
+
+
+In [1]: sequences = SeqIO.parse(file, “fasta“)
+
+In [2]: for fasta in SeqIO.parse(file, “fasta“):
+
+27
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+SeqRecord objects contain the following components:
+
+sequence.id
+
+
+
+
+
+
+
+Note. sequence.id will produce the fasta header in it’s entirety unless the header contains whitespace. If the header contains whitespace, then only the header which precedes the whitespace will be returned:
+
+
+
+In [1]: for fasta in SeqIO.parse(file, “fasta“):
+
+In [2]:     print(fasta.id)
+
+Out[2]: 97392682|Sequence_name|Organism|etc...
+
+28
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+ For example, if the fasta header reads:
+
+
+The previous code (below) will return the following output:
+
+
+
+
+
+
+
+This may mean you want to consider what your fasta headers look like! Particularly if you intend to manipulate them.
+
+If you want the full header irrespective of whitespace...
+
+97392682 |Sequence_name |Organism |etc...
+
+In [1]: for fasta in SeqIO.parse(file, “fasta“):
+
+In [2]:     print(fasta.id)
+
+Out[2]: 97392682
+
+29
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+The sequence element of the fasta file is given in the following way:
+sequence.seq
+
+
+
+
+
+
+
+
+
+In [1]: for fasta in SeqIO.parse(file, “fasta“):
+
+In [2]:     print(fasta.seq)
+
+Out[2]:GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTCTCCCTATCATTCCCTACCCGGAGAAGAGAAACAAGAGCAGAGATAGCATCAGGATACGATCCAATAGTAGCTTTATTCACTTCAACAACAGCT
+
+30
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+Be aware however, the “.seq” element is not stored as a string, so if you do the following:
+
+
+
+
+
+
+
+
+
+
+
+
+You will generate a list containing a seqrecord and not a string.
+
+In [1]: seq_list = []
+
+In [2]: for fasta in SeqIO.parse(file, “fasta“):
+
+In [3]:     seq_list.append(fasta.seq)
+
+In [4]: seq_list
+
+Out[2]:[Seq('GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTC...CGG', SingleLetterAlphabet())]
+
+31
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+One could for example put these elements into a dictionary in the standard way we have practiced:
+
+
+
+
+
+
+
+
+
+
+
+
+Note. You will still generate a dictionary containing a seqrecord and not a string.
+
+In [1]: seq_dict = {}
+
+In [2]: for fasta in SeqIO.parse(file, “fasta“):
+
+In [3]:     seq_dict[fasta.id]=(fasta.seq)
+
+In [4]: seq_dict
+
+Out[4]:{'97392682': Seq('GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTC...CGG', SingleLetterAlphabet())}
+
+32
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+However if you access the dictionary, and print in the normal way, it produces a string:
+
+In [5]: for keys, values in seq_dict.items(): 
+
+In [6]:     print(">{0}\n{1}".format(keys, values)) 
+
+Out[6]:>97392682
+GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTCTCCCTATCATTCCCTACCCGGAGAAGAGAAACAAGAGCAGAGATAGCATCAGGATACGATCCAATAGTAGCTTTATTCACTTCAACAACAGCTAAACTCGTTAACAGAGTAGCAGCAATCGCTTTGCAATCCGGTGACCCGACCCGTAAAACAGTAACAATCCGTCTTATCACACCATCAGCTACTAAACCCACTTTGTTATCATCTTCTAAACTAAGATTCAAAAGCAAAGACAGAGAC
+
+33
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+Biopython has a method for writing seqrecords directly to a dictionary however, which in some cases, will prove more efficient:
+
+
+
+
+
+
+
+
+
+
+
+In this case, sequence.id is used as the key by default, but a list of all other characters are included as variables.
+
+In [1]: record_dict = SeqIO.to_dict(SeqIO.parse("example.fasta",
+ "fasta"))
+
+
+In [2]: record_dict
+
+Out[6]:{'97392682': SeqRecord(seq=Seq('GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTC...CGG', SingleLetterAlphabet()), id='97392682', name='97392682', description='97392682 |Sequence_name |Organism |etc...', dbxrefs=[])}
+
+34
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+To access only the sequence.id and sequence.seq parts of the record (i.e. to print out a fasta formated file) you can do the following:
+
+In [1]: with open('output_fasta.fa', 'w') as handle:
+
+In [2]:    SeqIO.write(record_dict.values(), handle, 'fasta')
+
+
+>97392682 |Sequence_name |Organism |etc...
+GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTCTCCCTA
+TCATTCCCTACCCGGAGAAGAGAAACAAGAGCAGAGATAGCATCAGGATACGATCCAATA
+GTAGCTTTATTCACTTCAACAACAGCTAAACTCGTTAACAGAGTAGCAGCAATCGCTTTG
+CAATCCGGTGACCCGACCCGTAAAACAGTAACAATCCGTCTTATCACACCATCAGCTACT
+AAACCCACTTTGTTATCATCTTCTAAACTAAGATTCAAAAGCAAAGACAGAGACTTTTCT
+
+35
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+To access only the sequence.id and sequence.seq parts of the record (i.e. to print out a fasta formated file) you can do the following:
+
+In [1]: with open('output_fasta.fa', 'w') as handle:
+
+In [2]:    SeqIO.write(record_dict.values(), handle, 'fasta')
+
+
+>97392682 |Sequence_name |Organism |etc...
+GATTATACCGGAAACGAGCAGAGCGCGTAAAGAGCCGTCGCTGATTCCTTTCTCTCCCTA
+TCATTCCCTACCCGGAGAAGAGAAACAAGAGCAGAGATAGCATCAGGATACGATCCAATA
+GTAGCTTTATTCACTTCAACAACAGCTAAACTCGTTAACAGAGTAGCAGCAATCGCTTTG
+CAATCCGGTGACCCGACCCGTAAAACAGTAACAATCCGTCTTATCACACCATCAGCTACT
+AAACCCACTTTGTTATCATCTTCTAAACTAAGATTCAAAAGCAAAGACAGAGACTTTTCT
+
+35
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+In the previous example we used SeqIO.write to write our output in much the same way we would use the standard “.write()” method.
+
+This is actually a powerful tool that can convert output into different formats as well as simply writing them out. For example, if we take a genbank format file:
+
+LOCUS       BV686369                 424 bp    DNA     linear   STS 02-DEC-2006
+DEFINITION  At5g66280 Arabidopsis lyrata ssp. petraea ICE9 Arabidopsis lyrata
+            ssp. petraea ICE9 Arabidopsis lyrata subsp. petraea STS genomic,
+            sequence tagged site.
+ACCESSION   BV686369
+VERSION     BV686369.1
+KEYWORDS    STS.
+SOURCE      Arabidopsis lyrata subsp. petraea
+  ORGANISM  Arabidopsis lyrata subsp. petraea
+            Eukaryota; Viridiplantae; Streptophyta; Embryophyta; Tracheophyta;
+            Spermatophyta; Magnoliophyta; eudicotyledons; Gunneridae;
+            Pentapetalae; rosids; malvids; Brassicales; Brassicaceae;
+            Camelineae; Arabidopsis.
+....
+
+36
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+If we import this file into Biopython in the standard way:
+
+
+
+We can then use SeqIO.write to convert it to a fasta file:
+
+
+In [1]: for files in SeqIO.parse(file, “genbank“):
+
+In [2]:     SeqIO.write(files, “/path/to/out.fasta“, “fasta“)
+
+>BV686369.1 At5g66280 Arabidopsis lyrata ssp. petraea ICE9 Arabidopsis lyrata ssp. petraea ICE9 GCTGATCTCTCTGATGCCTCCTCTCTCCGCCGTTGGCTCGACGTCATCAAGCCTGACGAG
+GTCTACAACCTTGCTGCTCAGTCCCATGTCGCCGTCTCATTCGAGATCCCTGACTACACT
+GCTGACGTCGTCGCTACTGGAGCTCTTCGTCTCCTGGAGGCTGTCAGATCTCACAACATC
+GACAACGGCCGTGCCATCAAGTACTACCAGGCTGGCTCTTCCGAGATGTTCGGGTCAACT
+CCTCCTCCCCAGTCAGAGACCACGCCCTTTCATCCGAGATCTCCCTACGCTGCCTCTAAA
+TGCGCTGCTCATTGGTACACTGTCAATTACAGAGAGGCCTACGGTCTGTACGCCTGCAAC
+
+37
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - SeqRecord
+
+In addition to this method of converting file formats, SeqIO offers specific functionality for converting file, namely: SeqIO.convert():
+
+
+In [1]: count = SeqIO.convert(file, "genbank", "sequence_gb.fasta", "fasta") 
+
+In [2]: print("Converted %i records" % count)
+
+Out[2]: Converted 1 records
+
+38
+
+14 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython - AlignIO
+
+If instead of standard sequence files, you have alignments of sequences SeqIO will not deal with these. In this case, you should use AlignIO. It has very similar usage options to SeqIO. See here for more details.
+
+
+
+Format conversion to a format of your choice happens in exactly the same way as with SeqIO also. 
+
+
+
+It is also possible to output fasta files:  
+
+
+In [1]: alignments = AlignIO.parse(file, “clustal“)
+
+In [2]: AlignIO.write(alignments, “output“, “phylip“)
+
+In [3]: AlignIO.read(open(file), “clustal“)
+
+In [4]: print(alignment.format(“fasta“))
+
+39
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Creating alignments
+
+We have seen how Biopython can deal with existing alignments, and how we could use either os.system() or subprocess.call() to run an alignment programme outside of python, but Biopython can also handle making alignments using pairwise2.
+
+
+
+
+For an in depth explanation of how pairwise2 is working, please read here.
+
+In [1]: from Bio import pairwise2
+
+40
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Pairwise2
+
+Using pairwise2 to create alignments:
+
+
+
+This creates a list of possible alignments:
+
+
+
+
+
+
+
+Within each list (within the ‘alignments list’) are the sequences (with gaps if needed), the alignment score and the start and end positions.
+
+In [1]: alignments = pairwise2.align.globalxx(“AGGTCG“, “AGG“)
+
+In [2]: alignments)
+
+Out[2]: 
+[('AGGTCG', 'A-G--G', 3.0, 0, 6),
+ ('AGGTCG', 'AG---G', 3.0, 0, 6),
+ ('AGGTCG', 'AGG---', 3.0, 0, 6)]
+
+41
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Pairwise2
+
+You can view these alignments as alignments:
+
+In [3]: for x in range(0, len(alignments), 1):
+
+In [4]:    print(pairwise2.format_alignment(*alignments[x]))
+
+Out[4]: 
+AGGTCG
+| |  |
+A-G--G
+  Score=3
+
+AGGTCG
+||   |
+AG---G
+  Score=3
+
+AGGTCG
+|||   
+AGG---
+  Score=3
+
+42
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Pairwise2
+
+As you can see from these alignments, the first and second alignment seem rather unrealistic biologically, but they all have the same alignment score, meaning pairwise2 considers they have the same likelihood.
+
+These scores are currently based on default parameter settings. You can (and should) adjust these settings to be more meaningful in your cases (i.e. adjust the penalties for opening and extending gaps).
+
+Read the documentation to understand how to do that!
+
+Out[4]: 
+AGGTCG
+| |  |
+A-G--G
+  Score=3
+
+AGGTCG
+||   |
+AG---G
+  Score=3
+
+AGGTCG
+|||   
+AGG---
+  Score=3
+
+43
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Pairwise2
+
+You can get the ‘best’ alignment from those created (based on score):
+
+In [3]: for a in pairwise2.align.globalxx(“AGGTCG“, “AGG“):
+
+In [4]:    print(pairwise2.format_alignment(*a))
+
+Out[4]: 
+AGGTCG
+| |  |
+A-G--G
+  Score=3
+
+AGGTCG
+||   |
+AG---G
+  Score=3
+
+AGGTCG
+|||   
+AGG---
+  Score=3
+
+44
+
+15 March 2019
+
+‘Biopython and other useful modules’
+
+Biopython – Pairwise2
+
+However if your sequences generate multiple alignments with the same score, all will be returned. If you choose, you can have a single alignment returned (with the highest score):
+
+
+
+
+
+
+
+
+
+
+
+Note. For sequences longer than those shown in these examples, you are less likely to get multiple “best” alignments. 
+
+In [5]: for a in pairwise2.align.globalxx(“AGGTCG“, “AGG“, 
+one_alignment_only = True):
+
+In [6]:    print(pairwise2.format_alignment(*a))
+
+Out[4]: 
+AGGTCG
+| |  |
+A-G--G
+  Score=3
+
+45
+
+15 March 2019
+
+‘Biopython and other useful modules’

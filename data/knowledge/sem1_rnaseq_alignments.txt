@@ -1,0 +1,241 @@
+Transcriptomics workshop 2: RNA-seq data alignments
+Dr. Craig Willis
+Assistant Professor in Bioinformatics
+1 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcriptomics schedule
+2 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Lecture
+Workshop
+Lecture
+Workshop
+Workshop
+Transcriptomic
+technologies
+RNA-seq:
+quality control
+RNA-seq:
+alignment
+RNA-seq:
+data analysis
+Downstream
+data analyses
+Session Learning Outcomes
+3 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+1. Remember key steps of a typical RNA-seq workflow
+2. Know what is meant by ‘alignment’ and ‘quantification’
+3. Recognise different alignment and quantification strategies
+Simplified RNA-seq workflow
+4 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Raw reads
+(FASTQ Files)
+Quality
+Control
+Alignment +
+Quantification
+Visualisations
+Other downstream approaches
+• Enrichment analysis;
+Ø Gene Ontology
+Ø Pathways
+Ø Transcription factor targets
+Ø Drug targets
+• Gene prioritisation/ranking
+• (and many more)
+Network
+analysis
+Differential
+expression
+analysis
+Sequencer
+output
+Initial pre-processing Further pre-processing
+Feature filtering +
+normalisation if/as needed
+Analyses
+Alignment and quantification
+5 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overview:
+Overarching goal:
+• Quantify gene expression from raw RNA-seq files
+Driving approaches:
+• Traditional (genome) alignment
+• Pseudo-alignment
+FASTQ
+Gene 1
+Gene 2
+Gene 3
+Sample 1 Sample 2 Sample N
+Gene M
+Alignment and quantification
+6 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Traditional (genome) alignment and quantification:
+Process:
+1. Align reads to their (best
+matching) position along a
+reference genome
+2. Count number of reads that
+align to given genomic feature
+of the reference genome
+What’s needed?
+• Reads
+• (Indexed) reference genome
+for alignment
+• Genomic feature file
+(GTF/GFF) for counting
+• Aligner + counting tool(s)
+Alignment and quantification
+7 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Traditional (genome) alignment and quantification:
+Genome alignment
+tools typically permit
+some degree of:
+• Mismatches
+• Indels
+• Clipping of some
+short fragments on
+the two ends of
+the reads
+Alignment and quantification
+8 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Traditional (genome) alignment and quantification:
+Splice-aware genome alignment tools overcome the above by enabling
+‘gapped’ alignments to handle those reads that span exon-intron junctions
+Fragmentation at random location
+many sequence fragments
+will span a spliced intron
+Discontinuous mapping
+Fragment fails to align
+Alignment and quantification
+9 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Traditional (genome) alignment and quantification:
+Some popular splice-aware aligner tools:
+• Tophat2
+• Hisat2
+• STAR
+Some popular counting tools:
+• featureCounts
+• HTSeq-count
+Alignment and quantification
+10 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Overview:
+Overarching goal:
+• Quantify gene expression from raw RNA-seq files
+Driving approaches:
+• Traditional (genome) alignment
+• Pseudo-alignment
+FASTQ
+Gene 1
+Gene 2
+Gene 3
+Sample 1 Sample 2 Sample N
+Gene M
+Alignment and quantification
+11 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Alignment-free (pseudo-alignment) quantification:
+Goals:
+1. Identify which transcript each read originated from
+2. Count number of reads associated with each transcript
+Process:
+1. Quantify transcript abundances upon
+identifying potential transcripts from which
+read originated from (rather than upon exact
+position of reads in the transcripts)
+2. Infer gene counts from transcript abundances
+What’s needed?
+• Reads
+• Indexed reference transcriptome
+• Pseudo-aligner tool
+Alignment and quantification
+12 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Genome alignment vs. pseudoalignment conceptualised:
+Genome alignment:
+• Match reads to genome on
+exact base-by-base basis
+Move things around to find the match
+Simple case:
+What about finding
+the 3-letter
+sequence ‘PFN’ in
+this 1639 letter
+sequence?
+More realistic case:
+Genome alignment
+= time-intensive!
+Takes long time to
+match millions of
+short reads against
+genomes of billions
+of nucleotides…
+Alignment and quantification
+13 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Genome alignment vs. pseudo-alignment conceptualised:
+Pseudo-alignment:
+• Deduce transcripts that
+could have generated a
+particular read
+Example sequence = DNAHX
+Cross reference its components with
+transcripts in transcriptome
+Transcripts without a ‘D’ cannot
+possibly be matches = ignore them
+Alignment and quantification
+14 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Genome alignment vs. pseudo-alignment conceptualised:
+Benefits of pseudo-alignment:
+• ↑ computational performance (↓ time + ↓ power) without losing accuracy
+• Transcript-level estimates can improve gene-level inferences
+• Outputs ‘ready made’ for input into isoform analyses tools
+Alignment and quantification
+15 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Kallisto pseudo-alignment tool:
+• Natively run through terminal/shell
+• Can also run through R by interfacing with terminal/shell
+• Two main functions:
+1. index (create transcriptome index)
+2. quant (quantify transcript abundance)
+Overview:
+Alignment and quantification
+16 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Kallisto pseudo-alignment tool:
+Using Kallisto natively in terminal/shell:
+1. Build transcriptome index:
+Call tool Call index
+function
+Path/name of resultant
+transcriptome index file
+Path/name of input
+reference transcriptome
+2. Quantify transcript abundances (paired-end example):
+Call
+tool
+Call quant
+function
+Path/name of our
+transcriptome index file
+Path/name for our
+output results folder
+Path/names of 1st + 2nd
+FASTQ files of paired reads
+Alignment and quantification
+17 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Kallisto pseudo-alignment tool:
+Using Kallisto via interfacing with R:
+1. Build transcriptome index:
+2. Quantify transcript abundances (paired-end example):
+Terminal:
+R:
+Terminal:
+R:
+Worksheet break
+18 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Complete section ‘1. Alignment and
+pseudo-alignment’ on worksheet
+Additional resources
+19 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Worksheet:
+• ‘Section 2: additional tasks’ – practice using Kallisto
+Reading (available on Canvas):
+• Kallisto primary journal article
+• Other resources related to genome alignment and pseudo-alignment
+Any questions?
+20 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare

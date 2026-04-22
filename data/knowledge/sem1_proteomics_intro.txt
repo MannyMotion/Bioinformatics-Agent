@@ -1,0 +1,947 @@
+
+Research and Analytical Methods
+
+Proteomics - Introduction
+
+Dr C. Sutton
+
+Proteomics
+
+Protein recap
+
+Identification of proteins
+
+Principles of proteomics
+
+Proteomics applications
+
+Bioinformatics
+
+What are proteins?
+
+    Nature has designeda system that can create an infinite number of products. Proteins are exquisitely designed to carry out specific functions
+
+    A single nucleotide mutation can make a protein inactive or not expressed. Loss of the protein can be deleterious or lethal, but it can also improve performance. Mutations occur in response to environmental stresses, organisms adapt or die.
+
+    DNA (genes) provides the genetic code, transcribed to mRNA and translated to amino acids
+
+    A gene defines the sequence of amino acids that are synthesised on ribosomes into proteins
+
+    Every amino acid in the sequence of a protein has a purpose in defining the function of that protein
+
+    Proteins have a diverse range of functions and characteristics
+
+    A single nucleotide mutation can change an amino acid making the protein inactive or can even prevent expression. 
+
+    Loss or modification of the protein can be deleterious or lethal.
+
+    Mutations can improve performance
+
+    Mutations occur in response to environmental stresses - organisms adapt or die.
+
+What are proteins? – genetic code
+
+    The Crick, Brenner et al. experimentThe Crick, Brenner et al. experiment first demonstrated that codons consist of three DNA bases. Marshall NirenbergThe Crick, Brenner et al. experiment first demonstrated that codons consist of three DNA bases. Marshall Nirenberg and Heinrich J. Matthaei were the first to reveal the nature of a codon in 1961. 
+
+Protein primary sequence
+2 amino acids
+
+Dipeptides – XX, 
+
+20x20 = 400 combinations 
+
+Amino  acid combinations – X = any of 20 amino acids
+
+10,240,000,000,000 more than 10 billion variations for decapeptides
+
+number of atoms in the entire observable universe is estimated to be within the range of 1078 to 1082
+Read more: http://www.universetoday.com/36302/atoms-in-the-universe/#ixzz2jKAzGFBl
+
+Protein primary sequence
+3 amino acids
+
+Tripeptides – XXX
+
+20x20x20 = 8000 combinations 
+
+Amino  acid combinations – X = any of 20 amino acids
+
+10,240,000,000,000 more than 10 billion variations for decapeptides
+
+number of atoms in the entire observable universe is estimated to be within the range of 1078 to 1082
+Read more: http://www.universetoday.com/36302/atoms-in-the-universe/#ixzz2jKAzGFBl
+
+Protein primary sequence
+4 amino acids
+
+Tetrapeptides – XXXX
+
+20x20x20x20 = 16000 combinations 
+
+Amino  acid combinations – X = any of 20 amino acids
+
+10,240,000,000,000 more than 10 billion variations for decapeptides
+
+number of atoms in the entire observable universe is estimated to be within the range of 1078 to 1082
+Read more: http://www.universetoday.com/36302/atoms-in-the-universe/#ixzz2jKAzGFBl
+
+Protein primary sequence
+10 amino acids
+
+Decapeptide – 10xX
+
+2010 = 10 billion combinations 
+
+Amino  acid combinations – X = any of 20 amino acids
+
+10,240,000,000,000 more than 10 billion variations for decapeptides
+
+number of atoms in the entire observable universe is estimated to be within the range of 1078 to 1082
+Read more: http://www.universetoday.com/36302/atoms-in-the-universe/#ixzz2jKAzGFBl
+
+Protein primary sequence
+100 amino acids
+
+Small protein – 100xX 
+
+20100 = 1.27130  combinations 
+
+Amino  acid combinations – X = any of 20 amino acids
+
+10,240,000,000,000 more than 10 billion variations for decapeptides
+
+number of atoms in the entire observable universe is estimated to be within the range of 1078 to 1082
+Read more: http://www.universetoday.com/36302/atoms-in-the-universe/#ixzz2jKAzGFBl
+
+What are proteins?
+
+Nobel Prize in Medicine – 1962 co-discoverer of the structure of DNA
+
+“In the theatre of life……..DNA is the script………proteins are the actors”
+
+James D. Watson b. 1928
+
+During the lectures I will introduce you scientists, young and old who have made contributions that have been important to the evolution of proteomics. 
+
+Discovered the structure of DNA along with Francis Crick, Maurice Wilkins and Rosalind Franklin in 1953 at the age of 25
+
+Why are proteins important?
+
+A single nucleotide mutation can change an amino acid making the protein inactive or preventing its  expression. 
+
+Loss or modification of the protein can be deleterious or lethal.
+
+Mutations can improve performance - evolution
+
+Mutations occur in response to environmental stresses - organisms adapt or die.
+
+Nature has created a system that can produce an infinite number of products
+
+A single nucleotide mutation can make a protein inactive or is not expressed. Loss of the protein can be deleterious or lethal, but it can also improve performance. Mutations occur in response to environmental stresses, organisms adapt or die.
+
+Are we, the human species still evolving?
+
+Single nucleotide polymorphism (SNP)
+
+
+can be a change or addition of a single nucleotide
+
+changes affect the coding and non-coding regions
+
+changes affect the coding region can be 
+synonymous (silent mutations) – no amino acid change
+non-synonymous 
+missense - change amino acid and protein function
+nonsense  - generate a stop codon truncate the protein
+
+To make new cells, an existing cell divides in two. But first it copies its DNA so the new cells will each have a complete set of genetic instructions. Cells sometimes make mistakes during the copying process - kind of like typos. These typos lead to variations in the DNA sequence at particular locations, called single nucleotide polymorphisms, or SNPs (pronounced "snips").
+
+SNPs can generate biological variation between people by causing differences in the recipes for proteins that are written in genes. Those differences can in turn influence a variety of traits such as appearance, disease susceptibility or response to drugs. While some SNPs lead to differences in health or physical appearance, most SNPs seem to lead to no observable differences between people at all.
+
+DNA is passed from parent to child, so you inherit your SNPs versions from your parents. You will be a match with your siblings, grandparents, aunts, uncles, and cousins at many of these SNPs. But you will have far fewer matches with people to whom you are only distantly related. The number of SNPs where you match another person can therefore be used to tell how closely related you are.
+
+Examples – ICDH, gifitinib kinase target, straight hair, curly hair, eye colour
+
+1.5 million SNPs in the human genome out of 3 billion base pairs (1 in every 2000bp)
+
+Somatic changes
+
+Quantity (expression levels)
+Function (why?, how?)
+Spatial (where?)
+Temporal (when?)
+Turnover (stability)
+Protein-protein interactions (PPIs) - networking
+Structure (1o, 2o, 3o, 4o), post-translational modifications (PTMs)
+
+Somatic changes refers to the changes once the protein has been expressed, rather than changes at the chromosomal level. 
+Not all cellular responses results in mutations when responding to external influences. Cells adapt by expressing different members of the same family in response to knockout (e.g. change integrin, MMP expression). Differentiation – responses to growth factors, cytokines, chemokines, physiological properties of the microenvironment
+
+Structure – 1o, 2o, 3o, 4o, post translational modifications
+Function (why?, how?)
+Location (where?)
+Temporal (when?)
+Quantity – dynamic range
+Stability – lability, turnover (half life)
+Protein-protein interaction - networking
+Dynamic – changes in expression, mobility
+
+Protein biochemistry or proteomics?
+
+Max Perutz  	 1914 - 2002
+
+Nobel Prize in Chemistry - 1962
+“For his studies of the structures of globular proteins”
+
+haemoglobin 
+
+studied 1 protein (haemoglobin) for more than 50 years
+“retired” in 1979
+died of cancer
+his last work involved ligand binding to haemoglobin to help develop a clinically useful drug for increasing oxygen supply to hypoxic tumours for radiation therapy
+
+Milestones in biomedicine
+
+personalised proteomics
+
+proteogenomics
+
+HUPO
+
+human proteome
+
+proteomics
+
+protein MS
+
+personalised genomics
+
+NGS
+
+Celera
+
+human genome
+
+HUGO
+
+DNA seq
+
+1980
+
+2010
+
+2020
+
+1990
+
+2000
+
+bioinformatics
+
+big data
+
+internet
+
+Genome for $10k in a week, single cell genomes
+
+The human genome
+
+THE HUMAN GENOME – the complete contents of the genetic material (DNA) in 23 chromosomes.  
+
+The genome comprises about 3.2 billion base pairs, of which less than 2% encodes for proteins (approximately 20,323 genes).
+
+Sequencing of the human genome was completed in 2001 
+
+Science 291, 1304-51 (2001)
+
+http://www.celera.com/
+
+http://www.hugo-international.org/index.htm
+
+HUGO – massive international collaboration – started in 1987 and took 13 years
+Celera – single company, started in 1997 and took 3 years – technology driven
+
+THE HUMAN GENOME – the complete contents of the genetic material (DNA) of in humans. The human genome contains about 23,000 genes on 23 long DNA molecules, called chromosomes, located in the nucleus of all cells. Together, the long DNA molecules are polymers of about three billion nucleotides, but less than 2% of the nucleotides in these DNA molecules encode proteins. The remaining 98% of the genome (i) is involved in the control of gene expression, (ii) is important for maintaining the structure of the chromosomes and their stability, and (iii) is the result of small segments of nucleotides (called repeats) that have been duplicated repeatedly over millions of years. 
+
+Definition of Proteomics
+
+Marc Wilkins, University of New South Wales, 1994
+
+
+“Proteomics is the examination of a complete set of proteins synthesized by a cell under a given set of physiological or developmental conditions”
+
+
+67,000 papers on proteomics
+
+14,300 papers on cancer proteomics
+
+“Omics”
+
+ Genomic
++
+Transcriptomics
++
+Proteomics
++
+Metabolomics
+=
+Systems biology
+
+R. Goodacre 2005
+
+approx. 30% of the human genes still of unknown 
+
+Poor correlation between mRNA and protein levels
+
+“Omics” systems biology
+
+ gene function 
+
+ mRNA level ≠ protein level
+	Gry et al , BMC Genomics 10, (2009)
+
+ active agents in cells
+
+ PTMs, protein-protein interactions
+
+ drug targets and biomarkers
+
+R. Goodacre 2005
+
+Proteomics complexity
+
+Different levels of biological complexity
+More layers of regulation and control
+Increased heterogeneity of samples
+
+http://www.piercenet.com
+
+Proteomics is a series of experiments (workflow) performed consecutively to provide the end product (a result)
+
+Proteomics workflow
+
+Proteomics is a series of experiments (workflow) performed consecutively to provide the end product (a result)
+
+This is a workflow that we will be referring to throughout the lectures as a representative of the basic strategies that are used for proteomics analysis. There are two main approaches.
+
+This is a workflow that we will be referring to throughout the lectures as a representative of the basic strategies that are used for proteomics analysis. There are two main approaches.
+
+Identification of proteins by fingerprint analysis
+
+Everyone is familiar with the fingerprint analysis – we each have a unique pattern of epidermal ridges on the skin of our fingers and thumbs, the images of which are used for criminal investigations, and are now often used as part of biometric information about individuals along with palm, DNA and face recognition patterns. If a police investigation is able to recover fingerprint images at the scene of a crime, they can be compared to a database of stored images. Mass spectrometry can be used in a similar way to identify proteins. Has anyone been to the States in the last couple of years?
+
+
+Protein sequence
+
+MGLSDGEWQQVLNVWGKVEADIAGHGQEVLIRLFTGHPETLEKFDKFKHLKTEAEMKASEDLKKHGTVVLTALGGILKKKGHHEAELKPLAQSHATKHKIPIKYLEFISDAIIHVLHSKHPGDFGADAQGAMTKALELFRNDIAAKYKELGFQG
+
+myoglobin
+
+Myoglobin, an examples we are using to demonstrate the concept o f proteomics identification, abbreviated 1-letter sequence of amino acids in the protein
+Serves as a reserve supply of oxygen and facilitates the movement of oxygen within muscles.
+
+
+Degradation of proteins to peptides
+
+Peptides
+
+Protein
+
+protease
+
+ trypsin 			(Arg, Lys)			(R, K) 
+ endoproteinase Glu-C 	(Asp, Glu)			(D, E)
+ endoproteinase Arg-C 	(Arg)			(R)
+ endoproteinase Asn-N 	(Asn)			(N)
+ chymotrypsin 		(Tyr, Phe, Trp, Ile, Leu)	(Y, F, W, I, L)
+ elastase 		(Ala, Val, Ile, Leu)		(A, V, I, L)
+
+In proteomic the key to fingerprinting is to degrade the proteins in to peptides using specific proteases that act in an analogous manner to restriction endonucleases. 
+
+Even though some 20 products can be produced by digesting this protein with trypsin, in practice we only detect and only need to detect a small number of the peptides to determine of the protein is present in a sample. Some such as single, amino acids, di- and tri-peptides, we will not see as they are too small, and sometimes rarely, they can be too big. Trypsin digestion, in addition to being reliable and having relatively simple cleavage rules, also has the advantage of digesting at two amino acids that are relatively uncommon (lys, arg 5.7% each), yielding many peptides of a size ideally suitable for mass spectrometry – 700 and 3500Da. Chymotrypsin which cleaves at more amino acids of medium to higher frequency (F, Y, W, L, I, M – 3.9, 3.2, 1.3, 9.0. 5.2, 2.4%), produce peptides that are too small, whereas cyanogen bromide that cleaves only at methionine (2.4%) a relatively low abundance amino acid produces peptides that are frequently too big. 
+
+
+Protein – trypsin digestion
+
+MGLSDGEWQQVLNVWGKVEADIAGHGQEVLIRLFTGHPETLEKFDKFKHLKTEAEMKASEDLKKHGTVVLTALGGILKKKGHHEAELKPLAQSHATKHKIPIKYLEFISDAIIHVLHSKHPGDFGADAQGAMTKALELFRNDIAAKYKELGFQG
+
+Myoglobin, an examples we are using to demonstrate the concept o f proteomics identification, abbreviated 1-letter sequence of amino acids in the protein
+
+
+Fingerprint analysis
+
+MGLSDGEWQQVLNVWGKVEADIAGHGQEVLIRLFTGHPETLEKFDKFKHLKTEAEMKASEDLKKHGTVVLTALGGILKKKGHHEAELKPLAQSHATKHKIPIKYLEFISDAIIHVLHSKHPGDFGADAQGAMTKALELFRNDIAAKYKELGFQG
+
+trypsin
+
+MGLSDGEWQQVLNVWGK VEADIAGHGQEVLIR LFTGHPETLEK FDKFK HLK TEAEMK ASEDLK K HGTVVLTALGGILK K K GHHEAELKPLAQSHATK HK IPIK YLEFISDAIIHVLHSK HPGDFGADAQGAMTK ALELFR NDIAAK YK ELGFQG
+
+Trypsin is by far the best characterised and most frequently used protease for proteomics. Degradation or digestion of the protein requires the use of proteases that cleave at specific sites in the amino acid sequence. The position of the cleavage sites results in peptides of specific length and amino acid sequence, and consequently different molecular weight
+
+Anyone know why we sometimes call it digestion?
+
+
+Fingerprint analysis
+
+MGLSDGEWQQVLNVWGKVEADIAGHGQEVLIRLFTGHPETLEKFDKFKHLKTEAEMKASEDLKKHGTVVLTALGGILKKKGHHEAELKPLAQSHATKHKIPIKYLEFISDAIIHVLHSKHPGDFGADAQGAMTKALELFRNDIAAKYKELGFQG
+
+trypsin
+
+protein
+
+MGLSDGEWQQVLNVWGK
+VEADIAGHGQEVLIR
+LFTGHPETLEK
+FDK
+FK
+HLK
+TEAEMK
+ASEDLK
+K
+HGTVVLTALGGILK
+K
+K
+GHHEAELKPLAQSHATK
+HK
+IPIK
+YLEFISDAIIHVLHSK
+HPGDFGADAQGAMTK
+ALELFR
+NDIAAK
+YK
+ELGFQG
+
+peptides
+
+Sometimes trypsin will not cleave at arg or lys, e.g. if there is a proline residue on the C-terminal side of the cleavage site, but this is a known rule. Sometimes trypsin will not cleave if there are double basic residues – lys-lys, arg-lys, arg-arg, and results in what we refer to as partial digests. When we are searching we try to anticipate these by allowing for 1 missed cleavage.
+
+Primary structure - 20 Common Amino Acid Residues
+
+Mass spectrometry is important for peptide analysis because of the constituent amino acids. Amino acids can be split into groups based on physical and chemical properties such as hydrophobicity or acidity. Every amino acid has a valuable physicochemical function that it contributes towards the function of each protein. E.g. Prolines – Dr Jones lectures – protein folding. Through the process of evolution, in the majority of cases the position of every amino acid in the sequence of the protein has a specific function and contributes to the protein performing optimally within the environment in which it is expressed. There is very little redundancy and no room for error otherwise the protein or enzyme will not function. We can use some of these properties of individual amino acids to manipulate proteins and peptides, i.e. Electrophoresis or chromatography, reduction or digestion.
+
+Does everyone know the rationale for the 1 and 3 letter code for amino acids? phonetic associations
+
+MS-based peptide analysis
+
+sample
+
+Ion 
+Source
+
+Mass Analyser
+
+Detector
+
+spectrum
+
+
+Ion Source – generates gaseous ions
+ESI, MALDI
+
+Analyser – separates the ions based on their mass-to-charge (m/z) using electric/magnetic fields
+		TOF, ion trap, quadrupole, fourier transform
+
+Detector - detect the separated ions	multichannel plate, discrete 	dynode electron multiplier
+
+It is not my intention to go into great detail on how mass spectrometers. I will cover those aspects that are of specific interest to protein and peptide analysis. There has been a massive explosion in mass spectrometry development and design with the advent of proteomics analysis. There are three main parts to a mass spectrometer.
+
+
+Peptide mass fingerprint (PMF)
+
+Mass spectrometry
+
+D
+
+K
+K
+K
+HK
+FK
+YK
+HLK
+FDK
+IPIK
+ALELFR
+NDIAAK
+ELGFQG
+TEAEMK
+ASEDLK
+LFTGHPETLEK
+HGTVVLTALGGILK
+HPGDFGADAQGAMTK
+VEADIAGHGQEVLIR
+YLEFISDAIIHVLHSK
+GHHEAELKPLAQSHATK
+MGLSDGEWQQVLNVWGK
+
+B
+
+A
+
+E
+
+C
+
+E
+
+m/z
+
+B
+
+D
+
+C
+
+A
+
+PMF as indicated by this mass spectrum, is based on detecting and using the molecular weight of a number of intact peptides as unique identifiers of the proteins. This only really applies to pure proteins or 2D gels. However, we don’t need the whole of the fingerprint to identify the protein (cf forensic fingerprinting)
+
+Database searching - MASCOT Search Engine
+
+Mascot (www.matrixscience.com) – a probability-based database search engine for the identification of proteins
+
+mass data submitted as peak lists
+
+match PMF or MS/MS against theoretical fingerprints (in silico) from a protein sequence database (e.g. UniProt)
+http://www.uniprot.org/uniprot/
+
+SwissProt – 550,000 sequences for 13000 species 
+(20192 human genes – in silico translation of the human genome)
+
+results are ranked in order of most closely matching protein, using a probability based algorithm
+
+The most popular search engine used is called Mascot.
+
+Each protein identified is given a score. A threshold score of significance, typically 95% or 1 in 20 chance of being wrong, is defined for each search, and only proteins which score higher are considered to be real. The higher the score the greater the confidence of the identity. 
+
+
+UniProt
+Protein existence (PE): sequence entries
+1: Evidence at protein level 	76308 		14.2% 
+2: Evidence at transcript level 	68067 		12.7% 
+3: Inferred from homology 	377413 	70.1% 
+4: Predicted 			14336 		2.7% 
+5: Uncertain 			1886 		0.4% 
+
+
+Peptide mass fingerprint
+
+database searching – unknown protein
+
+theoretical/in silico digests
+
+experimental digest
+
+B
+
+D
+
+m/z
+
+m/z
+
+m/z
+
+A
+
+E
+
+C
+
+m/z
+
+No Mono MH+
+1946.943
+1853.962
+1885.022
+1606.855
+1271.663
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+Let’s now imagine that our protein is an unknown. The masses from the mass spectrum are compared to theoretical lists for all known proteins in a protein sequence database. An important and massive advantage of proteomics fingerprinting, compared to true fingerprinting is that we do not need to populate the database with previous experimental data for comparison our new experimental data. We can simulate digestion based on protein sequences determined from whole genomes translated into genes, into mRNA and hence into proteins. This is called in silico database searching. Can any of you tell me which one matches our experimental data?
+
+
+Peptide mass fingerprint
+
+database searching - matching
+
+theoretical/in silico digests
+
+experimental digest
+
+B
+
+D
+
+m/z
+
+m/z
+
+m/z
+
+A
+
+E
+
+C
+
+m/z
+
+No Mono MH+
+1946.943
+1853.962
+1885.022
+1606.855
+1271.663
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+m/z
+
+
+Peptide mass fingerprint
+
+MS analysis – measure intact peptides
+
+No Range		Mono MH+	Sequence	
+[  1- 17]	1946.943	MGLSDGEWQQVLNVWGK
+[ 18- 32]	1606.855	VEADIAGHGQEVLIR
+[ 33- 43]	1271.663	LFTGHPETLEK
+[ 44- 46]	409.208	FDK	
+[ 47- 48]	294.181	FK	
+[ 49- 51]	397.256	HLK	
+[ 52- 57]	708.323	TEAEMK	
+[ 58- 63]	662.336	ASEDLK	
+[ 64- 64]	147.113	K	
+[ 65- 78]	1378.842	HGTVVLTALGGILK
+[ 79- 79]	147.113	K	
+[ 80- 80]	147.113	K	
+[ 81- 97]	1853.962	GHHEAELKPLAQSHATK
+[ 98- 99]	284.172	HK	
+[100-103]	470.334	IPIK	
+[104-119]	1885.022	YLEFISDAIIHVLHSK
+[120-134]	1502.669	HPGDFGADAQGAMTK
+[135-140]	748.435	ALELFR	
+[141-146]	631.341	NDIAAK	
+[147-148]	310.176	YK	
+[149-154]	650.314	ELGFQG
+
+If this is an unknown, the database search will tell us which peptide sequences the mass signals correspond to, and also those regions of the protein we do not see, which can also be important.
+
+High throughput proteomics - “Mudpit”
+
+Multi-dimensional Protein Identification Technology
+
+100’s of proteins
+
+1000’s of peptides
+
+protease digestion
+
+2D chromatography
+
+MS/MS
+
+In the case of the Mudpit approach, when 100’s of proteins are digested to create a pool of 1000’s of peptides, one or two types of chromatography are required to separate the peptides. Identification of peptides and the original protein required MS/MS analysis, i.e. fragmentation of the peptide in mass spectrometry to provide a fingerprint.
+
+MS/MS
+
+Peptide mixture
+
+Have only masses to start
+
+The masses of all the pieces give an MS/MS spectrum
+
+1  peptide 
+selected for MS/MS
+
+
+Peptide fragment fingerprint
+
+MS -> MS/MS
+
+B
+
+MS
+
+parent ion selection
+
+MS/MS
+
+Peptide fragments
+
+MS spectrum shows all the peptide or parent signals when all the signals are allowed to travel to the detector. The second set of poles (quad, hexa or ion gate) allow only one parent signal through. The parent enters a collision cell to encourage fragmentation of the peptide backbone. Fragments and residual parent are detected by the detector following a separation step – overall this is call MS/MS or tandem MS
+
+
+Peptide fragment fingerprint
+
+MS/MS
+
+parent/precursor ion
+
+MH+
+
+fragment ions/daughter ions
+
+m/z
+Whereas MS or PMF requires the masses of numerous (5 to 10) parents, which may not be easy to acquire, many fragments can be obtained from a single parent. Two levels of information are available – the parent mass and the fragment or daughter ion masses providing greater discrimination that then parent masses on their own. The power of MS/MS or peptide fragment fingerprinting is that the pattern of fragments correlates directly with the sequence of the peptide. 
+
+Peptide Fragmentation
+
++
+
+H
+
+x
+
+3
+
+y
+
+3
+
+z
+
+R3
+
+
+3
+
+CH2
+
+R
+
+R
+
+R
+
+O
+
+O
+
+O
+
++
+
+1
+
+2
+
+4
+
+H
+
+H
+
+N
+
+CH
+
+C
+
+NH
+
+CH
+
+NH
+
+CH
+
+NH
+
+CH
+
+COOH
+
+C
+
+C
+
+2
+
+a
+
+1
+
+a
+
+MW =                 =                 =
+
+c
+
+b
+
+x
+
+z
+
+b
+
++
+
+y
+
++
+
++
+
+1
+
+1
+
+1
+
+3
+
+3
+
+1
+
+3
+
+c
+
+1
+
++
+
+H
+
+Advantageously, fragmentation occurs predominantly on the peptide back bone. There are three bonds for each amino acid that make up the peptide backbone. A nomenclature has been developed to assist an understanding of MS-based fragmentation. This is a summary slide of the key fragmentation processes and the resulting products.
+
+
+MS/MS fingerprint
+
+database searching
+
+Hence our fragmentation might read as the sequence of the peptide. However it doesn’t always provide a complete set of the same type of fragments and this does not matter for database searching. The database search engine only needs to know that the fragments are generated according to the expected rules.
+
+
+MS/MS fingerprint
+
+database searching
+
+Peptide ID
+
+VEADIAGHGQEVLIR
+
+Protein ID
+
+
+Bottom-up proteomics
+
+Fragments
+
+Protein
+
+Peptides
+
+MS/MS
+
+protease
+
+MS spectrum
+Peptide mass fingerprint
+
+MALDI TOF MS
+
+MS/MS spectrum
+Fragment fingerprint
+
+MALDI TOF-TOF MS
+ESI Q-TOF MS
+ESI ion trap MS
+
+Biological mass spectrometry
+
+Nobel Prize in Chemistry in 2002
+
+Koichi Tanaka – b. 1959
+
+John Fenn – 1917 - 2010
+
+“for the development of methods for identification and structure analysis of biological macromolecules”
+
+ESI MS 1984
+
+MALDI MS 1987
+
+The massive explosion in mass spectrometry development and design which has contributed to proteomics analysis resulted in the Nobel prize being awarded to the inventors of ESI and MALDI. These instrument are capable of detecting a picogram or trillionth or a millionth of a millionth of a gram of peptide. This is equivalent to weight about 7 people in 7 billion (based on an average weight per person of 65kg) = 455x1012 g as population just passed 7 billion on 31st October 2011.
+
+John  Fenn was 66 when he published his discovery and 85 when he was awarded his Prize, whereas Koichi was 28 when he published his discovery and 42 when he was awarded his Prize. Koichi has a degree in engineering, no PhD and made his discovery in industry not academia.
+
+MALDI principles
+
+Matrix assisted laser desorption ionisation = MALDI
+
+Analyte = peptide mixture
+
+α-cyano-4-hydroxycinnamic acid
+
+absorption - absorb light at the chosen wavelength (e.g. N2 UV laser = 337 nm)
+transportation - expanding plume carries sample
+ionisation - acidic matrices can donate H+
+protects samples from degradation by laser energy
+
+Sample and matrix added and mixed together as solutions on a metal target and allowed to dry. As the matrix is in excess, the sample is embedded in the crystals on drying. CHCA is a typical compound used as a matrix and is used for peptide analysis.
+
+One of the great mysteries of MALDI is why some matrices work well for some analytes and others work better for other biomolecules.
+
+MALDI Time-of-Flight (TOF) mass spectrometer
+
+UV laser
+(λ = 337 nm)
+
+reflectron
+
+ion source
+
+collision cell
+
+“lift” cell
+
+MALDI target
+
+flight tube
+
+mass selection gate
+
+extraction grid
+
+detector
+
+Peptide mass fingerprint
+
+ions are accelerated in the extraction region
+all ions acquire the same kinetic energy
+each ions’ velocity is dependent on ion mass, i.e. lighter ions fly faster than heavy ions
+ions separate in the field-free drift region according to their velocities
+The reflectron is an ion mirror that extends the time-of-flight, separating the ions further and improving resolution and accuracy
+ion arrivals are detected at a certain point in space (the detector) and flight times are readily assigned to masses
+
+Electrospray Ionisation (ESI) Principles
+
+The charged droplets shrink by solvent evaporation, assisted by a warm flow of nitrogen, known as the drying gas, which passes across the front of the ionisation source
+
+Eventually charged sample ions, free from solvent, are released from the droplets
+
+The charged droplets shrink by solvent evaporation, assisted by a warm flow of nitrogen, known as the drying gas, which passes across the front of the ionisation source, and by the 

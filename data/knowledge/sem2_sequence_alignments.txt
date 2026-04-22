@@ -1,0 +1,171 @@
+	 
+Sequence alignments: an overview
+Sequence alignment is perhaps the most commonly run experiment in the scientific community, although many people would probably not consider alignment to be an experiment, it is a hypothesis driven test. Despite how common it is, alignment is complex, and is only a useful tool if it is performed with adequate methodology, and suitable assumptions.
+The aim of this tutorial is not to provide an in depth overview of the different algorithms available to perform sequence alignment, but I would encourage you to read more  about it because it is a vast and useful topic. I have included some useful material in the 'further reading' section of this tutorial, but it is not exhaustive. Do some searching, read widely, and in the case of the various software that are available, feel free to test some out!
+The two big questions in sequence alignment
+Global vs. Local
+In principle, alignment algorithms have been separated into two camps, Global and Local. Global alignments attempt to align every residue (nucleotide or amino acid) in every sequence. This means that for them to be useful (or indeed even meaningful), the component sequences need to be of roughly the same size, and the sequences need to be similar in content. Global alignments tend to use the  Needleman-Wunsch  algorithm.
+Local alignment on the other hand targets sequences with a larger degree of dissimilarity, allowing the user to align sequences of great length, that contain both similar and dissimilar regions. Local alignment is really useful when aligning genomes for example. The  Smith-Waterman  algorithm is a typical example of a local alignment method.
+While global and local are discreet categories, there are now more algorithms being developed that are hybrids of these approaches, so called semi-global (or glocal). These methods tend to construct partial alignments.
+Understanding your data set is essential for the correct selection of an alignment methodology. Keep this in mind when thinking about the best way to tackle any given problem!
+Pairwise vs. Multi-sequence
+Pairwise methods are, as the name suggests, only suitable for a maximum of two sequences at a time. This has several computational benefits, chief among which is efficiency (time and computational power). Where pairwise methods struggle, is dealing with low complexity repetitive elements. One of the most common forms of pairwise alignment (although it may not be immediately obvious) is BLAST. We won't cover BLAST based alignment in this tutorial, but see the specific tutorial  here  if you are interested.
+Multiple sequence alignments builds on pairwise alignments by adding further sequences. This can be useful for identifying conserved regions. The main drawback of multi-sequence approaches is that the are computationally (and temporally) more intensive. They also tend to produce multiple output combinations.
+Choosing between these methodologies will be dependent on your specific question, and again requires you to understand your data, and they type of output you need.
+Performing sequence alignments
+There are several ways to perform sequence alignments, which all have merits and drawbacks. Choosing between them will be dependent on you specific situation (i.e. volume, methodology, sequence type, reproducibility etc...).
+1) Online resources such as the  MAFFT .
+These types of online programs offer a very simple way of performing relatively simple alignments (memory usage will be restricted) in a user friendly GUI. They are great for single use cases, but parameter optimisation will be limited. They also have many manual steps, prohibiting incorporation into automated pipelines.
+2) Standalone alignment programs
+For continuity, let us consider  MAFFT 
+)
+ again. These tend to run through the commandline (although some may have a GUI interface also), and so will only be memory restricted by the system on which you run them. If you are writing code in UNIX, these represent an excellent option. It is possible to control the bash shell via python, but inputs and outputs will have to be opened and closed creating extra steps. There are a lot of alignment programs available. I don't have a complete list, but see  here .
+3) Via biopython (or other python integrated modules)
+This is the methodology we will cover in this workshop. Using biopython allows you to seamlessly integrate the parsing, handling and creating of alignment objects in one place, minimising redundant code.
+A note on biopython.
+While this will not be your first exposure to biopython as a tool ensuring that you understand the basics is still important. Biopython is perhaps one of the most powerful available to computational biologists. I do like to remind you all "not to reinvent the wheel" buy rewriting scripts which have been written and implemented well by others. most of the time, I'll be referring to functionality within biopython. This tutorial is not going to cover the breadth of things biopython can do, so I'd encourage you all to really read the documentation, here .
+
+Importing sequences through biopython.
+We have spent a lot of time in our workshops writing functions that will parse, amongst other things, FASTA and FASTQ files. We have done it this way, because it is essential that you understand how to do it. In the 'real world', you will probably do it via biopython (mainly because it's really well implemented).
+So to import (or parse correctly) a sequence through biopython, you need to do the following steps:
+1) Import the specific functions from biopython.
+from Bio import SeqIO
+
+
+2) Use the function ('SeqIO') to parse a file containing sequences.
+for record in SeqIO.parse(open(file, "r"), "fasta"):
+    print(record.id, record.seq)
+
+
+Note. The above code is a little different from the way we have done things in the past (i.e. opens the file as part of the 'for loop' statement. It works exactly the same way. Chose the way you feel most comfortable.
+The output of this code (the print command), should look something like the example below:
+('AT1G04130.1_pop1_+_m', Seq('ATGGCGCTATGGATGGACGCTGGAGCGACGCCTACAACGGAGAACGAAAAGGCT...TAG', SingleLetterAlphabet()))
+
+
+You will notice that unlike the method by which we have been returning sequences, the 'seq' element contains slightly more data than simply the sequence. If you want to return the actual sequence, you could amend the code to the following:
+print(record.id, str(record.seq))
+
+
+This will print the sequence as a string in the way we familiar with.
+Performing alignments with biopython.
+You can then use the sequences you have imported to create alignments. You do this through a biopython function called 'pairwise2'. For full documentation on pairwise2, see the manual  here 
+ (Links to an external site.)
+.
+from Bio import pairwise2
+
+
+It is then simply a matter of choosing an alignment algorithm, and performing the alignment. (Again, see the complete documentation linked above for this). In this example, we will use the two short fragments below:
+Sequence_1 = "ATGCGGTGCGTCATAAGCGAAATCGCTAGCT"
+Sequence_2 = "TTGCGGTGCGTCATAAGCGAAATCGCTAGCT"
+
+alignments = pairwise2.align.globalxx(Sequence_1, Sequence_2)
+
+
+This returns a list attributed to the variable 'alignment'.
+Why might we expect the alignment output to be a list?
+We can then view the elements of the list in the normal way:
+print(alignments)
+
+
+Which produces, as we expected a list, but more specifically, a list of tuples.
+[('AT-GCGGTGCGTCATAAGCGAAATCGCTAGCT', '-TTGCGGTGCGTCATAAGCGAAATCGCTAGCT', 30.0, 0, 32), ('A-TGCGGTGCGTCATAAGCGAAATCGCTAGCT', '-TTGCGGTGCGTCATAAGCGAAATCGCTAGCT', 30.0, 0, 32), ('ATGCGGTGCGTCATAAGCGAAATCGCTAGCT', 'TTGCGGTGCGTCATAAGCGAAATCGCTAGCT', 30.0, 0, 31)]
+
+
+The elements of each of the three alignments within the list (each within its own tuple) are as follows: Aligned Sequence_1; aligned Sequence_2; alignment score; start; and end.
+What do the 'score', 'start' and 'end' values tell you about each alignment?
+This output is not terribly useful for visualising alignments though. You can improve this using another function within biopython.
+from Bio.pairwise2 import format_alignment
+for x in range(0, len(alignments), 1):
+    print(format_alignment(*alignments[x]))
+
+
+This code produces the following output, which offers a much clearer visual representation of the alignments.
+AT-GCGGTGCGTCATAAGCGAAATCGCTAGCT
+ | |||||||||||||||||||||||||||||
+-TTGCGGTGCGTCATAAGCGAAATCGCTAGCT
+  Score=30
+
+A-TGCGGTGCGTCATAAGCGAAATCGCTAGCT
+  ||||||||||||||||||||||||||||||
+-TTGCGGTGCGTCATAAGCGAAATCGCTAGCT
+  Score=30
+
+ATGCGGTGCGTCATAAGCGAAATCGCTAGCT
+.||||||||||||||||||||||||||||||
+TTGCGGTGCGTCATAAGCGAAATCGCTAGCT
+  Score=30
+
+
+Which is the best alignment?
+The alignment we have just performed is a global alignment, with default parameters. We can also run local alignments, and/or change the parameters to adjust the way that the alignment is generated. The parameters that we can adjust are highlighted below:
+Match parameters
+CODE  DESCRIPTION & OPTIONAL KEYWORDS
+x     No parameters. Identical characters have score of 1, otherwise 0.
+m     A match score is the score of identical chars, otherwise mismatch
+      score. Keywords ``match``, ``mismatch``.
+d     A dictionary returns the score of any pair of characters.
+      Keyword ``match_dict``.
+c     A callback function returns scores. Keyword ``match_fn``.
+
+
+Gap penalty parameters
+CODE  DESCRIPTION & OPTIONAL KEYWORDS
+x     No gap penalties.
+s     Same open and extend gap penalties for both sequences.
+      Keywords ``open``, ``extend``.
+d     The sequences have different open and extend gap penalties.
+      Keywords ``openA``, ``extendA``, ``openB``, ``extendB``.
+c     A callback function returns the gap penalties.
+      Keywords ``gap_A_fn``, ``gap_B_fn``.
+
+
+So, for example, we could run another global alignment, but this time introduce penalties for certain behaviours. In this case, we elect to score 3 points for an identical residue, -1 point for a non-identical residue, -1.5 points for opening a gap (i.e. increasing the alignment length instead of matching non-identical residues), and -0.5 points for extending a gap.
+for alignments in pairwise2.align.globalms(Sequence_1, Sequence_2, 3, -1, -1.5, -.5):
+    print(format_alignment(*alignments))
+
+
+When we run our global alignment with these parameters, the output is as follows:
+ATGCGGTGCGTCATAAGCGAAATCGCTAGCT
+.||||||||||||||||||||||||||||||
+TTGCGGTGCGTCATAAGCGAAATCGCTAGCT
+  Score=89
+
+
+As you can see, this has reduced the number of alignments produces, and the 'score' for the alignment has changed to represent this.
+Are the parameters we used to refine the alignment reasonable?
+Have a go manipulating the parameters, what is the impact on the alignment(s) you produce?
+What do the 'm' and 's' parameters mean?
+Biopython is also capable of parsing alignments made in other programs (for example in standalone alignment programs). You can do this using ' AlignIO 
+ (Links to an external site.)
+' in the following way:
+from Bio import AlignIO
+aln = "~/ATmyb2.aln"
+clustal_align = AlignIO.parse(open(aln, "r"), "clustal")
+for align in clustal_align:
+    print(align)
+
+
+Which produces the following output.
+Note. You will need to use  this alignment file to run the above code.
+SingleLetterAlphabet() alignment with 15 rows and 1068 columns
+--------------------------------------------...--- gi|110735486|emb|AM293712.1|
+--------------------------------------------...--- gi|110735484|emb|AM293710.1|
+--------------------------------------------...--- gi|110735485|emb|AM293711.1|
+--------------------------------------------...--- gi|110735474|emb|AM293700.1|
+--------------------------------------------...--- gi|110735472|emb|AM293698.1|
+--------------------------------------------...--- gi|110735469|emb|AM293695.1|
+--------------------------------------------...--- gi|110735470|emb|AM293696.1|
+--------------------------------------------...--- gi|110735473|emb|AM293699.1|
+--------------------------------------------...--- gi|158266453|gb|EU177808.1|
+--------------------------------------------...--- gi|158266454|gb|EU177809.1|
+--------------------------------------------...--- gi|158266455|gb|EU177810.1|
+--------------------------------------------...--- gi|110735482|emb|AM293708.1|
+AGTCCTATGTTATTTAGCTACATTCAAATTTGGAAATATATTGA...--- gi|158266452|EU177807.1
+--------------------------------------------...TTG gi|Tc38|
+--------------------------------------------...--- gi|Ron|
+
+
+Note.  As you can see, the alignment imported here is not a pairwise alignment, but a multi-sequence alignment. It was made using 'clustal'.
+How might you go about adjusting the type of alignment you import?
+Are you seeing the whole alignment here? Or only part of it?
+

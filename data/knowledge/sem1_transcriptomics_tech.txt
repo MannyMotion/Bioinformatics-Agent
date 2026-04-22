@@ -1,0 +1,279 @@
+Introduction to transcriptomics: transcriptomic technologies
+Dr. Craig Willis
+Assistant Professor in Bioinformatics
+1 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Lecture
+Workshop
+Lecture
+Workshop
+Workshop
+Transcriptomics schedule
+2 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcriptomic
+technologies
+RNA-seq:
+quality control
+RNA-seq:
+alignment
+RNA-seq:
+data analysis
+Downstream
+data analyses
+Session Learning Outcomes
+3 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+1. Be able to define transcriptomics
+2. Understand why transcriptomics is useful
+3. Know different transcriptomic data types
+and how they are generated
+The omics ‘landscape’
+4 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Omics aims at collective
+characterisation and quantification
+of pools of biological molecules
+• Several omic ‘tracts’ defined across
+the layers of molecular biology…
+What is transcriptomics?
+5 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Study of an organism’s transcriptome: the sum of its RNA molecules
+What is transcriptomics?
+6 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Study of an organism’s transcriptome: the sum of its RNA molecules
+Why use transcriptomics?
+7 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Link between genome and proteome (and thus cellular phenotype)
+• Non-coding RNA’s have important biological functions
+• Well-developed technologies
+• Biomarker discovery in health and disease
+• Expression in pooled cell populations
+• Microarray
+• RNA-sequencing (RNA-seq)
+Main transcriptomic techniques
+8 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Bulk
+Single cell
+Spatial
+• Expression in individual cell populations
+• Single cell RNA-sequencing
+• Single nucleus RNA-sequencing
+• Location of expression in tissue section
+• Spatial transcriptomics
+Main transcriptomic techniques
+9 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+bulk single cell (single cell) spatial
+‘Bulk’ transcriptomics
+10 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Expression in pooled cell populations
+• ‘Conventional’ transcriptomic methods:
+Ø Microarray
+Ø RNA-sequencing (RNA-seq)
+Tissue sample
+RNA from all
+cell populations
+Average expression
+from all cells
+‘Bulk’ transcriptomics: microarray
+11 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Microarray core principle:
+Array: an arrangement of DNA sequences
+(‘probes’) for finite number of genes (‘features’).
+Each feature has pre-defined position on array
+and contains millions of identical probes.
+Fluorescence
+Gene expression ∝ fluorescence intensity ∝ amount of
+labelled cDNA bound to gene sequence at each probe position
+‘Bulk’ transcriptomics: microarray
+12 SEM1 24/25
+Two-channel vs. single-channel microarrays:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Two-channel Single-channel
+‘Bulk’ transcriptomics: RNA-seq
+13 SEM1 24/25
+RNA-seq core principle:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+FastQ file
+‘Bulk’ transcriptomics: RNA-seq
+14 SEM1 24/25
+RNA-seq core principle:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+‘Bulk’ transcriptomics: RNA-seq
+15 SEM1 24/25
+Single-end vs. paired-end RNA-seq:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• ↑ ability to detect genomic
+rearrangements, repetitive
+sequence elements, gene
+fusions, novel transcripts,
+indel variants, etc
+Paired-end:
+• Produce 2x number of reads
+for same time and effort in
+library preparation
+• ↑ read alignment accuracy
+‘Bulk’ transcriptomics: RNA-seq
+16 SEM1 24/25
+Stranded vs. unstranded RNA-seq:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Transcript Double-stranded DNA:
+• sense strand (5’ → 3’; coding)
+• antisense strand (3’ → 5’; non-coding)
+Unstranded:
+Stranded (forward then reverse):
+Stranded (reverse then forward):
+• Stranded helps to tell us which strand
+RNA is being transcribed from
+• Resolve ambiguity of overlapping genes
+transcribed from opposite strands
+(↑ expression quantification accuracy)
+‘Bulk’ transcriptomics: RNA-seq
+17 SEM1 24/25
+Short-read vs. long-read RNA-seq:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Short: ~50-300 bp
+• Long: ~5,000+ bp
+Long: Short:
+Long:
+• Can generate full length
+isoform reads
+• Can facilitate better
+identification of
+structural variation and
+resolve splicing events
+• May be prone to lower
+accuracy per read
+and/or higher error rate
+‘Bulk’ transcriptomics: RNA-seq
+18 SEM1 24/25
+Read depth vs. breadth:
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+In RNA-seq, read depth = number of reads per sample (in millions)
+‘Bulk’ transcriptomics: RNA-seq
+19 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+***Recommendations based on guidance given by Illumina
+Experimental considerations:
+• 50 bp single-end reads generally sufficient for
+standard gene expression profiling, and may
+only need 5-25 million reads per sample
+• Identification of novel variants, splice sites or isoform
+analyses can benefit from longer (e.g., 75-100 bp)
+paired-end reads (ideally stranded) + greater read
+depth (e.g., 30-60 million reads per sample)
+• For small RNA analysis (e.g., miRNA), a single read
+(usually 50 bp) typically covers entire sequence, with most
+applications ranging from 1-5 million reads per sample
+‘Bulk’ transcriptomics: comparison
+20 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Bulk transcriptomics limitations
+21 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+What are potential limitations of bulk transcriptomics?
+Single cell vs. bulk transcriptomics
+22 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Information gain with single cell vs. bulk transcriptomics:
+Bulk: Single cell:
+Single-cell transcriptomics
+23 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Expression in individual cell populations
+• Single-cell transcriptomic methods:
+Ø Single cell RNA-seq (scRNA-seq)
+Ø Single nucleus RNA-seq (snRNA-seq)
+Tissue sample
+Single cell input
+Cell-type specific
+expression
+Single cell RNA-seq (scRNA-seq)
+24 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+scRNA-seq core principle:
+How do we recognise individual cells?
+Single cell RNA-seq (scRNA-seq)
+25 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Droplet barcoding:
+Tissue
+Dissociated
+Single cells
+Single cell cDNA
+individually barcoded
+Pooled barcoded
+cDNA library
+Data matrix, with each
+barcode representing a cell
+Sequencing
+scRNA-seq vs. snRNA-seq
+26 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Sequence nucleus
+rather than whole cell
+snRNA-seq:
+• Useful method to
+analyse expression in
+cells that are difficult
+to separate
+• Can be applied to
+frozen tissues
+Single cell limitations
+27 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Potential limitations of single cell transcriptomics?
+Spatial transcriptomics
+28 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+• Expression location in tissue
+• Spatial transcriptomic methods:
+Ø In situ capture (sequencing-based)
+Ø In situ hybridisation (imaging-based)
+Spatial transcriptomics
+29 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+In situ capture (sequencing-based):
+Tissue section
+Array of spatially
+barcoded, mRNA
+capturing probes
+Mount tissue over array
+for location-specific
+barcoded mRNA capture
+Next generation
+sequencing of
+captured mRNA
+Align array with
+image of tissue
+section for spatial
+analysis of all
+tissue mRNAs
+Map sequencing
+data for each
+individual mRNA
+back to spot of
+origin on array
+Spatial transcriptomics
+30 SEM1 24/25
+In situ hybridisation (imaging-based):
+BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Modern transcriptomics frontier?
+31 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Integration of single cell and spatial transcriptomics:
+ll data
+n working with
+ space?
+e annotation
+14
+• Spatial topography of cell-type populations in a biological sample
+• Decode mechanisms of intracellular communication
+• Cell type-specific and location-specific gene expression changes
+Recommended further reading
+32 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare
+Bulk transcriptomics:
+• Microarray core concepts:
+Ø Miller & Tang, 2009. Clin Microbiol Rev, 22(4):611-633
+• RNA-seq core concepts:
+Ø Kukurba & Montgomery, 2015. Cold Spring Harb Protoc, 2015(11):951-969
+Ø Vikman et al, 2014. J Mol Endocrinol, 53(2):R93-101
+• RNA-seq vs. microarray:
+Ø Wang et al, 2009. Nat Rev Genet, 10(1):57-63
+Single cell transcriptomics:
+• scRNA-seq core concepts:
+Ø Dal Molin & Di Camillo, 2019. Brief Bioinform, 20(4):1384-1394x
+• scRNA-seq vs. snRNA-seq:
+Ø Wen et al, 2022. Mol Med Rep, 26(5):339
+Spatial transcriptomics:
+• Spatial transcriptomics core concepts:
+Ø Williams et al, 2022. Genome Med, 14(1):68
+Integrating single cell and spatial transcriptomics:
+• Recent overview:
+Ø Longo et al, 2021. Nat Rev Genet, 22(10):627-644
+Any questions?
+33 SEM1 24/25 BIS7019-B – ‘Omics’ Techniques in Biology and Healthcare

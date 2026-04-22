@@ -1,0 +1,91 @@
+Understanding the Role of Proteomics in Advancing P4 Medicine through Multi-Omics Technologies for Precision Healthcare. 
+
+What is Proteomics and P4 Medicine 
+
+Proteomics, which is part of the omics system biology, was first coined in 1995 and is defined as a large-scale analysis of a complete set of proteins expressed by the cell line, tissue or organism under a given set of physiological or developmental conditions (Graves and Haystead 2002). Without this expression, we can not identify proteins. Proteins are the functional molecules of cells, they are essential for understanding biological pathways, disease mechanisms and cellular processes. Proteomics matters because not much in depth information can be obtained from the study of genes or proteins alone. Therefore, the genome alone can not explain the mechanism of ageing, disease and environmental influence. The only way to characterise protein change and determine the targets of modification is by the study of protein(Graves and Haystead 2002). Protein molecules control the cells controlling structure, function and regulation. The aim of proteomics is not only to identify all the proteins in a cell but to create a three-dimensional map of the cell indicating where proteins are located(Graves and Haystead 2002). Proteomics aims to also analyse the structure and function of biological systems. An example of this, is the protein content of cancerous cells which is often different from that of a healthy cell. Therefore, proteins in the cancerous cells may not be present in healthy cells. Therefore, proteomics allows these unique proteins to be a very good target option for anti-cancer drugs. 
+
+Proteomic plays a key role in system biology, which views biological systems as integrated whole network rather than an isolated components, by combining data from genomics, proteomics, transcriptomics and metabolomics, this allows a comprehensive model to be constructed and analysed to predict how biological molecular data interact and function together enabling a holistic understanding of health and disease in medicine enabling novel diagnostic markers and therapeutic targets(Hood and Tian 2012). 
+
+Proteomics also plays a key role in P4 medicine which stands for Personalized, Predictive, Preventive and Participatory. It is an advanced healthcare model designed to improve disease management and patient outcomes. Developed by Dr. Leroy Hood, this concept aims to shift the focus from reactive disease treatment to proactively maintaining and tailoring strategies based on individual biological data (Pack, 2016). With the integration of omics data, this allows for the construction of technologies, system biologists develop to mine, integrate and model together to generate and analyse Big Data of heterogeneous biological data to generate predictive patients risks for developing disease like sleep apnea and actionable models to improve health and disease for each patient allowing earlier intervention methods and to reduce the burden of chronic conditions and also lowering costs(Pack, 2016). 
+
+Proteomics supports each of the four P4 medicine pillars by allowing personalised treatment to patients with conditions like obstructive sleep apnea (OSA) which can have clinically different subgroups due to environmental, ethnic, genetic and epigenetic factors(Pack 2016). Proteomics P4 Medicine pillar such as Personalized pillar helps to detect individual molecular signatures such as protein expression profiles. This allows specific treatment plans based on individual protein patterns. Another one of the primary pillars of P4 medicine is its predictive pillar. This pillar has the capability to anticipate an individual's risk of developing disease and to allow earlier interventions, actionable preventive strategies and personalised treatment regimes tailored to each person to be put in place to improve outcomes and reduce healthcare burdens (Hood and Tian 2012). This shows its significance in the proactive and individualised focus of P4 Medicine. Preventive Medicine is another core pillar of P4 Medicine. This pillar focuses on lowering incidents and severity of disease by detecting early disease risk factors and taking action before symptoms appear. Preventive measures can be personalised for each person by applying multi-omics technology, such as 2D Gel Electrophoresis, which separate proteins by isoelectric point and molecular weight. The protein expression of the sample can be qualitatively and quantitatively compared. With the appearance or disappearance of spots can show the different protein expression. The greater the intensity of the spots, this can provide quantitative information of the level of protein expression. Similarly, liquid chromatography-mass spectrometry (LC-MS) is another multi-omics technology for direct protein analysis (Chen et al. 2023). MS uses ion source to generate gaseous ions like ESI, MALDI and then the mass analyser separates the ions based on their mass to charge (m/z) using electric/magnetic fields. Then the MS detector detects the separate ions. They identify early protein biomarkers of disease progression or inflammation. This also allows for early focused intervention that improves health outcomes. As (Collatuzzo and Boffetta 2022) highlights, multidimensional data used to develop public health interventions and to monitor the health status of the population. This indicates how omics technologies are being used to monitor health status and develop preventive strategies in occupational health. Lastly, P4 Medicine Participatory, contributes to data driven self monitoring tools like wearable devices and apps. With this patients can track changes in their health and receive personalised alerts. (Pack 2016) highlights the facts that social media and tech can connect patients with shared molecular profiles and this empowers patients actively managing their own care. 
+
+How does proteomics contribute to P4 personalized medicine using omics technology
+
+Proteomics allows for quantification of protein expression. Due to levels of gene transcription often being affected by post-transcriptional modification, RNA analysis usually lacks correlation with the protein expression(Chen et al. 2023). Therefore, since gene expression does not always correlate protein expression, proteomics allows for more precision by showing true functional molecules in the body. Proteomics also indicates that by providing the directly associated information with environment change or disease progression, it can show the understanding of how a person’s body reacts to their surroundings or illness necessary for personalised care. This further indicates that by identifying biomarkers before clinical symptoms appear, proteomics supports preventive interventions.
+
+In addition, another way proteomics contributes to personalized medicine is protein and protein interactions. This can be identified by a combination of immunoprecipitation and mass spectrometry. Target proteins can be purified by antibodies (BMPR-1B), followed by mass spectrometry to detect interaction of unknown proteins, therefore, this will allow interacted proteins to be detected like (GDF5), (GDF9) and (HSP10)(Chen et al. 2023). This will map the networks to help identify individual specific disease pathways and drug targets. 
+
+Another method as to how proteomics contributes to personalized medicine is by detecting post translational modification (PTMs). This process involves phosphorylation, glycosylation, ubiquitination, acetylation and nitrosylation which are present in proteins after translation. These modifications are essential for intracellular signal transduction, protein transport and enzyme activity(Chen et al. 2023). These modifications influence how proteins behave in each person and this helps with specific targeted interventions based on the molecular signatures like immunotherapy. Therefore, understanding the PTMs mechanisms that govern immune checkpoints is important for building new treatment strategies to improve immunotherapy efficacy and overcome resistance(Jia et al. 2025). 
+
+While understanding how proteomics contributes to detecting post translational modification, modified proteins like phosphoproteomics support disease specific mechanism discovery and can help to understand how a disease develops. This protein can show a new mechanism in type 2 diabetes, lung adenocarcinoma and Alzheimer's disease(Chen et al. 2023).This supports early detection and prediction. By using proteomics to identify those modified proteins to reveal those disease mechanisms, biomarkers and networks proteomics can help to develop personalised diagnostics and therapeutic strategies for treatment(Giudice and Petsalaki 2019).  
+
+(Olivier et al. 2019) Cancer Proteomics study also known as the cancer genome atlas (TCGA) looks at the effect to profile tumor proteins. This study was done using a reverse phase protein array. However, this study was limited to a few hundred proteins using this type of old method. However, several recent studies have used technology like Mass spectrometry methods to identify cancer specific biomarkers in ovarian cancer. With the integration of proteomics data, this has helped the study in the classification of breast cancer. With further use of proteomics data, analysis was done to predict drug sensitivity and identify putative protein interfering with drug resistance. This study also supports personalized cancer care treatment in medicine by connecting treatments to specific protein profiles in each patient's tumor.
+
+With Proteomics as one of the biological systems integrated networks, proteomics contributes to personalised medicine by offering a detailed, patient specific view of protein activity, molecular interaction and disease mechanisms. When combined with genomics, transcriptomics and metabolomics, proteomics offers a more in depth outlook of individual protein biology. This allows for more accurate diagnosis, treatment and monitoring which is specifically tailored to the individuals needs and wants in personalized medicine.
+
+Limitations to the implementation of proteomics in P4 medicine 
+
+While proteomics has contributed to personalized medicine, there are a number of challenges and limitations when implementing proteomics in personalized P4 medicine. Some of those challenges include technological limitations, biological complexity and volume of data.
+
+An important part of the growth of proteomics has been in the advancement of protein technologies such as 2 dimensional gel electrophoresis (2-DE). This method has improved in areas of protein separation to protein identification. However, it is still not feasible to conduct many types of proteomics analysis due to limitations in the technology. (Graves and Haystead 2002) highlights the fact that this is because 2-DE is a slow process that is very difficult to automate, taking 2 days to analyse a single sample per gel. This limits participatory and personalized diagnostics in P4 medicine. However, since its inception 32 years ago, protein electrophoresis still remains the most effective way to resolve complex mixed protein. Nevertheless, this process will still remain an essential component of proteomic until it is replaced. 
+
+Additionally, A typical 2-DE is limited by both the number and type of protein that can be resolved such as the eukaryotic cell lysate(Graves and Haystead 2002). (Graves and Haystead 2002) also inferred that some of these problems can be resolved with different solubilization conditions and pH gradients. Another limitation is the inability to detect low copy proteins when analysing total cell lysate(Graves and Haystead 2002).
+
+Mass spectrometry is another technology that limits the implementation of proteomics in P4 Medicine. (Graves and Haystead 2002) tells us that MS is not a quantitative technique because peptide ionization is not quantitative. Therefore, some proteins which can’t be seen on gels may give stronger signals than some with darkly staining proteins. This gives an understanding that many proteins do not stain well and bigger proteins also tend to bind more than small proteins. This suggests that MS signal strength is less reliable and does not reflect that protein abundance due to the ionization efficiency varying between peptides. Furthermore, MS sensitivity is also affected by many factors. (Graves and Haystead 2002) makes it clear that sample preparation, sample ionization, mass spectrometer type, sample type and database search methods all impact MS sensitivity. This shows that sample handling, techniques used and the type of MS technology used, all alter the sensitivity of proteomics detection. This can lead to more inconsistent detection of protein abounce and biomarkers.
+
+Another important part of the growth of proteomics has been in the advancement of biological understanding. As multi-omics progress, there will be increasingly large amounts of data being produced specifically from post translational modifications (PTM) and therefore explaining and understanding this biology data becomes very complex and challenging. (Graves and Haystead 2002) highlights that there is an estimation that up to 200 different types of post translational protein modification exist. This suggests that proteins can be modified in many ways which can affect functions, location of the protein mapped and the interactions. This makes it harder to complete analysis in a clinical setting. (Graves and Haystead 2002) further explains that changes in the modifications of several proteins that a cell expresses is possible to be analysed at the same time. However, this becomes a problem determining which modifications are biologically meaningful or if it is noise from the high volume of data being produced simultaneously from PTM. This could become very data intensive.
+
+Conclusion 
+
+P4 Medicine in proteomic shows promise for understanding and treating major diseases like cancer. With the help of multi-omics technologies mapping molecular profiles in health and disease become more easier. They help to advance precision medicine. However, many limitations and challenges still remain with the use of omic technology and the volume of biological data makes data understanding more complex. As more multi-omics tools improve, research will become more widespread and practical for the broader bioinformatic research community and clinical setting using P4 medicine in proteomics. Therefore, by using the multi-omics system biology, will allow researchers the ability to study more complex biological systems and will ultimately provide more answers that cannot be obtained from the study of individual proteins or groups of proteins. 
+
+
+Reference 
+
+Hood, L. and Tian, Q. (2012) Systems Approaches to Biology and Disease Enable Translational Systems Medicine. Genomics, Proteomics & Bioinformatics 10 (4), 181–185. 
+(Hood and Tian 2012)
+
+Pack, A.I. (2016) Application of Personalized, Predictive, Preventative, and Participatory (P4) Medicine to Obstructive Sleep Apnea. A Roadmap for Improving Care? Annals of the American Thoracic Society 13 (9), 1456–1467. 
+(Pack 2016)
+
+Hood, L. and Flores , M. (2012) A personal view on systems medicine and the emergence of proactive P4 medicine: predictive, preventive, personalized and participatory. New Biotechnology 29 (6), 613–624. 
+(Hood and Flores 2012)
+
+Collatuzzo, G. and Boffetta, P. (2022) Application of P4 (Predictive, Preventive, Personalized, Participatory) Approach to Occupational Medicine - PMC. La Medicina del Lavoro 113 (1), . 
+(Collatuzzo and Boffetta 2022)
+
+Flores, M., Glusman, G., Brogaard, K., Price, N.D. and Hood, L. (2013) P4 medicine: how systems medicine will transform the healthcare sector and society - PMC. Personalized medicine 10 (6), . 
+(Flores et al. 2013)
+
+Khan, M.Z.I., Tam, S.Y. and Law, H.K.W. (2022) Advances in High Throughput Proteomics Profiling in Establishing Potential Biomarkers for Gastrointestinal Cancer - PMC. Cells 11 (6), . 
+(Khan et al. 2022)
+
+Chen, C., Wang, J., Pan, D., Wang, X., Xu, Y., Yan, J., Wang, L., Yang, X., Yang, M. and Liu, G. (2023) Applications of multi‐omics analysis in human diseases - PMC. MedComm 4 (4), . 
+(Chen et al. 2023)
+
+Olivier, M., Asmis, R., Hawkins, G.A., Howard, T.D. and Cox, L.A. (2019) The Need for Multi-Omics Biomarker Signatures in Precision Medicine - PMC. International Journal of Molecular Sciences 20 (19), . 
+(Olivier et al. 2019)
+
+You, J., Guo, Y., Zhang, Y., Kang, J.-J., Wang, L.-B., Feng, J.-F., Cheng, W. and Yu, J.-T. (2023) Plasma proteomic profiles predict individual future health risk. Nature Communications 14 (1), . 
+(You et al. 2023)
+
+Merry, E., Thway, K., Jones, R.L. and Huang, P.H. (2021) Predictive and prognostic transcriptomic biomarkers in soft tissue sarcomas. npj Precision Oncology 5 (1), . 
+(Merry et al. 2021)
+
+Hunter, B., Hindocha, S. and Lee, R.W. (2022) The Role of Artificial Intelligence in Early Cancer Diagnosis - PMC. Cancers 14 (6), . 
+(Hunter et al. 2022)
+
+Graves, P.R. and Haystead, T.A.J. (2002) Molecular Biologist’s Guide to Proteomics - PMC. Microbiology and Molecular Biology Reviews 66 (1), . 
+(Graves and Haystead 2002)
+
+Jia, Haiqing, Jiang, L., Shen, X., Ye, H., Li, X., Zhang, L., Hu, Y., Song, D., Jia, Hui and Wang, Z. (2025) Post-translational modifications of cancer immune checkpoints: mechanisms and therapeutic strategies. Molecular Cancer 24 (1), 1–35. 
+(Jia et al. 2025)
+
+Giudice, G. and Petsalaki, E. (2019) Proteomics and phosphoproteomics in precision medicine: applications and challenges - PMC. Briefings in Bioinformatics 20 (3), . 
+(Giudice and Petsalaki 2019)
+
+Olivier, M., Asmis, R., Hawkins, G.A., Howard, T.D. and Cox, L.A. (2019) The Need for Multi-Omics Biomarker Signatures in Precision Medicine - PMC. International Journal of Molecular Sciences 20 (19), . 
+(Olivier et al. 2019)
+
+

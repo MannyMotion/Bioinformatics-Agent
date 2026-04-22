@@ -1,0 +1,228 @@
+An Introduction to Genomics
+Dr Andrew Tedder
+@DrATedder
+1 1 October, 2024 An Introduction to Genomics
+Outline
+• Genes, Chromosomes and Genomes
+• Exons and Introns
+• Repeats & Pseudogenes
+2 1 October, 2024 An Introduction to Genomics
+A brief history
+• 1865 – Genes are particulate factors
+• 1903 – Chromosomes are hereditary units
+• 1910 – Genes lie on Chromosomes
+• 1913 – Chromosomes contain linear arrays of genes
+• 1927 – Mutations are physical changes in genes
+• 1931 – Recombination is caused by ‘crossing over’
+• 1944 – DNA is the genetic material
+• 1945 – A gene codes for a protein
+• 1953 – DNA is a double helix
+• 1958 – DNA replicates semi-conservatively
+• 1961 – Genetic code is triplet
+• 1977 – DNA can be sequenced
+• 1997 – Genomes can be sequenced
+3 1 October, 2024 An Introduction to Genomics
+Genomes – the basics
+• The genome is distributed along chromosomes, which
+are made of compressed and entwined DNA.
+• A (protein-coding) gene is a segment of chromosomal
+DNA that directs the synthesis of a protein.
+4 1 October, 2024 An Introduction to Genomics
+The human genome
+• The human genome is distributed along 23 pairs of
+chromosomes
+− 22 autosomal pairs
+− The sex chromosome pair: XX for females and XY for males
+• In each pair, one chromosome is maternally inherited,
+the other paternally (cf. meiosis)
+5 1 October, 2024 An Introduction to Genomics
+Human chromosomes
+6 1 October, 2024 An Introduction to Genomics
+Source: http://www.yorku.ca/kdenning/++2140%202006-7/2140-17oct2006.htm
+Orthology map of human and mouse
+chromosomes
+7 1 October, 2024 An Introduction to Genomics
+http://atlasgeneticsoncology.org/Deep/ComparCancerCytogID20011.html
+Chromosomes and DNA
+8 1 October, 2024 An Introduction to Genomics
+https://www.quora.com/How-could-a-chromosome-be-related-to-DNA
+Human genome - Statistics
+9 1 October, 2024 An Introduction to Genomics
+Human genome - Statistics
+10 1 October, 2024 An Introduction to Genomics
+Human genome has fewer genes than
+expected
+11 1 October, 2024 An Introduction to Genomics
+• Before the 2000s, it was estimated that the human
+genome contained > 35,000 genes
+• The initial annotation indicated around 30,000 genes.
+This was later reduced to ~20,000 after removal of
+pseudogenes.
+Estimated gene numbers
+12 1 October, 2024 An Introduction to Genomics
+• Dog (Canis familiaris): ~14,000
+• Platypus (Ornithorhynchus anatinus): ~17,000
+• Chicken (Gallus gallus): ~17,000
+• Frog (Xenopus tropicalis): ~17,000
+• Zebrafish (Danio rerio): ~17,700
+• Fruitfly (Drosophila melanogaster): 14,000
+• Caenorhabditis elegans: 20,000
+• Yeast (S. cerevisiae): 5,800
+Is gene number an indication of
+complexity?
+13 1 October, 2024 An Introduction to Genomics
+• Human proteins are long and have a higher number of
+domains on average
+• Human genes undergo alternative splicing, thus can
+generate multiple proteins per gene
+• The regulation of human genes is complex: By
+transcription factors, microRNAs, phosphorylations
+etc. The same or slightly different form of a protein
+can be made at different abundance, at different
+times, and in different tissues
+What about the bits that aren’t genes?
+14 1 October, 2024 An Introduction to Genomics
+• Very small portion (~5%) of the genome encode for
+proteins, the vast majority of the regions are repetitive
+elements, intergenic sequences, pseudogenes, introns
+and potential regulatory elements
+• Junk DNA may not be “junk”, a large fraction of the
+intergenic DNA is actually transcribed into RNA, but
+their potential function is not clear
+What about the bits that aren’t genes?
+15 1 October, 2024 An Introduction to Genomics
+• Some of the “junk DNA” contains regulatory elements,
+finding them is difficult
+• Mammalian genomes are mosaic of isochores: ~300
+Kb long DNA with homogeneous G+C%, caused by
+bias in mutation or recombination
+• Genes are more concentrated in G+C rich regions
+Repetitive elements
+16 1 October, 2024 An Introduction to Genomics
+• LINE retrotransposon
+• Retro: going through an RNA intermediate
+• LINE: Long Interspersed Elements
+• The complete sequence is 6000 – 8000 bp long,
+contains genes for an RNA binding protein and an
+endonuclease and reverse transcriptase.
+Repetitive elements
+17 1 October, 2024 An Introduction to Genomics
+• SINE retrotransposon
+• SINE: Short Interspersed Elements
+• A “parasite’s parasite”, depends on LINE for its
+propagation
+• Alu elements are the most abundant in human
+(300 bp long)
+• Retrovirus
+• DNA transposon
+Repetitive elements
+18 1 October, 2024 An Introduction to Genomics
+In total, 46% of the human genome is recognisable interspersed repeats!
+Why so many?
+19 1 October, 2024 An Introduction to Genomics
+• Why are repeats bad?
+• Repetitive elements waste energy (replication,
+transcription etc...). Fewer repeats linked to higher
+metabolic rates (i.e. Birds)
+• Insertion of repetitive elements can be harmful
+Why so many?
+20 1 October, 2024 An Introduction to Genomics
+• Why are they still here?
+• Mammalian genomes can not rid them because of
+small population size which allows accumulation of
+junk DNA.
+• The generation and deletion of repetitive elements
+have reached an equilibrium
+• Mammalian genomes can tolerate them because we
+developed mechanisms to control them such as
+histone modification, and siRNA
+Effect on genes
+21 1 October, 2024 An Introduction to Genomics
+Transposons are highly mutagenic, cause insertion, chromosome breakage,
+recombination and genome rearrangement.
+Effect on gene expression
+22 1 October, 2024 An Introduction to Genomics
+Repetitive elements can be useful!
+23 1 October, 2024 An Introduction to Genomics
+Different types of pseudogenes
+24 1 October, 2024 An Introduction to Genomics
+• Duplicated pseudogenes:
+• created by tandem duplication or unequal crossover
+• segment duplication common (5% of genome)
+• Retropseudogenes (processed):
+• by mRNA retrotransposition
+• Other types:
+• Spontaneous loss of function e.g. Olfactory receptors
+• Nuclear mitochondrial DNA (Numt)
+Olfactory pseudogenes in Humans
+25 1 October, 2024 An Introduction to Genomics
+• Evidence for 900 olfactory receptor genes and
+pseudogenes in Human genome
+• 63% of them have disrupted open reading frames (thus
+non-functional)
+• Other primates have a similar fraction of pseudogenes,
+thought to be linked to the evolution of full trichromatic
+vision
+26 1 October, 2024 An Introduction to Genomics
+Evolution of olfactory receptor genes
+27 1 October, 2024 An Introduction to Genomics
+Duplicated pseudogenes
+X XX
+• retains original intron/exon structure
+• e.g. globins, Hox cluster
+• sometime can be transcribed
+28 1 October, 2024 An Introduction to Genomics
+Processed pseudogenes
+LINE-1 mediated
+retrotransposition
+• Mostly ‘dead-on-arrival’
+• Features: intron less, poly-A tail, direct repeats
+• Target-primed reverse transcription
+29 1 October, 2024 An Introduction to Genomics
+Calculate the age of pseudogenes
+30 1 October, 2024 An Introduction to Genomics
+Calculate the age of pseudogenes
+A burst of retrotransposition
+activity in ancestral primates
+(~40 Myr)
+31 1 October, 2024 An Introduction to Genomics
+Calculate the age of pseudogenes
+A burst of retrotransposition
+activity in ancestral primates
+(~40 Myr)
+Slowdown in
+retrotransposition
+32 1 October, 2024 An Introduction to Genomics
+Calculate the age of pseudogenes
+Human & mouse
+diverge, ~75 Myr
+33 1 October, 2024 An Introduction to Genomics
+Human specific pseudogenes
+Genes losses during human origins, Wang, Grus, Zhangm PLOS 2005
+Human specific
+• Wang et al. identified 80 pseudogenes that were inactivated after humans split from
+chimpanzees
+• They used phylogenetic tree construction to distinguish human specific loss from
+chimp specific gene gain
+34 1 October, 2024 An Introduction to Genomics
+Ultra-conserved regions
+• More than 500 regions (> 200 bp) that are absolutely conserved (100% identity)
+between orthologous regions of the human, rat, and mouse genomes
+• > 5000 shorter (100-200 bp) ultra-conserved sequences
+• Nearly all of the segments are also conserved in the chicken and dog genomes,
+with an average of 95% and 99% identity, respectively.
+35 1 October, 2024 An Introduction to Genomics
+Ultra-conserved regions
+Ultra-conserved
+Coding
+Ultra-conserved regions are MORE
+conserved than coding regions!
+36 1 October, 2024 An Introduction to Genomics
+What do they do?
+In vivo enhancer analysis of human conserved non-coding sequences, Pennacchio, et al. Nature 2006
+• Tested 167 elements
+• 75 (45%) functioned reproducibly as
+tissue-specific enhancers at embryonic
+day 11.5
+• Most involved in developing nervous
+system
