@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioAgent — Agentic Bioinformatics Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0e1a;
+            color: #e0e6f0;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            background: linear-gradient(135deg, #1a1f35 0%, #0d1220 100%);
+            border-bottom: 1px solid #2a3550;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f9eff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #6b7a99;
+            margin-top: 2px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin-left: auto;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #22c55e;
+        }
+
+        /* --- Main Layout --- */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Upload Section --- */
+        .upload-section {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .upload-section h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .upload-section p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #2a3550;
+            border-radius: 12px;
+            padding: 48px 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #0d1220;
+            position: relative;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #4f9eff;
+            background: #0d1830;
+        }
+
+        .upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-zone h3 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .upload-zone p {
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 0;
+        }
+
+        .supported-formats {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .format-badge {
+            background: #1e293b;
+            border: 1px solid #2a3550;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f9eff;
+            font-family: monospace;
+        }
+
+        /* --- RNA-seq Options --- */
+        .rnaseq-options {
+            display: none;
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .rnaseq-options h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0d1220;
+            border: 1px solid #2a3550;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #e0e6f0;
+            font-size: 14px;
+        }
+
+        /* --- Analyse Button --- */
+        .analyse-btn {
+            display: none;
+            width: 100%;
+            padding: 14px;
+            margin-top: 16px;
+            background: linear-gradient(135deg, #4f9eff, #7c3aed);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .analyse-btn:hover { opacity: 0.9; }
+        .analyse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* --- Progress --- */
+        .progress-section {
+            display: none;
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #1e293b;
+            border-top-color: #4f9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-steps {
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto 0;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .step.active { color: #4f9eff; }
+        .step.done { color: #22c55e; }
+
+        .step-icon { font-size: 16px; width: 20px; }
+
+        /* --- Results Section --- */
+        .results-section {
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .pipeline-badge {
+            background: linear-gradient(135deg, #1e3a5f, #2d1b69);
+            border: 1px solid #4f9eff;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4f9eff;
+        }
+
+        .confidence-badge {
+            background: #1a2a1a;
+            border: 1px solid #22c55e;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #22c55e;
+        }
+
+        /* --- Cards --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .stat-card .unit {
+            font-size: 14px;
+            color: #64748b;
+            margin-left: 4px;
+        }
+
+        /* --- Reasoning Box --- */
+        .reasoning-box {
+            background: #0d1220;
+            border: 1px solid #1e3a5f;
+            border-left: 4px solid #4f9eff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+
+        .reasoning-box h4 {
+            color: #4f9eff;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Warnings --- */
+        .warnings-box {
+            margin-bottom: 24px;
+        }
+
+        .warning-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .warning-item.pass {
+            background: #0f2a1a;
+            border: 1px solid #166534;
+            color: #86efac;
+        }
+
+        .warning-item.warn {
+            background: #2a1a0a;
+            border: 1px solid #854d0e;
+            color: #fde68a;
+        }
+
+        .warning-item.alert {
+            background: #2a0a0a;
+            border: 1px solid #991b1b;
+            color: #fca5a5;
+        }
+
+        /* --- Plots --- */
+        .plots-section {
+            margin-bottom: 24px;
+        }
+
+        .plots-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .plots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .plot-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .plot-card img {
+            width: 100%;
+            display: block;
+        }
+
+        /* --- Interpretation --- */
+        .interpretation-box {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .interpretation-box h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 16px;
+        }
+
+        .interpretation-box pre {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #94a3b8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* --- New Analysis Button --- */
+        .new-analysis-btn {
+            background: #1e293b;
+            border: 1px solid #2a3550;
+            border-radius: 10px;
+            color: #94a3b8;
+            padding: 12px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 40px;
+        }
+
+        .new-analysis-btn:hover {
+            background: #2a3550;
+            color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo">🧬 BioAgent</div>
+        <div class="tagline">Agentic Bioinformatics Analysis System</div>
+    </div>
+    <div class="status-dot"></div>
+    <div class="status-text" id="serverStatus">Connecting...</div>
+</header>
+
+<main>
+
+    <!-- Upload Section -->
+    <div class="upload-section" id="uploadSection">
+        <h2>Upload Your Bioinformatics File</h2>
+        <p>BioAgent will automatically detect the file type, select the appropriate pipeline, and run the full analysis.</p>
+
+        <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept=".fasta,.fa,.fna,.fastq,.vcf,.csv,.tsv,.txt">
+            <div class="upload-icon">📁</div>
+            <h3 id="uploadZoneText">Drop your file here or click to browse</h3>
+            <p id="uploadZoneSubtext">Supported formats shown below</p>
+        </div>
+
+        <div class="supported-formats">
+            <span class="format-badge">.fasta</span>
+            <span class="format-badge">.fastq</span>
+            <span class="format-badge">.vcf</span>
+            <span class="format-badge">.csv</span>
+            <span class="format-badge">.tsv</span>
+        </div>
+
+        <div class="rnaseq-options" id="rnaseqOptions">
+            <h4>RNA-seq Options (CSV file detected)</h4>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Control label (column prefix)</label>
+                    <input type="text" id="controlLabel" value="control" placeholder="e.g. healthy">
+                </div>
+                <div class="input-group">
+                    <label>Treatment label (column prefix)</label>
+                    <input type="text" id="treatmentLabel" value="treatment" placeholder="e.g. cancer">
+                </div>
+            </div>
+        </div>
+
+        <button class="analyse-btn" id="analyseBtn" onclick="runAnalysis()">
+            🔬 Run Analysis
+        </button>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section" id="progressSection">
+        <div class="spinner"></div>
+        <h3 style="font-size:18px; margin-bottom:8px;">Analysing your file...</h3>
+        <p style="color:#64748b; font-size:14px;">This may take 30-60 seconds</p>
+        <div class="progress-steps">
+            <div class="step active" id="step1">
+                <span class="step-icon">🔍</span> Detecting file type
+            </div>
+            <div class="step" id="step2">
+                <span class="step-icon">🧠</span> Selecting pipeline
+            </div>
+            <div class="step" id="step3">
+                <span class="step-icon">⚙️</span> Running analysis
+            </div>
+            <div class="step" id="step4">
+                <span class="step-icon">📊</span> Generating visualisations
+            </div>
+            <div class="step" id="step5">
+                <span class="step-icon">📝</span> Building interpretation
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" id="resultsSection">
+
+        <div class="results-header">
+            <h2 style="font-size:22px; font-weight:700; color:#f1f5f9;">Analysis Complete</h2>
+            <div class="pipeline-badge" id="pipelineBadge">—</div>
+            <div class="confidence-badge" id="confidenceBadge">—</div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="cards-grid" id="statsGrid"></div>
+
+        <!-- Reasoning -->
+        <div class="reasoning-box">
+            <h4>🤖 Why this pipeline was selected</h4>
+            <div id="reasoningText"></div>
+        </div>
+
+        <!-- Warnings -->
+        <div class="warnings-box" id="warningsBox"></div>
+
+        <!-- Plots -->
+        <div class="plots-section">
+            <h3>📊 Visualisations</h3>
+            <div class="plots-grid" id="plotsGrid"></div>
+        </div>
+
+        <!-- Interpretation -->
+        <div class="interpretation-box">
+            <h3>🔬 Biological Interpretation</h3>
+            <pre id="interpretationText"></pre>
+        </div>
+
+        <button class="new-analysis-btn" onclick="resetUI()">
+            ← Run Another Analysis
+        </button>
+
+    </div>
+
+</main>
+
+<script>
+    const API = 'http://localhost:8000';
+    let selectedFile = null;
+
+    // Check server health on load
+    async function checkHealth() {
+        try {
+            const res = await fetch(`${API}/health`);
+            const data = await res.json();
+            if (data.status === 'ok') {
+                document.getElementById('serverStatus').textContent = 'Server Online';
+            }
+        } catch {
+            document.getElementById('serverStatus').textContent = 'Server Offline';
+            document.getElementById('serverStatus').style.color = '#ef4444';
+            document.querySelector('.status-dot').style.background = '#ef4444';
+        }
+    }
+
+    checkHealth();
+
+    // File selection
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        selectedFile = file;
+
+        document.getElementById('uploadZoneText').textContent = `✅ ${file.name}`;
+        document.getElementById('uploadZoneSubtext').textContent =
+            `${(file.size / 1024).toFixed(1)} KB — ready to analyse`;
+
+        // Show RNA-seq options for CSV files
+        const isCSV = file.name.endsWith('.csv') || file.name.endsWith('.tsv');
+        document.getElementById('rnaseqOptions').style.display = isCSV ? 'block' : 'none';
+
+        document.getElementById('analyseBtn').style.display = 'block';
+    });
+
+    // Drag and drop
+    const zone = document.getElementById('uploadZone');
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            document.getElementById('fileInput').files = e.dataTransfer.files;
+            document.getElementById('fileInput').dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Animate progress steps
+    function animateSteps() {
+        const steps = ['step1','step2','step3','step4','step5'];
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i > 0) {
+                document.getElementById(steps[i-1]).className = 'step done';
+            }
+            if (i < steps.length) {
+                document.getElementById(steps[i]).className = 'step active';
+                i++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 4000);
+        return interval;
+    }
+
+    // Run analysis
+    async function runAnalysis() {
+        if (!selectedFile) return;
+
+        const btn = document.getElementById('analyseBtn');
+        btn.disabled = true;
+
+        // Show progress
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('progressSection').style.display = 'block';
+
+        const stepInterval = animateSteps();
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        // Add RNA-seq labels if CSV
+        const isCSV = selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.tsv');
+        if (isCSV) {
+            formData.append('control_label', document.getElementById('controlLabel').value);
+            formData.append('treatment_label', document.getElementById('treatmentLabel').value);
+        }
+
+        try {
+            const res = await fetch(`${API}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Analysis failed');
+            }
+
+            const data = await res.json();
+            clearInterval(stepInterval);
+
+            // Show results
+            document.getElementById('progressSection').style.display = 'none';
+            showResults(data);
+
+        } catch (err) {
+            clearInterval(stepInterval);
+            document.getElementById('progressSection').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'block';
+            btn.disabled = false;
+            alert(`Error: ${err.message}`);
+        }
+    }
+
+    // Display results
+    function showResults(data) {
+        document.getElementById('resultsSection').style.display = 'block';
+
+        // Pipeline and confidence badges
+        document.getElementById('pipelineBadge').textContent = data.pipeline;
+        document.getElementById('confidenceBadge').textContent =
+            `${(data.confidence * 100).toFixed(0)}% confidence`;
+
+        // Stats cards
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = '';
+        if (data.stats) {
+            Object.entries(data.stats).forEach(([key, val]) => {
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                statsGrid.innerHTML += `
+                    <div class="stat-card">
+                        <div class="label">${label}</div>
+                        <div class="value">${typeof val === 'number' ? val.toLocaleString() : val}</div>
+                    </div>`;
+            });
+        }
+
+        // Reasoning
+        document.getElementById('reasoningText').textContent = data.reasoning;
+
+        // Warnings
+        const warningsBox = document.getElementById('warningsBox');
+        warningsBox.innerHTML = '';
+        data.warnings.forEach(w => {
+            let cls = 'pass';
+            if (w.startsWith('WARNING')) cls = 'warn';
+            if (w.startsWith('CLINICAL')) cls = 'alert';
+            const icon = cls === 'pass' ? '✅' : cls === 'warn' ? '⚠️' : '🚨';
+            warningsBox.innerHTML += `
+                <div class="warning-item ${cls}">
+                    <span>${icon}</span>
+                    <span>${w}</span>
+                </div>`;
+        });
+
+        // Plots
+        const plotsGrid = document.getElementById('plotsGrid');
+        plotsGrid.innerHTML = '';
+        data.plot_urls.forEach(url => {
+            plotsGrid.innerHTML += `
+                <div class="plot-card">
+                    <img src="${API}${url}" alt="Analysis plot" 
+                         onerror="this.style.display='none'">
+                </div>`;
+        });
+
+        // Interpretation
+        document.getElementById('interpretationText').textContent = data.interpretation;
+    }
+
+    // Reset UI
+    function resetUI() {
+        selectedFile = null;
+        document.getElementById('uploadSection').style.display = 'block';
+        document.getElementById('resultsSection').style.display = 'none';
+        document.getElementById('uploadZoneText').textContent = 'Drop your file here or click to browse';
+        document.getElementById('uploadZoneSubtext').textContent = 'Supported formats shown below';
+        document.getElementById('analyseBtn').style.display = 'none';
+        document.getElementById('analyseBtn').disabled = false;
+        document.getElementById('rnaseqOptions').style.display = 'none';
+        document.getElementById('fileInput').value = '';
+        ['step1','step2','step3','step4','step5'].forEach((id, i) => {
+            document.getElementById(id).className = i === 0 ? 'step active' : 'step';
+        });
+    }
+</script>
+
+</body>
+</html>
