@@ -23,7 +23,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
@@ -72,8 +72,6 @@ def health_check() -> dict:
 
 
 @app.post("/upload")
-from fastapi import Form
-
 async def upload_file(
     file: UploadFile = File(...),
     control_label: str = Form(default="control"),
