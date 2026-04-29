@@ -72,10 +72,12 @@ def health_check() -> dict:
 
 
 @app.post("/upload")
+from fastapi import Form
+
 async def upload_file(
     file: UploadFile = File(...),
-    control_label: str = "control",
-    treatment_label: str = "treatment"
+    control_label: str = Form(default="control"),
+    treatment_label: str = Form(default="treatment")
 ) -> JSONResponse:
     """
     Upload a bioinformatics file and run the appropriate pipeline.
