@@ -21,3 +21,5 @@ Thumbs.db
 *.env
 secrets.yaml
 bioagent.log
+uploads/
+outputs/
