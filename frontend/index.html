@@ -660,11 +660,8 @@
         formData.append('file', selectedFile);
 
         // Add RNA-seq labels if CSV
-        const isCSV = selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.tsv');
-        if (isCSV) {
-            formData.append('control_label', document.getElementById('controlLabel').value);
-            formData.append('treatment_label', document.getElementById('treatmentLabel').value);
-        }
+        formData.append('control_label', document.getElementById('controlLabel').value || 'control');
+        formData.append('treatment_label', document.getElementById('treatmentLabel').value || 'treatment');
 
         try {
             const res = await fetch(`${API}/upload`, {
