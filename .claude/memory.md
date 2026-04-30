@@ -1,61 +1,70 @@
-# Memory — What I Know About Manny
+# 📝 Memory — Steve's Notes About Manny
 
-## Learning Style
-- Learns by doing, not by reading
-- Needs to understand the "why" before accepting a solution
-- Asks clarifying questions when confused (good instinct)
-- Sometimes transcription errors in voice input — interpret charitably
-- Prefers concise explanations with concrete examples
+## Manny's Communication Style
+- Speaks conversationally, sometimes asks clarifying questions mid-thought
+- Prefers practical, hands-on examples over theory
+- Responds well to clear, step-by-step instructions
+- Sometimes transcription garbles technical terms — interpret charitably
+- Appreciates brevity — no walls of text
+
+## Manny's Learning Preferences
+- Learns best by building, not reading
+- Wants to understand WHY before HOW
+- Asks good questions (e.g., "why would you subscribe to Claude only to use 10% of its brain?")
+- Thinks about systems and processes, not just individual tasks
+- Interested in reproducibility and documentation
 
 ## Technical Strengths
-- Strong Python fundamentals
-- Prior experience: built a full algorithmic gold trading bot (Pine Script + Python + MT5)
-- Git/GitHub comfortable
-- Conda environment setup
-- Debugging mindset
+- Python skills solid
+- Previous experience: Pine Script + Python MT5 (Gold trading bot)
+- MSc-level bioinformatics knowledge
+- Understands file formats (FASTA, VCF, CSV)
+- Good at debugging when given guidance
 
-## Technical Gaps (Teaching Opportunities)
-- No industry bioinformatics experience (this is v0.1 learning)
-- RAG was new concept — now understands it deeply
-- Form handling in FastAPI (needed Form import fix)
-- Pronunciation: "Phred" (not "Fred"), "Ollama" (oh-LAH-mah)
+## Technical Gaps (Being Addressed)
+- No industry bioinformatics experience (this project fills that gap)
+- Learning RAG systems for the first time
+- Learning full-stack web development as he builds
+- Learning to deploy systems locally before cloud
 
-## Personal Context
-- Based in Manchester, UK
-- Using a Toshiba Satellite Pro C50-H-11J (i5-1035G1, 16GB RAM, 318GB free)
-- Has 3 semesters of MSc notes (Sem1, Sem2, Sem3) ingested into RAG
-- Job hunt is stressful — this project is proving ground for capability
+## Work Context
+- Job hunting for 4 months, no luck yet
+- This BioAgent project IS his work experience
+- Building this to show employers/investors he can:
+  - Design agentic systems
+  - Implement RAG
+  - Build full-stack applications
+  - Write production-quality code
+  - Document and version control properly
 
-## Preferences Discovered
-- Likes clear structure (checklists, step-by-step)
-- Appreciates when you acknowledge effort
-- Wants to move fast but not at expense of understanding
-- Respects time — short, focused responses preferred
-- Uses GitHub Desktop (not CLI) for commits
-- Prefers voice-based interaction (transcribed to text)
+## Preferences Learned
+- Prefers concise, actionable responses
+- Likes seeing progress visualised (tests passing, commits tagged)
+- Wants to understand decisions, not just follow instructions
+- Appreciates when Steve explains WHY a tool was chosen over alternatives
+- Responds well to accountability (daily micro-tasks, weekly deadlines)
 
-## Project Ownership
-- Wants to understand every decision
-- Will push back if something doesn't make sense (good)
-- Cares about code quality and testing
-- Interested in the business angle (SaaS, career prep)
+## Session Patterns
+- Works best in focused 1-3 hour blocks
+- Prefers to finish a complete feature before moving to next
+- Takes screenshots of working features to see progress
+- Asks questions about edge cases and error handling
+- Likes to commit and tag versions when milestones hit
 
-## What Motivates Him
-- Seeing things work end-to-end
-- Learning real bioinformatics concepts
-- Building something portfolio-worthy
-- Knowing his code is defensible in interviews
-- Clear next steps
+## What Motivates Manny
+- Seeing working demos in browser
+- GitHub commit history showing progress
+- Tests passing
+- Version tags (v0.1.0, v0.2.0)
+- Knowing this is real portfolio work for employers
 
-## Recent Decisions Made Together
-- Chose ChromaDB over Pinecone/Weaviate (local, free, no config)
-- Chose sentence-transformers over larger models (CPU feasible)
-- Chose FastAPI over Django (lightweight, modern)
-- Chose HTML/CSS/JS frontend over React (simpler, faster demo)
-- Deferring Ollama until core system was solid
+## Next Session Prep
+- Check if Ollama is installed (`ollama run llama3.2:3b`)
+- Review v0.5.0 plan (LLM integration)
+- Have continuation prompt ready if context gets long
 
-## Things to Remind Him
-- This project is his work experience — it's valuable
-- The system is demo-ready and interview-grade
-- He understands bioinformatics AND engineering — rare combination
-- The RAG + agentic architecture is genuinely impressive
+## Notes for Future Steve
+- Manny thinks systematically — he suggested the .claude/ structure himself
+- He's genuinely interested in how systems work, not just getting them working
+- Good instinct for documentation (suggested CONTINUITY.md early)
+- Can handle complex architectures if explained clearly
