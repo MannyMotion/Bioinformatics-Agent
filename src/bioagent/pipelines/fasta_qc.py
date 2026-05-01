@@ -20,6 +20,8 @@ Outputs: QCResult dataclass containing stats, plots, and interpretation
 Author:  Emmanuel Ogbu (Manny)
 Date:    2026-04-23
 """
+import os
+os.environ["MPLBACKEND"] = "Agg"
 
 import re
 from pathlib import Path
@@ -28,12 +30,14 @@ from dataclasses import dataclass, field
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend — no display needed on server
+import matplotlib
+matplotlib.rcParams['figure.max_open_warning'] = 0
 import matplotlib.pyplot as plt
+plt.switch_backend("Agg")
 import matplotlib.patches as mpatches
 import seaborn as sns
 
 from bioagent.parsers.fasta_parser import parse_fasta, FastaRecord
-from bioagent.rag.retriever import BioRetriever
 from bioagent.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -83,7 +87,7 @@ class QCResult:
 def run_fasta_qc(
     file_path: str | Path,
     output_dir: str | Path = "outputs",
-    use_rag: bool = True
+    use_rag: bool = False
 ) -> QCResult:
     """
     Run the full FASTA QC pipeline on a given file.
@@ -122,10 +126,51 @@ def run_fasta_qc(
     logger.info("Step 4: Generating QC warnings...")
     result.warnings = _generate_warnings(result, sequence_stats)
 
-    # Step 5 — Generate visualisations
+    # Step 5 — Generate visualisations in separate process
     logger.info("Step 5: Generating visualisations...")
-    plot_paths = _generate_plots(result, sequence_stats, out_dir)
-    result.plot_paths = plot_paths
+    try:
+        import subprocess
+        import sys
+        import json
+
+        # Write result data to temp file for subprocess
+        temp_data = {
+            "file_name": result.file_name,
+            "mean_gc": result.mean_gc,
+            "median_length": result.median_length,
+            "gc_values": [s.gc_content for s in sequence_stats],
+            "lengths": [s.length for s in sequence_stats],
+            "nucleotide_counts": {
+                k: sum(s.nucleotide_counts[k] for s in sequence_stats)
+                for k in ["A", "C", "G", "T", "N"]
+            },
+            "output_dir": str(out_dir)
+        }
+
+        temp_file = out_dir / f"{result.file_name}_plotdata.json"
+        temp_file.write_text(json.dumps(temp_data))
+
+        # Run plot generation as separate subprocess
+        plot_script = Path(__file__).parent.parent / "utils" / "plot_runner.py"
+        logger.info(f"Plot script path: {plot_script} — exists: {plot_script.exists()}")
+        proc = subprocess.run(
+            [sys.executable, str(plot_script), str(temp_file)],
+            capture_output=True, text=True, timeout=60
+        )
+        logger.warning(f"Plot subprocess failed. returncode={proc.returncode} stderr='{proc.stderr[:300]}' stdout='{proc.stdout[:300]}'")
+        temp_file.unlink(missing_ok=True)
+
+        if proc.returncode == 0:
+            plot_paths_raw = json.loads(proc.stdout.strip())
+            result.plot_paths = plot_paths_raw
+            logger.info(f"Step 5: Generated {len(plot_paths_raw)} plots.")
+        else:
+            logger.warning(f"Plot subprocess failed: {proc.stderr[:200]}")
+            result.plot_paths = []
+
+    except Exception as e:
+        logger.warning(f"Plot generation failed: {type(e).__name__}: {e}")
+        result.plot_paths = []
 
     # Step 6 — Query RAG for biological interpretation
     if use_rag:
@@ -450,6 +495,7 @@ def _get_rag_interpretation(result: QCResult) -> str:
         Human-readable biological interpretation string.
     """
     try:
+        from bioagent.rag.retriever import BioRetriever  # import here, not at top
         retriever = BioRetriever()
 
         # Build a query based on the actual results

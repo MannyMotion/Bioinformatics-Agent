@@ -19,6 +19,8 @@ Outputs: VariantResult dataclass with annotations, stats, plots
 Author:  Emmanuel Ogbu (Manny)
 Date:    2026-04-24
 """
+import os
+os.environ["MPLBACKEND"] = "Agg"
 
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -26,10 +28,12 @@ from collections import Counter
 
 import matplotlib
 matplotlib.use("Agg")
+import matplotlib
+matplotlib.rcParams['figure.max_open_warning'] = 0
 import matplotlib.pyplot as plt
+plt.switch_backend("Agg")
 import seaborn as sns
 
-from bioagent.rag.retriever import BioRetriever
 from bioagent.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -143,7 +147,7 @@ class VariantResult:
 def run_variant_pipeline(
     vcf_file: str | Path,
     output_dir: str | Path = "outputs",
-    use_rag: bool = True
+    use_rag: bool = False
 ) -> VariantResult:
     """
     Run the full variant annotation pipeline.
@@ -515,6 +519,7 @@ def _generate_warnings(result: VariantResult) -> list[str]:
 def _get_rag_interpretation(result: VariantResult) -> str:
     """Query RAG for biological interpretation."""
     try:
+        from bioagent.rag.retriever import BioRetriever  # import here, not at top
         retriever = BioRetriever()
         query = (
             f"variant calling annotation clinical significance "

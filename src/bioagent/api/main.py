@@ -60,6 +60,7 @@ app.add_middleware(
 
 # Serve output plots as static files
 app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 
 @app.get("/health")
@@ -71,35 +72,22 @@ def health_check() -> dict:
     return {"status": "ok", "version": "0.3.0"}
 
 
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+executor = ThreadPoolExecutor(max_workers=2)
+
 @app.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),
     control_label: str = Form(default="control"),
     treatment_label: str = Form(default="treatment")
 ) -> JSONResponse:
-    """
-    Upload a bioinformatics file and run the appropriate pipeline.
+    """Upload a bioinformatics file and run the appropriate pipeline."""
 
-    The system will:
-    1. Save the uploaded file
-    2. Auto-detect its type
-    3. Route to the correct pipeline
-    4. Run the full analysis
-    5. Return results with a job_id for retrieval
-
-    Args:
-        file: The uploaded bioinformatics file (FASTA, VCF, CSV etc.)
-        control_label: For CSV files — column prefix for control samples
-        treatment_label: For CSV files — column prefix for treatment samples
-
-    Returns:
-        JSON with job_id, detected file type, pipeline used, and results.
-    """
-    # Generate unique job ID for this analysis
     job_id = str(uuid.uuid4())[:8]
     logger.info(f"New upload job: {job_id} — file: {file.filename}")
 
-    # Save uploaded file to disk
     upload_path = UPLOAD_DIR / f"{job_id}_{file.filename}"
     try:
         with open(upload_path, "wb") as buffer:
@@ -109,14 +97,19 @@ async def upload_file(
         logger.error(f"Failed to save upload: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
 
-    # Run the pipeline via router
+    # Run pipeline in thread pool — prevents matplotlib from crashing
+    # the async uvicorn event loop on Windows
     try:
-        result, decision = route_file(
-            upload_path,
-            output_dir=OUTPUT_DIR,
-            use_rag=False,  # set True when Ollama is integrated
-            rnaseq_control=control_label,
-            rnaseq_treatment=treatment_label
+        loop = asyncio.get_event_loop()
+        result, decision = await loop.run_in_executor(
+            executor,
+            lambda: route_file(
+                upload_path,
+                output_dir=OUTPUT_DIR,
+                use_rag=False,
+                rnaseq_control=control_label,
+                rnaseq_treatment=treatment_label
+            )
         )
         logger.info(f"Job {job_id} complete: {decision.pipeline_name}")
     except ValueError as e:
@@ -125,56 +118,55 @@ async def upload_file(
         logger.error(f"Pipeline failed for job {job_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Analysis failed: {e}")
 
-    # Package results into JSON-serialisable format
     response_data = _package_results(job_id, result, decision)
-
-    # Store in job store for later retrieval
     job_store[job_id] = response_data
-
     return JSONResponse(content=response_data)
 
 
-@app.get("/analyse/{job_id}")
-def get_results(job_id: str) -> JSONResponse:
+@app.post("/ask/{job_id}")
+async def ask_question(job_id: str, question: str = Form(...)) -> JSONResponse:
     """
-    Retrieve results for a previously submitted job.
+    Answer a follow-up question about a completed analysis.
 
     Args:
-        job_id: The job ID returned by /upload
+        job_id: The job ID from a previous /upload call.
+        question: The user's follow-up question.
 
     Returns:
-        JSON with full analysis results.
+        JSON with Ollama's answer.
     """
     if job_id not in job_store:
         raise HTTPException(
             status_code=404,
             detail=f"Job {job_id} not found."
         )
-    return JSONResponse(content=job_store[job_id])
 
+    job_data = job_store[job_id]
 
-@app.get("/jobs")
-def list_jobs() -> JSONResponse:
-    """List all completed analysis jobs."""
-    jobs = [
-        {
-            "job_id": jid,
-            "file_name": data.get("file_name"),
-            "pipeline": data.get("pipeline"),
-            "file_type": data.get("file_type")
-        }
-        for jid, data in job_store.items()
-    ]
-    return JSONResponse(content={"jobs": jobs})
+    try:
+        from bioagent.agent.explainer import answer_question
+
+        answer = answer_question(
+            question=question,
+            pipeline_name=job_data.get("pipeline", ""),
+            stats=job_data.get("stats", {}),
+            interpretation=job_data.get("interpretation", "")
+        )
+
+        return JSONResponse(content={
+            "job_id": job_id,
+            "question": question,
+            "answer": answer
+        })
+
+    except Exception as e:
+        logger.error(f"Q&A failed for job {job_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def _package_results(job_id: str, result: Any, decision: Any) -> dict:
     """
     Convert pipeline result objects into JSON-serialisable dictionaries.
-
-    Different pipelines return different result types (QCResult,
-    RNAseqResult, VariantResult) — this function handles all of them
-    and produces a consistent response format.
 
     Args:
         job_id: Unique job identifier.
@@ -202,9 +194,8 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
         "plot_urls": plot_urls,
     }
 
-    # Add pipeline-specific fields
+    # Add pipeline-specific stats FIRST
     if hasattr(result, "mean_gc"):
-        # FASTA QC result
         base["stats"] = {
             "total_sequences": result.total_sequences,
             "total_bases": result.total_bases,
@@ -214,18 +205,14 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
             "max_length": result.max_length,
             "low_complexity_count": result.low_complexity_count,
         }
-
     elif hasattr(result, "upregulated_count"):
-        # RNA-seq result
         base["stats"] = {
             "total_genes": result.total_genes,
             "genes_tested": result.genes_tested,
             "upregulated_count": result.upregulated_count,
             "downregulated_count": result.downregulated_count,
         }
-
     elif hasattr(result, "pathogenic_count"):
-        # Variant result
         base["stats"] = {
             "total_variants": result.total_variants,
             "pass_filter_count": result.pass_filter_count,
@@ -233,4 +220,8 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
             "pathogenic_count": result.pathogenic_count,
         }
 
+    # Ollama explanation is generated via /ask endpoint (async Q&A)
+    # Not called during upload to avoid browser timeout
+    # use_rag=True in router handles RAG context for basic interpretation
+    
     return base

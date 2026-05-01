@@ -20,6 +20,8 @@ Outputs: RNAseqResult dataclass with stats, plots, interpretation
 Author:  Emmanuel Ogbu (Manny)
 Date:    2026-04-24
 """
+import os
+os.environ["MPLBACKEND"] = "Agg"
 
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -29,12 +31,14 @@ import pandas as pd
 from scipy import stats
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend for server use
+import matplotlib
+matplotlib.rcParams['figure.max_open_warning'] = 0
 import matplotlib.pyplot as plt
+plt.switch_backend("Agg")
 import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-from bioagent.rag.retriever import BioRetriever
 from bioagent.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -85,7 +89,7 @@ def run_rnaseq_pipeline(
     control_label: str,
     treatment_label: str,
     output_dir: str | Path = "outputs",
-    use_rag: bool = True
+    use_rag: bool = False
 ) -> RNAseqResult:
     """
     Run the full RNA-seq differential expression pipeline.
@@ -552,12 +556,10 @@ def _generate_warnings(result: RNAseqResult) -> list[str]:
     return warnings
 
 
-def _get_rag_interpretation(
-    result: RNAseqResult,
-    gene_results: list[GeneResult]
-) -> str:
+def _get_rag_interpretation(result: RNAseqResult,gene_results: list[GeneResult]) -> str:
     """Query RAG for biological interpretation of DE results."""
     try:
+        from bioagent.rag.retriever import BioRetriever  # import here, not at top
         retriever = BioRetriever()
         query = (
             f"RNA-seq differential expression analysis "

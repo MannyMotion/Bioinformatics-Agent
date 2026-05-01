@@ -577,7 +577,6 @@
     const API = 'http://localhost:8000';
     let selectedFile = null;
 
-    // Check server health on load
     async function checkHealth() {
         try {
             const res = await fetch(`${API}/health`);
@@ -594,24 +593,18 @@
 
     checkHealth();
 
-    // File selection
     document.getElementById('fileInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
         selectedFile = file;
-
         document.getElementById('uploadZoneText').textContent = `✅ ${file.name}`;
         document.getElementById('uploadZoneSubtext').textContent =
             `${(file.size / 1024).toFixed(1)} KB — ready to analyse`;
-
-        // Show RNA-seq options for CSV files
         const isCSV = file.name.endsWith('.csv') || file.name.endsWith('.tsv');
         document.getElementById('rnaseqOptions').style.display = isCSV ? 'block' : 'none';
-
         document.getElementById('analyseBtn').style.display = 'block';
     });
 
-    // Drag and drop
     const zone = document.getElementById('uploadZone');
     zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
@@ -625,7 +618,6 @@
         }
     });
 
-    // Animate progress steps
     function animateSteps() {
         const steps = ['step1','step2','step3','step4','step5'];
         let i = 0;
@@ -643,63 +635,52 @@
         return interval;
     }
 
-    // Run analysis
     async function runAnalysis() {
         if (!selectedFile) return;
-
         const btn = document.getElementById('analyseBtn');
         btn.disabled = true;
-
-        // Show progress
         document.getElementById('uploadSection').style.display = 'none';
         document.getElementById('progressSection').style.display = 'block';
-
         const stepInterval = animateSteps();
-
         const formData = new FormData();
         formData.append('file', selectedFile);
-
-        // Add RNA-seq labels if CSV
         formData.append('control_label', document.getElementById('controlLabel').value || 'control');
         formData.append('treatment_label', document.getElementById('treatmentLabel').value || 'treatment');
-
         try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300000);
             const res = await fetch(`${API}/upload`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
-
+            clearTimeout(timeoutId);
             if (!res.ok) {
                 const err = await res.json();
                 throw new Error(err.detail || 'Analysis failed');
             }
-
             const data = await res.json();
             clearInterval(stepInterval);
-
-            // Show results
             document.getElementById('progressSection').style.display = 'none';
             showResults(data);
-
         } catch (err) {
             clearInterval(stepInterval);
             document.getElementById('progressSection').style.display = 'none';
             document.getElementById('uploadSection').style.display = 'block';
             btn.disabled = false;
-            alert(`Error: ${err.message}`);
+            if (err.name === 'AbortError') {
+                alert('Analysis timed out. Please try again.');
+            } else {
+                alert(`Error: ${err.message}`);
+            }
         }
     }
 
-    // Display results
     function showResults(data) {
         document.getElementById('resultsSection').style.display = 'block';
-
-        // Pipeline and confidence badges
         document.getElementById('pipelineBadge').textContent = data.pipeline;
         document.getElementById('confidenceBadge').textContent =
             `${(data.confidence * 100).toFixed(0)}% confidence`;
-
-        // Stats cards
         const statsGrid = document.getElementById('statsGrid');
         statsGrid.innerHTML = '';
         if (data.stats) {
@@ -712,11 +693,7 @@
                     </div>`;
             });
         }
-
-        // Reasoning
         document.getElementById('reasoningText').textContent = data.reasoning;
-
-        // Warnings
         const warningsBox = document.getElementById('warningsBox');
         warningsBox.innerHTML = '';
         data.warnings.forEach(w => {
@@ -730,23 +707,27 @@
                     <span>${w}</span>
                 </div>`;
         });
-
-        // Plots
         const plotsGrid = document.getElementById('plotsGrid');
         plotsGrid.innerHTML = '';
         data.plot_urls.forEach(url => {
-            plotsGrid.innerHTML += `
-                <div class="plot-card">
-                    <img src="${API}${url}" alt="Analysis plot" 
-                         onerror="this.style.display='none'">
-                </div>`;
+            if (url.endsWith('.html')) {
+                plotsGrid.innerHTML += `
+                    <div class="plot-card">
+                        <iframe src="${API}${url}" 
+                            style="width:100%;height:420px;border:none;border-radius:12px;">
+                        </iframe>
+                    </div>`;
+            } else {
+                plotsGrid.innerHTML += `
+                    <div class="plot-card">
+                        <img src="${API}${url}" alt="Analysis plot"
+                            onerror="this.style.display='none'">
+                    </div>`;
+            }
         });
-
-        // Interpretation
         document.getElementById('interpretationText').textContent = data.interpretation;
     }
 
-    // Reset UI
     function resetUI() {
         selectedFile = null;
         document.getElementById('uploadSection').style.display = 'block';

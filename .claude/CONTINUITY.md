@@ -1,100 +1,92 @@
 # BioAgent — Project Continuity Document
 
-**Last Updated:** April 28, 2026
+**Last Updated:** May 1, 2026
 **Current Version:** v0.4.0
-**Project Status:** Demo-ready, all three pipelines functional
+**Next Version:** v0.5.0 (Ollama LLM integration — IN PROGRESS)
 
 ---
 
-## 🎯 Project Summary
+## Current Project State
 
-BioAgent is an agentic bioinformatics analysis system that:
-1. Auto-detects uploaded bioinformatics files (FASTA, FASTQ, VCF, CSV)
-2. Routes to the correct pipeline
-3. Executes full analysis with publication-quality plots
-4. Explains results using a RAG knowledge base (640 chunks from MSc notes)
-5. Displays everything in a web browser
+### What's Built and Working
+- RAG system: 640 chunks, ChromaDB, sentence-transformers
+- File detector: FASTA/FASTQ/VCF/CSV auto-detection
+- Pipeline router: routes to correct pipeline with reasoning
+- FASTA QC pipeline: GC content, length, composition, complexity
+- RNA-seq pipeline: CPM, DE analysis, volcano/PCA/heatmap
+- Variant annotation: VCF parsing, clinical annotation
+- FastAPI backend: /upload, /health, /analyse, /jobs
+- Web frontend: drag-drop, results display, plots
+- 23 tests passing
+- GitHub: v0.4.0 tagged
 
-**Current milestone:** Full-stack demo complete (frontend + backend + all 3 pipelines).
-**Next milestone:** Ollama LLM integration (v0.5.0).
-
----
-
-## 📦 What's Built (v0.4.0)
-
-### Layer 1 — RAG Knowledge System
-- **ChromaDB** vector database (local, free)
-- **sentence-transformers** (`all-MiniLM-L6-v2`) for embeddings
-- **640 chunks** ingested from MSc Bioinformatics notes (Sem1, Sem2, Sem3)
-- Queryable in <2 seconds
-
-**Key files:**
-- `src/bioagent/rag/embedder.py` — text to vectors
-- `src/bioagent/rag/vector_store.py` — ChromaDB interface
-- `src/bioagent/rag/ingestion.py` — document chunking
-- `src/bioagent/rag/retriever.py` — semantic search
+### What's In Progress (v0.5.0)
+- Ollama installed and tested locally (llama3.2:3b, 2GB)
+- explainer.py created in src/bioagent/agent/
+- Next: wire explainer into the pipeline + add Q&A to frontend
 
 ---
 
-### Layer 2 — File Detection & Routing
-- **Auto-detector** (`src/bioagent/agent/detector.py`)
-  - FASTA/FASTQ detection (95%+ confidence)
-  - VCF detection (99%+ confidence)
-  - CSV/TSV detection (80%+ confidence)
-  - Returns `DetectionResult` with confidence and explanation
+## How to Resume Work
 
-- **Router** (`src/bioagent/agent/router.py`)
-  - Routes detected files to correct pipeline
-  - Provides human-readable reasoning for each routing decision
+### Start the System
+```bash
+conda activate bioagent
+python -m uvicorn bioagent.api.main:app --reload --host 0.0.0.0 --port 8000
+```
+Then open `frontend/index.html` in browser.
 
----
+### Run Tests
+```bash
+pytest tests/ -v
+```
+Expected: 23 passed
 
-### Layer 3 — Three Bioinformatics Pipelines
-
-#### Pipeline 1: FASTA Quality Control (`src/bioagent/pipelines/fasta_qc.py`)
-- **Input:** FASTA or FASTQ files
-- **Analyses:**
-  - GC content per sequence
-  - Sequence length distribution
-  - Nucleotide composition
-  - Low complexity detection (k-mer diversity)
-- **Outputs:** 3 plots (GC histogram, length distribution, composition bar chart) + interpretation
-
-#### Pipeline 2: RNA-seq Differential Expression (`src/bioagent/pipelines/rnaseq.py`)
-- **Input:** Gene count matrix CSV (rows=genes, cols=samples)
-- **Analyses:**
-  - CPM normalisation
-  - T-test differential expression
-  - Significance filtering (p<0.05, |log2FC|≥1.0)
-- **Outputs:** Volcano plot, PCA plot, heatmap + full DE report
-
-#### Pipeline 3: Variant Annotation (`src/bioagent/pipelines/variant_annotation.py`)
-- **Input:** VCF files
-- **Analyses:**
-  - VCF parsing
-  - Quality filtering (PHRED threshold)
-  - Clinical annotation (gene, consequence, pathogenicity)
-- **Outputs:** Quality chart, genes-per-variant chart, significance pie chart + pathogenic report
+### Key Paths
+- Project: `C:\Users\Invate\Downloads\Bioinformatics-Agent`
+- Backend: `src/bioagent/api/main.py`
+- Frontend: `frontend/index.html`
+- Pipelines: `src/bioagent/pipelines/`
+- RAG: `src/bioagent/rag/`
+- Agent: `src/bioagent/agent/`
 
 ---
 
-### Layer 4 — FastAPI Backend & Web Frontend
+## v0.5.0 Build Plan (Ollama Integration)
 
-**Backend** (`src/bioagent/api/main.py`):
-- `POST /upload` — accepts file + optional RNA-seq labels, returns analysis results
-- `GET /health` — server status
-- `GET /analyse/{job_id}` — retrieve previous results
-- `GET /jobs` — list all completed jobs
-- CORS enabled for frontend
-- `/outputs` mounted as static file server for plot display
+### What We're Adding
+1. `src/bioagent/agent/explainer.py` — calls Ollama with pipeline results + RAG context
+2. Wire explainer into `src/bioagent/api/main.py` — call after pipeline runs
+3. Add Q&A box to `frontend/index.html` — user asks follow-up questions
+4. Add `/ask/{job_id}` endpoint to backend — handles follow-up questions
 
-**Frontend** (`frontend/index.html`):
-- Drag-and-drop file upload
-- Auto-shows RNA-seq options for CSV files
-- Animated progress steps during analysis
-- Results display with stats cards, reasoning box, warnings, 3 plots, full interpretation
-- "Run Another Analysis" button to reset
+### Architecture Change
+Before: Pipeline → basic_interpretation() → display
+After:  Pipeline → RAG query → Ollama(results + context) → rich explanation → display
+↑
+User Q&A also goes here
+
+### Files to Modify
+- `src/bioagent/agent/explainer.py` (new — already created)
+- `src/bioagent/api/main.py` (add /ask endpoint)
+- `frontend/index.html` (add Q&A section)
 
 ---
 
-## 🗂️ File Structure
+## .claude/ Folder Structure
+.claude/
+├── agents.md          # Who Steve is + how to work with Manny
+├── memory.md          # What Steve knows about Manny
+├── CONTINUITY.md      # This file — current project state
+└── skills/
+└── bioinformatics_pipelines.md  # How to build new pipelines
+
+---
+
+## Version History
+- v0.0.1 — Project skeleton
+- v0.1.0 — First working pipeline (FASTA QC)
+- v0.2.0 — RNA-seq pipeline
+- v0.3.0 — All three pipelines complete
+- v0.4.0 — Full-stack demo (frontend + backend)
+- v0.5.0 — Ollama LLM integration (IN PROGRESS)
