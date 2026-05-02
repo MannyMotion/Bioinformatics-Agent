@@ -126,48 +126,12 @@ def run_fasta_qc(
     logger.info("Step 4: Generating QC warnings...")
     result.warnings = _generate_warnings(result, sequence_stats)
 
-    # Step 5 — Generate visualisations in separate process
+    # Step 5 — Generate visualisations
     logger.info("Step 5: Generating visualisations...")
     try:
-        import subprocess
-        import sys
-        import json
-
-        # Write result data to temp file for subprocess
-        temp_data = {
-            "file_name": result.file_name,
-            "mean_gc": result.mean_gc,
-            "median_length": result.median_length,
-            "gc_values": [s.gc_content for s in sequence_stats],
-            "lengths": [s.length for s in sequence_stats],
-            "nucleotide_counts": {
-                k: sum(s.nucleotide_counts[k] for s in sequence_stats)
-                for k in ["A", "C", "G", "T", "N"]
-            },
-            "output_dir": str(out_dir)
-        }
-
-        temp_file = out_dir / f"{result.file_name}_plotdata.json"
-        temp_file.write_text(json.dumps(temp_data))
-
-        # Run plot generation as separate subprocess
-        plot_script = Path(__file__).parent.parent / "utils" / "plot_runner.py"
-        logger.info(f"Plot script path: {plot_script} — exists: {plot_script.exists()}")
-        proc = subprocess.run(
-            [sys.executable, str(plot_script), str(temp_file)],
-            capture_output=True, text=True, timeout=60
-        )
-        logger.warning(f"Plot subprocess failed. returncode={proc.returncode} stderr='{proc.stderr[:300]}' stdout='{proc.stdout[:300]}'")
-        temp_file.unlink(missing_ok=True)
-
-        if proc.returncode == 0:
-            plot_paths_raw = json.loads(proc.stdout.strip())
-            result.plot_paths = plot_paths_raw
-            logger.info(f"Step 5: Generated {len(plot_paths_raw)} plots.")
-        else:
-            logger.warning(f"Plot subprocess failed: {proc.stderr[:200]}")
-            result.plot_paths = []
-
+        plot_paths = _generate_plots_html(result, sequence_stats, out_dir)
+        result.plot_paths = plot_paths
+        logger.info(f"Step 5: Generated {len(plot_paths)} plots.")
     except Exception as e:
         logger.warning(f"Plot generation failed: {type(e).__name__}: {e}")
         result.plot_paths = []
@@ -349,136 +313,147 @@ def _generate_warnings(
     return warnings
 
 
-def _generate_plots(
+def _generate_plots_html(
     result: QCResult,
     stats: list[SequenceStats],
     output_dir: Path
 ) -> list[str]:
-    """
-    Generate publication-quality QC visualisations.
+    """Generate FASTA QC plots as standalone HTML files using Chart.js."""
+    import json
 
-    Produces:
-    1. GC content distribution histogram
-    2. Sequence length distribution
-    3. Nucleotide composition bar chart
-
-    Args:
-        result: QCResult summary statistics.
-        stats: Per-sequence statistics.
-        output_dir: Directory to save plots.
-
-    Returns:
-        List of file paths to saved plots.
-    """
-    # Use seaborn style for publication-quality aesthetics
-    sns.set_theme(style="whitegrid", palette="muted")
+    out_dir = Path(output_dir)
     plot_paths = []
 
-    # --- Plot 1: GC Content Distribution ---
-    fig, ax = plt.subplots(figsize=(10, 6))
     gc_values = [s.gc_content for s in stats]
-
-    ax.hist(gc_values, bins=20, color="#2196F3", edgecolor="white", alpha=0.8)
-    ax.axvline(
-        result.mean_gc, color="#F44336", linestyle="--",
-        linewidth=2, label=f"Mean GC: {result.mean_gc}%"
-    )
-    ax.axvline(
-        GC_LOW_THRESHOLD, color="#FF9800", linestyle=":",
-        linewidth=1.5, label=f"Low threshold ({GC_LOW_THRESHOLD}%)"
-    )
-    ax.axvline(
-        GC_HIGH_THRESHOLD, color="#FF9800", linestyle=":",
-        linewidth=1.5, label=f"High threshold ({GC_HIGH_THRESHOLD}%)"
-    )
-
-    ax.set_xlabel("GC Content (%)", fontsize=12)
-    ax.set_ylabel("Number of Sequences", fontsize=12)
-    ax.set_title(
-        f"GC Content Distribution\n{result.file_name} "
-        f"({result.total_sequences} sequences)",
-        fontsize=14, fontweight="bold"
-    )
-    ax.legend(fontsize=10)
-    plt.tight_layout()
-
-    gc_plot_path = output_dir / f"{result.file_name}_gc_content.png"
-    plt.savefig(gc_plot_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(gc_plot_path))
-    logger.info(f"Saved GC content plot: {gc_plot_path}")
-
-    # --- Plot 2: Sequence Length Distribution ---
-    fig, ax = plt.subplots(figsize=(10, 6))
     lengths = [s.length for s in stats]
-
-    ax.hist(lengths, bins=20, color="#4CAF50", edgecolor="white", alpha=0.8)
-    ax.axvline(
-        result.median_length, color="#F44336", linestyle="--",
-        linewidth=2, label=f"Median: {result.median_length:.0f}bp"
-    )
-
-    ax.set_xlabel("Sequence Length (bp)", fontsize=12)
-    ax.set_ylabel("Number of Sequences", fontsize=12)
-    ax.set_title(
-        f"Sequence Length Distribution\n{result.file_name}",
-        fontsize=14, fontweight="bold"
-    )
-    ax.legend(fontsize=10)
-    plt.tight_layout()
-
-    length_plot_path = output_dir / f"{result.file_name}_lengths.png"
-    plt.savefig(length_plot_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(length_plot_path))
-    logger.info(f"Saved length distribution plot: {length_plot_path}")
-
-    # --- Plot 3: Nucleotide Composition ---
-    fig, ax = plt.subplots(figsize=(10, 6))
-
-    # Sum nucleotide counts across all sequences
     total_counts = {"A": 0, "C": 0, "G": 0, "T": 0, "N": 0}
     for s in stats:
         for nuc, count in s.nucleotide_counts.items():
             total_counts[nuc] += count
-
     total = sum(total_counts.values())
-    percentages = {k: v/total*100 for k, v in total_counts.items() if total > 0}
+    percentages = {k: round(v/total*100, 1) for k, v in total_counts.items()} if total > 0 else {}
 
-    colors = {
-        "A": "#4CAF50", "T": "#2196F3",
-        "G": "#FF9800", "C": "#F44336", "N": "#9E9E9E"
-    }
-    bars = ax.bar(
-        percentages.keys(),
-        percentages.values(),
-        color=[colors[k] for k in percentages.keys()],
-        edgecolor="white",
-        alpha=0.85
-    )
+    # --- Plot 1: GC Content ---
+    gc_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="gc" width="800" height="400"></canvas>
+<script>
+const ctx = document.getElementById('gc').getContext('2d');
+const gcValues = {json.dumps(gc_values)};
+const bins = 20;
+const min = Math.min(...gcValues);
+const max = Math.max(...gcValues);
+const binSize = (max - min) / bins || 1;
+const labels = [], counts = [];
+for(let i=0;i<bins;i++){{
+    const lo = min + i*binSize;
+    labels.push(lo.toFixed(1));
+    counts.push(gcValues.filter(v=>v>=lo && v<lo+binSize).length);
+}}
+new Chart(ctx, {{
+    type:'bar',
+    data:{{labels,datasets:[{{label:'Sequences',data:counts,backgroundColor:'rgba(33,150,243,0.8)',borderColor:'#0a0e1a',borderWidth:1}}]}},
+    options:{{
+        responsive:true,
+        plugins:{{
+            title:{{display:true,text:'GC Content Distribution — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}},
+            legend:{{labels:{{color:'#e0e6f0'}}}}
+        }},
+        scales:{{
+            x:{{title:{{display:true,text:'GC Content (%)',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{title:{{display:true,text:'Number of Sequences',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-    # Add percentage labels on top of each bar
-    for bar, (nuc, pct) in zip(bars, percentages.items()):
-        ax.text(
-            bar.get_x() + bar.get_width()/2,
-            bar.get_height() + 0.5,
-            f"{pct:.1f}%",
-            ha="center", va="bottom", fontsize=11, fontweight="bold"
-        )
+    p = str(out_dir / f"{result.file_name}_gc_content.html")
+    Path(p).write_text(gc_html, encoding="utf-8")
+    plot_paths.append(p)
 
-    ax.set_xlabel("Nucleotide", fontsize=12)
-    ax.set_ylabel("Percentage (%)", fontsize=12)
-    ax.set_title(
-        f"Nucleotide Composition\n{result.file_name}",
-        fontsize=14, fontweight="bold"
-    )
-    plt.tight_layout()
+    # --- Plot 2: Length Distribution ---
+    len_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="len" width="800" height="400"></canvas>
+<script>
+const ctx = document.getElementById('len').getContext('2d');
+const lenValues = {json.dumps(lengths)};
+const bins = 20;
+const min = Math.min(...lenValues);
+const max = Math.max(...lenValues);
+const binSize = (max - min) / bins || 1;
+const labels = [], counts = [];
+for(let i=0;i<bins;i++){{
+    const lo = min + i*binSize;
+    labels.push(lo.toFixed(0));
+    counts.push(lenValues.filter(v=>v>=lo && v<lo+binSize).length);
+}}
+new Chart(ctx, {{
+    type:'bar',
+    data:{{labels,datasets:[{{label:'Sequences',data:counts,backgroundColor:'rgba(76,175,80,0.8)',borderColor:'#0a0e1a',borderWidth:1}}]}},
+    options:{{
+        responsive:true,
+        plugins:{{
+            title:{{display:true,text:'Sequence Length Distribution — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}},
+            legend:{{labels:{{color:'#e0e6f0'}}}}
+        }},
+        scales:{{
+            x:{{title:{{display:true,text:'Sequence Length (bp)',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{title:{{display:true,text:'Number of Sequences',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-    comp_plot_path = output_dir / f"{result.file_name}_composition.png"
-    plt.savefig(comp_plot_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(comp_plot_path))
-    logger.info(f"Saved nucleotide composition plot: {comp_plot_path}")
+    p = str(out_dir / f"{result.file_name}_lengths.html")
+    Path(p).write_text(len_html, encoding="utf-8")
+    plot_paths.append(p)
+
+    # --- Plot 3: Nucleotide Composition ---
+    nuc_labels = list(percentages.keys())
+    nuc_values = list(percentages.values())
+    nuc_colors = ["rgba(76,175,80,0.8)","rgba(244,67,54,0.8)","rgba(255,152,0,0.8)","rgba(33,150,243,0.8)","rgba(158,158,158,0.8)"]
+
+    comp_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="comp" width="700" height="400"></canvas>
+<script>
+const ctx = document.getElementById('comp').getContext('2d');
+new Chart(ctx, {{
+    type:'bar',
+    data:{{
+        labels:{json.dumps(nuc_labels)},
+        datasets:[{{
+            label:'Percentage (%)',
+            data:{json.dumps(nuc_values)},
+            backgroundColor:{json.dumps(nuc_colors[:len(nuc_labels)])},
+            borderColor:'#0a0e1a',
+            borderWidth:1
+        }}]
+    }},
+    options:{{
+        responsive:true,
+        plugins:{{
+            title:{{display:true,text:'Nucleotide Composition — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}},
+            legend:{{labels:{{color:'#e0e6f0'}}}}
+        }},
+        scales:{{
+            x:{{title:{{display:true,text:'Nucleotide',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{title:{{display:true,text:'Percentage (%)',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
+
+    p = str(out_dir / f"{result.file_name}_composition.html")
+    Path(p).write_text(comp_html, encoding="utf-8")
+    plot_paths.append(p)
 
     return plot_paths
 

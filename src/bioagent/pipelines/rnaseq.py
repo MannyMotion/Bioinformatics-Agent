@@ -20,8 +20,6 @@ Outputs: RNAseqResult dataclass with stats, plots, interpretation
 Author:  Emmanuel Ogbu (Manny)
 Date:    2026-04-24
 """
-import os
-os.environ["MPLBACKEND"] = "Agg"
 
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -31,13 +29,7 @@ import pandas as pd
 from scipy import stats
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend for server use
-import matplotlib
-matplotlib.rcParams['figure.max_open_warning'] = 0
-import matplotlib.pyplot as plt
-plt.switch_backend("Agg")
-import seaborn as sns
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
+
 
 from bioagent.utils.logger import get_logger
 
@@ -347,185 +339,125 @@ def _differential_expression(
 def _generate_plots(
     result: RNAseqResult,
     gene_results: list[GeneResult],
-    cpm_df: pd.DataFrame,
+    cpm_df,
     control_cols: list[str],
     treatment_cols: list[str],
     output_dir: Path
 ) -> list[str]:
-    """
-    Generate publication-quality RNA-seq visualisations.
+    """Generate RNA-seq plots as standalone HTML files using Chart.js."""
+    import json
+    import numpy as np
 
-    Produces:
-    1. Volcano plot — fold change vs significance
-    2. PCA plot — sample clustering
-    3. Heatmap — top differentially expressed genes
-
-    Args:
-        result: RNAseqResult summary.
-        gene_results: List of GeneResult objects.
-        cpm_df: CPM-normalised count matrix.
-        control_cols, treatment_cols: Sample column names.
-        output_dir: Where to save plots.
-
-    Returns:
-        List of saved plot file paths.
-    """
-    sns.set_theme(style="whitegrid")
+    out_dir = Path(output_dir)
     plot_paths = []
 
     # --- Plot 1: Volcano Plot ---
-    fig, ax = plt.subplots(figsize=(10, 8))
-
+    up_points, down_points, ns_points = [], [], []
     for g in gene_results:
-        # Convert p-value to -log10 scale — larger = more significant
-        neg_log10_p = -np.log10(g.p_value + 1e-10)
-
+        neg_log10_p = float(-np.log10(g.p_value + 1e-10))
+        point = {"x": float(g.log2_fold_change), "y": neg_log10_p, "label": g.gene_id}
         if g.significant and g.log2_fold_change > 0:
-            color = "#F44336"   # red = upregulated
+            up_points.append(point)
         elif g.significant and g.log2_fold_change < 0:
-            color = "#2196F3"   # blue = downregulated
+            down_points.append(point)
         else:
-            color = "#9E9E9E"   # grey = not significant
+            ns_points.append(point)
 
-        ax.scatter(
-            g.log2_fold_change, neg_log10_p,
-            c=color, alpha=0.8, s=60, edgecolors="white", linewidth=0.5
-        )
-
-        # Label significant genes
-        if g.significant:
-            ax.annotate(
-                g.gene_id,
-                (g.log2_fold_change, neg_log10_p),
-                textcoords="offset points",
-                xytext=(5, 5),
-                fontsize=8,
-                fontweight="bold"
-            )
-
-    # Threshold lines
-    ax.axhline(
-        -np.log10(PVALUE_THRESHOLD), color="black",
-        linestyle="--", linewidth=1, alpha=0.5,
-        label=f"p = {PVALUE_THRESHOLD}"
-    )
-    ax.axvline(
-        LOG2FC_THRESHOLD, color="black",
-        linestyle=":", linewidth=1, alpha=0.5
-    )
-    ax.axvline(
-        -LOG2FC_THRESHOLD, color="black",
-        linestyle=":", linewidth=1, alpha=0.5
-    )
-
-    # Legend
-    up_patch = plt.scatter([], [], c="#F44336", label=f"Up ({result.upregulated_count})")
-    down_patch = plt.scatter([], [], c="#2196F3", label=f"Down ({result.downregulated_count})")
-    ns_patch = plt.scatter([], [], c="#9E9E9E", label="Not significant")
-    ax.legend(handles=[up_patch, down_patch, ns_patch], fontsize=10)
-
-    ax.set_xlabel("log2 Fold Change", fontsize=12)
-    ax.set_ylabel("-log10(p-value)", fontsize=12)
-    ax.set_title(
-        f"Volcano Plot: {result.treatment_label} vs {result.control_label}\n"
-        f"{result.file_name}",
-        fontsize=14, fontweight="bold"
-    )
-    plt.tight_layout()
-
-    volcano_path = output_dir / f"{result.file_name}_volcano.png"
-    plt.savefig(volcano_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(volcano_path))
-    logger.info(f"Saved volcano plot: {volcano_path}")
-
-    # --- Plot 2: PCA Plot ---
-    fig, ax = plt.subplots(figsize=(8, 6))
-
-    # Transpose so rows=samples, cols=genes (PCA works on samples)
-    pca_data = cpm_df.T
-    scaler = StandardScaler()
-    scaled = scaler.fit_transform(pca_data)
-
-    pca = PCA(n_components=2)
-    pca_coords = pca.fit_transform(scaled)
-
-    # Plot each sample coloured by condition
-    for i, col in enumerate(control_cols):
-        ax.scatter(
-            pca_coords[i, 0], pca_coords[i, 1],
-            c="#4CAF50", s=120, edgecolors="white",
-            linewidth=1.5, zorder=5
-        )
-        ax.annotate(col, (pca_coords[i, 0], pca_coords[i, 1]),
-                   textcoords="offset points", xytext=(5, 5), fontsize=9)
-
-    offset = len(control_cols)
-    for i, col in enumerate(treatment_cols):
-        ax.scatter(
-            pca_coords[offset + i, 0], pca_coords[offset + i, 1],
-            c="#F44336", s=120, edgecolors="white",
-            linewidth=1.5, zorder=5
-        )
-        ax.annotate(col, (pca_coords[offset + i, 0], pca_coords[offset + i, 1]),
-                   textcoords="offset points", xytext=(5, 5), fontsize=9)
-
-    ctrl_patch = plt.scatter([], [], c="#4CAF50", label=result.control_label)
-    treat_patch = plt.scatter([], [], c="#F44336", label=result.treatment_label)
-    ax.legend(handles=[ctrl_patch, treat_patch], fontsize=10)
-
-    var_explained = pca.explained_variance_ratio_ * 100
-    ax.set_xlabel(f"PC1 ({var_explained[0]:.1f}% variance)", fontsize=12)
-    ax.set_ylabel(f"PC2 ({var_explained[1]:.1f}% variance)", fontsize=12)
-    ax.set_title(
-        f"PCA Plot — Sample Clustering\n{result.file_name}",
-        fontsize=14, fontweight="bold"
-    )
-    plt.tight_layout()
-
-    pca_path = output_dir / f"{result.file_name}_pca.png"
-    plt.savefig(pca_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(pca_path))
-    logger.info(f"Saved PCA plot: {pca_path}")
-
-    # --- Plot 3: Heatmap of top DEGs ---
-    sig_genes = [g for g in gene_results if g.significant]
-    top_genes = sorted(sig_genes, key=lambda x: abs(x.log2_fold_change), reverse=True)[:10]
-
-    if top_genes:
-        top_gene_ids = [g.gene_id for g in top_genes]
-        heatmap_data = cpm_df.loc[
-            [g for g in top_gene_ids if g in cpm_df.index]
+    volcano_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="volcano" width="800" height="500"></canvas>
+<script>
+const ctx = document.getElementById('volcano').getContext('2d');
+new Chart(ctx, {{
+    type: 'scatter',
+    data: {{
+        datasets: [
+            {{label:'Not significant ({len(ns_points)})',data:{json.dumps(ns_points)},backgroundColor:'rgba(158,158,158,0.5)',pointRadius:5}},
+            {{label:'Downregulated ({len(down_points)})',data:{json.dumps(down_points)},backgroundColor:'rgba(33,150,243,0.8)',pointRadius:7}},
+            {{label:'Upregulated ({len(up_points)})',data:{json.dumps(up_points)},backgroundColor:'rgba(244,67,54,0.8)',pointRadius:7}}
         ]
+    }},
+    options:{{
+        responsive:true,
+        plugins:{{
+            legend:{{labels:{{color:'#e0e6f0'}}}},
+            title:{{display:true,text:'Volcano Plot: {result.treatment_label} vs {result.control_label}',color:'#f1f5f9',font:{{size:16}}}}
+        }},
+        scales:{{
+            x:{{title:{{display:true,text:'log2 Fold Change',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{title:{{display:true,text:'-log10(p-value)',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-        if not heatmap_data.empty:
-            fig, ax = plt.subplots(figsize=(10, 6))
+    p = str(out_dir / f"{result.file_name}_volcano.html")
+    Path(p).write_text(volcano_html, encoding="utf-8")
+    plot_paths.append(p)
+    logger.info(f"Saved volcano plot: {p}")
 
-            sns.heatmap(
-                heatmap_data,
-                ax=ax,
-                cmap="RdBu_r",
-                center=0,
-                annot=True,
-                fmt=".0f",
-                linewidths=0.5,
-                cbar_kws={"label": "CPM"}
-            )
+    # PCA disabled — np.linalg.eigh causes Windows segfault in uvicorn
+    # Will be enabled when deployed to Linux
+    logger.info("PCA skipped on Windows.")
 
-            ax.set_title(
-                f"Top Differentially Expressed Genes (CPM)\n{result.file_name}",
-                fontsize=14, fontweight="bold"
-            )
-            ax.set_xlabel("Sample", fontsize=12)
-            ax.set_ylabel("Gene", fontsize=12)
-            plt.tight_layout()
+    # --- Plot 3: Heatmap ---
+    try:
+        sig_genes = [g for g in gene_results if g.significant]
+        top_genes = sorted(sig_genes, key=lambda x: abs(x.log2_fold_change), reverse=True)[:8]
+        top_ids = [g.gene_id for g in top_genes if g.gene_id in cpm_df.index]
+        all_cols = control_cols + treatment_cols
 
-            heatmap_path = output_dir / f"{result.file_name}_heatmap.png"
-            plt.savefig(heatmap_path, dpi=150, bbox_inches="tight")
-            plt.close()
-            plot_paths.append(str(heatmap_path))
-            logger.info(f"Saved heatmap: {heatmap_path}")
+        if top_ids:
+            labels = top_ids
+            datasets = []
+            colors = ["#4CAF50","#388E3C","#1B5E20","#F44336","#C62828","#B71C1C"]
+            for ci, col in enumerate(all_cols):
+                vals = [float(cpm_df.loc[g, col]) for g in top_ids]
+                datasets.append({
+                    "label": col,
+                    "data": vals,
+                    "backgroundColor": colors[ci % len(colors)],
+                    "borderColor": "#0a0e1a",
+                    "borderWidth": 1
+                })
+
+            heatmap_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="heatmap" width="800" height="450"></canvas>
+<script>
+const ctx = document.getElementById('heatmap').getContext('2d');
+new Chart(ctx, {{
+    type: 'bar',
+    data: {{
+        labels: {json.dumps(labels)},
+        datasets: {json.dumps(datasets)}
+    }},
+    options:{{
+        responsive:true,
+        plugins:{{
+            legend:{{labels:{{color:'#e0e6f0'}}}},
+            title:{{display:true,text:'Top Differentially Expressed Genes (CPM)',color:'#f1f5f9',font:{{size:16}}}}
+        }},
+        scales:{{
+            x:{{ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{title:{{display:true,text:'CPM',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
+
+            p = str(out_dir / f"{result.file_name}_heatmap.html")
+            Path(p).write_text(heatmap_html, encoding="utf-8")
+            plot_paths.append(p)
+            logger.info(f"Saved heatmap: {p}")
+
+    except Exception as e:
+        logger.warning(f"Heatmap plot failed: {e}")
 
     return plot_paths
 
