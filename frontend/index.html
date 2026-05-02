@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BioAgent — Agentic Bioinformatics Analysis</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
@@ -18,7 +14,6 @@
             min-height: 100vh;
         }
 
-        /* --- Header --- */
         header {
             background: linear-gradient(135deg, #1a1f35 0%, #0d1220 100%);
             border-bottom: 1px solid #2a3550;
@@ -36,39 +31,22 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .tagline {
-            font-size: 14px;
-            color: #6b7a99;
-            margin-top: 2px;
-        }
+        .tagline { font-size: 14px; color: #6b7a99; margin-top: 2px; }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             border-radius: 50%;
             background: #22c55e;
             margin-left: auto;
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .status-text {
-            font-size: 13px;
-            color: #22c55e;
-        }
+        .status-text { font-size: 13px; color: #22c55e; }
 
-        /* --- Main Layout --- */
-        main {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        main { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
 
-        /* --- Upload Section --- */
         .upload-section {
             background: #111827;
             border: 1px solid #1e293b;
@@ -78,18 +56,8 @@
             margin-bottom: 32px;
         }
 
-        .upload-section h2 {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #f1f5f9;
-        }
-
-        .upload-section p {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 28px;
-        }
+        .upload-section h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; color: #f1f5f9; }
+        .upload-section p { color: #64748b; font-size: 14px; margin-bottom: 28px; }
 
         .upload-zone {
             border: 2px dashed #2a3550;
@@ -101,359 +69,192 @@
             position: relative;
         }
 
-        .upload-zone:hover, .upload-zone.dragover {
-            border-color: #4f9eff;
-            background: #0d1830;
-        }
+        .upload-zone:hover, .upload-zone.dragover { border-color: #4f9eff; background: #0d1830; }
 
         .upload-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
+            position: absolute; inset: 0; opacity: 0;
+            cursor: pointer; width: 100%; height: 100%;
         }
 
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .upload-zone h3 {
-            font-size: 16px;
-            font-weight: 500;
-            color: #94a3b8;
-            margin-bottom: 8px;
-        }
-
-        .upload-zone p {
-            font-size: 13px;
-            color: #475569;
-            margin-bottom: 0;
-        }
+        .upload-icon { font-size: 48px; margin-bottom: 16px; }
+        .upload-zone h3 { font-size: 16px; font-weight: 500; color: #94a3b8; margin-bottom: 8px; }
+        .upload-zone p { font-size: 13px; color: #475569; margin-bottom: 0; }
 
         .supported-formats {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: flex; gap: 8px; justify-content: center;
+            margin-top: 20px; flex-wrap: wrap;
         }
 
         .format-badge {
-            background: #1e293b;
-            border: 1px solid #2a3550;
-            border-radius: 6px;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #4f9eff;
-            font-family: monospace;
+            background: #1e293b; border: 1px solid #2a3550;
+            border-radius: 6px; padding: 4px 12px;
+            font-size: 12px; font-weight: 600; color: #4f9eff; font-family: monospace;
         }
 
-        /* --- RNA-seq Options --- */
         .rnaseq-options {
-            display: none;
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 16px;
-            text-align: left;
+            display: none; background: #111827; border: 1px solid #1e293b;
+            border-radius: 12px; padding: 20px; margin-top: 16px; text-align: left;
         }
 
-        .rnaseq-options h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: #94a3b8;
-            margin-bottom: 12px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .input-group {
-            flex: 1;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 6px;
-        }
+        .rnaseq-options h4 { font-size: 14px; font-weight: 600; color: #94a3b8; margin-bottom: 12px; }
+        .input-row { display: flex; gap: 12px; }
+        .input-group { flex: 1; }
+        .input-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; }
 
         .input-group input {
-            width: 100%;
-            background: #0d1220;
-            border: 1px solid #2a3550;
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: #e0e6f0;
-            font-size: 14px;
+            width: 100%; background: #0d1220; border: 1px solid #2a3550;
+            border-radius: 8px; padding: 8px 12px; color: #e0e6f0; font-size: 14px;
         }
 
-        /* --- Analyse Button --- */
         .analyse-btn {
-            display: none;
-            width: 100%;
-            padding: 14px;
-            margin-top: 16px;
+            display: none; width: 100%; padding: 14px; margin-top: 16px;
             background: linear-gradient(135deg, #4f9eff, #7c3aed);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            border: none; border-radius: 10px; color: white;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
         }
 
         .analyse-btn:hover { opacity: 0.9; }
         .analyse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* --- Progress --- */
         .progress-section {
-            display: none;
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 32px;
-            text-align: center;
+            display: none; background: #111827; border: 1px solid #1e293b;
+            border-radius: 16px; padding: 32px; margin-bottom: 32px; text-align: center;
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #1e293b;
-            border-top-color: #4f9eff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
+            width: 48px; height: 48px; border: 3px solid #1e293b;
+            border-top-color: #4f9eff; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 16px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .progress-steps {
-            text-align: left;
-            max-width: 400px;
-            margin: 20px auto 0;
-        }
+        .progress-steps { text-align: left; max-width: 400px; margin: 20px auto 0; }
 
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            color: #475569;
-            font-size: 14px;
-        }
-
+        .step { display: flex; align-items: center; gap: 12px; padding: 8px 0; color: #475569; font-size: 14px; }
         .step.active { color: #4f9eff; }
         .step.done { color: #22c55e; }
-
         .step-icon { font-size: 16px; width: 20px; }
 
-        /* --- Results Section --- */
-        .results-section {
-            display: none;
-        }
+        .results-section { display: none; }
 
-        .results-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+        .results-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
 
         .pipeline-badge {
             background: linear-gradient(135deg, #1e3a5f, #2d1b69);
-            border: 1px solid #4f9eff;
-            border-radius: 8px;
-            padding: 6px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4f9eff;
+            border: 1px solid #4f9eff; border-radius: 8px;
+            padding: 6px 16px; font-size: 13px; font-weight: 600; color: #4f9eff;
         }
 
         .confidence-badge {
-            background: #1a2a1a;
-            border: 1px solid #22c55e;
-            border-radius: 8px;
-            padding: 6px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #22c55e;
+            background: #1a2a1a; border: 1px solid #22c55e;
+            border-radius: 8px; padding: 6px 16px;
+            font-size: 13px; font-weight: 600; color: #22c55e;
         }
 
-        /* --- Cards --- */
         .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px; margin-bottom: 24px;
         }
 
-        .stat-card {
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-        }
+        .stat-card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; }
+        .stat-card .label { font-size: 12px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 28px; font-weight: 700; color: #f1f5f9; }
 
-        .stat-card .label {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card .value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-
-        .stat-card .unit {
-            font-size: 14px;
-            color: #64748b;
-            margin-left: 4px;
-        }
-
-        /* --- Reasoning Box --- */
         .reasoning-box {
-            background: #0d1220;
-            border: 1px solid #1e3a5f;
-            border-left: 4px solid #4f9eff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #94a3b8;
+            background: #0d1220; border: 1px solid #1e3a5f;
+            border-left: 4px solid #4f9eff; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px;
+            font-size: 14px; line-height: 1.6; color: #94a3b8;
         }
 
         .reasoning-box h4 {
-            color: #4f9eff;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #4f9eff; font-size: 13px; font-weight: 600;
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
 
-        /* --- Warnings --- */
-        .warnings-box {
-            margin-bottom: 24px;
-        }
+        .warnings-box { margin-bottom: 24px; }
 
         .warning-item {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
+            display: flex; gap: 12px; align-items: flex-start;
+            padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-size: 14px;
         }
 
-        .warning-item.pass {
-            background: #0f2a1a;
-            border: 1px solid #166534;
-            color: #86efac;
-        }
+        .warning-item.pass { background: #0f2a1a; border: 1px solid #166534; color: #86efac; }
+        .warning-item.warn { background: #2a1a0a; border: 1px solid #854d0e; color: #fde68a; }
+        .warning-item.alert { background: #2a0a0a; border: 1px solid #991b1b; color: #fca5a5; }
 
-        .warning-item.warn {
-            background: #2a1a0a;
-            border: 1px solid #854d0e;
-            color: #fde68a;
-        }
+        .plots-section { margin-bottom: 24px; }
+        .plots-section h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 16px; }
 
-        .warning-item.alert {
-            background: #2a0a0a;
-            border: 1px solid #991b1b;
-            color: #fca5a5;
-        }
+        .plots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
 
-        /* --- Plots --- */
-        .plots-section {
-            margin-bottom: 24px;
-        }
+        .plot-card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
+        .plot-card img { width: 100%; display: block; }
 
-        .plots-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #f1f5f9;
-            margin-bottom: 16px;
-        }
-
-        .plots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 16px;
-        }
-
-        .plot-card {
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .plot-card img {
-            width: 100%;
-            display: block;
-        }
-
-        /* --- Interpretation --- */
         .interpretation-box {
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
+            background: #111827; border: 1px solid #1e293b;
+            border-radius: 12px; padding: 24px; margin-bottom: 24px;
         }
 
-        .interpretation-box h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #f1f5f9;
-            margin-bottom: 16px;
-        }
+        .interpretation-box h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 16px; }
 
         .interpretation-box pre {
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-            line-height: 1.7;
-            color: #94a3b8;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            font-family: 'Segoe UI', sans-serif; font-size: 14px;
+            line-height: 1.7; color: #94a3b8; white-space: pre-wrap; word-wrap: break-word;
         }
 
-        /* --- New Analysis Button --- */
+        .qa-box {
+            background: #111827; border: 1px solid #1e293b;
+            border-radius: 12px; padding: 24px; margin-bottom: 24px;
+        }
+
+        .qa-box h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+        .qa-box p { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+
+        .qa-input-row { display: flex; gap: 12px; margin-bottom: 16px; }
+
+        .qa-input {
+            flex: 1; background: #0d1220; border: 1px solid #2a3550;
+            border-radius: 8px; padding: 10px 14px;
+            color: #e0e6f0; font-size: 14px;
+        }
+
+        .qa-input:focus { outline: none; border-color: #4f9eff; }
+
+        .qa-btn {
+            background: linear-gradient(135deg, #4f9eff, #7c3aed);
+            border: none; border-radius: 8px; color: white;
+            padding: 10px 20px; font-size: 14px; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+        }
+
+        .qa-btn:hover { opacity: 0.9; }
+        .qa-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .qa-answer {
+            display: none;
+            background: #0d1220; border: 1px solid #1e3a5f;
+            border-left: 4px solid #4f9eff; border-radius: 8px; padding: 16px;
+        }
+
+        .qa-answer-label {
+            font-size: 12px; color: #4f9eff; font-weight: 600;
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .qa-answer-text { font-size: 14px; line-height: 1.7; color: #94a3b8; }
+
+        .qa-loading { display: none; color: #64748b; font-size: 14px; padding: 8px 0; }
+
         .new-analysis-btn {
-            background: #1e293b;
-            border: 1px solid #2a3550;
-            border-radius: 10px;
-            color: #94a3b8;
-            padding: 12px 24px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 40px;
+            background: #1e293b; border: 1px solid #2a3550;
+            border-radius: 10px; color: #94a3b8;
+            padding: 12px 24px; font-size: 14px; cursor: pointer;
+            transition: all 0.2s; margin-bottom: 40px;
         }
 
-        .new-analysis-btn:hover {
-            background: #2a3550;
-            color: #f1f5f9;
-        }
+        .new-analysis-btn:hover { background: #2a3550; color: #f1f5f9; }
     </style>
 </head>
 <body>
@@ -514,21 +315,11 @@
         <h3 style="font-size:18px; margin-bottom:8px;">Analysing your file...</h3>
         <p style="color:#64748b; font-size:14px;">This may take 30-60 seconds</p>
         <div class="progress-steps">
-            <div class="step active" id="step1">
-                <span class="step-icon">🔍</span> Detecting file type
-            </div>
-            <div class="step" id="step2">
-                <span class="step-icon">🧠</span> Selecting pipeline
-            </div>
-            <div class="step" id="step3">
-                <span class="step-icon">⚙️</span> Running analysis
-            </div>
-            <div class="step" id="step4">
-                <span class="step-icon">📊</span> Generating visualisations
-            </div>
-            <div class="step" id="step5">
-                <span class="step-icon">📝</span> Building interpretation
-            </div>
+            <div class="step active" id="step1"><span class="step-icon">🔍</span> Detecting file type</div>
+            <div class="step" id="step2"><span class="step-icon">🧠</span> Selecting pipeline</div>
+            <div class="step" id="step3"><span class="step-icon">⚙️</span> Running analysis</div>
+            <div class="step" id="step4"><span class="step-icon">📊</span> Generating visualisations</div>
+            <div class="step" id="step5"><span class="step-icon">📝</span> Building interpretation</div>
         </div>
     </div>
 
@@ -541,28 +332,44 @@
             <div class="confidence-badge" id="confidenceBadge">—</div>
         </div>
 
-        <!-- Stats Cards -->
         <div class="cards-grid" id="statsGrid"></div>
 
-        <!-- Reasoning -->
         <div class="reasoning-box">
             <h4>🤖 Why this pipeline was selected</h4>
             <div id="reasoningText"></div>
         </div>
 
-        <!-- Warnings -->
         <div class="warnings-box" id="warningsBox"></div>
 
-        <!-- Plots -->
         <div class="plots-section">
             <h3>📊 Visualisations</h3>
             <div class="plots-grid" id="plotsGrid"></div>
         </div>
 
-        <!-- Interpretation -->
         <div class="interpretation-box">
             <h3>🔬 Biological Interpretation</h3>
             <pre id="interpretationText"></pre>
+        </div>
+
+        <!-- Q&A Section -->
+        <div class="qa-box">
+            <h3>🤖 Ask Ollama</h3>
+            <p>Ask a follow-up question about your results. Powered by llama3.2:3b running locally — may take 20-30 seconds.</p>
+            <div class="qa-input-row">
+                <input type="text" id="questionInput" class="qa-input"
+                       placeholder="e.g. Why is BRCA1 downregulated? What does high TNF mean biologically?"
+                       onkeydown="if(event.key==='Enter') askQuestion()">
+                <button class="qa-btn" id="askBtn" onclick="askQuestion()">
+                    Ask Ollama
+                </button>
+            </div>
+            <div class="qa-loading" id="qaLoading">
+                ⏳ Ollama is thinking... (this may take 20-30 seconds)
+            </div>
+            <div class="qa-answer" id="qaAnswer">
+                <div class="qa-answer-label">Ollama Response</div>
+                <div class="qa-answer-text" id="qaAnswerText"></div>
+            </div>
         </div>
 
         <button class="new-analysis-btn" onclick="resetUI()">
@@ -576,6 +383,7 @@
 <script>
     const API = 'http://localhost:8000';
     let selectedFile = null;
+    let currentJobId = null;
 
     async function checkHealth() {
         try {
@@ -622,9 +430,7 @@
         const steps = ['step1','step2','step3','step4','step5'];
         let i = 0;
         const interval = setInterval(() => {
-            if (i > 0) {
-                document.getElementById(steps[i-1]).className = 'step done';
-            }
+            if (i > 0) document.getElementById(steps[i-1]).className = 'step done';
             if (i < steps.length) {
                 document.getElementById(steps[i]).className = 'step active';
                 i++;
@@ -677,10 +483,12 @@
     }
 
     function showResults(data) {
+        currentJobId = data.job_id;
         document.getElementById('resultsSection').style.display = 'block';
         document.getElementById('pipelineBadge').textContent = data.pipeline;
         document.getElementById('confidenceBadge').textContent =
             `${(data.confidence * 100).toFixed(0)}% confidence`;
+
         const statsGrid = document.getElementById('statsGrid');
         statsGrid.innerHTML = '';
         if (data.stats) {
@@ -693,7 +501,9 @@
                     </div>`;
             });
         }
+
         document.getElementById('reasoningText').textContent = data.reasoning;
+
         const warningsBox = document.getElementById('warningsBox');
         warningsBox.innerHTML = '';
         data.warnings.forEach(w => {
@@ -703,17 +513,17 @@
             const icon = cls === 'pass' ? '✅' : cls === 'warn' ? '⚠️' : '🚨';
             warningsBox.innerHTML += `
                 <div class="warning-item ${cls}">
-                    <span>${icon}</span>
-                    <span>${w}</span>
+                    <span>${icon}</span><span>${w}</span>
                 </div>`;
         });
+
         const plotsGrid = document.getElementById('plotsGrid');
         plotsGrid.innerHTML = '';
         data.plot_urls.forEach(url => {
             if (url.endsWith('.html')) {
                 plotsGrid.innerHTML += `
                     <div class="plot-card">
-                        <iframe src="${API}${url}" 
+                        <iframe src="${API}${url}"
                             style="width:100%;height:420px;border:none;border-radius:12px;">
                         </iframe>
                     </div>`;
@@ -725,11 +535,63 @@
                     </div>`;
             }
         });
+
         document.getElementById('interpretationText').textContent = data.interpretation;
+
+        // Reset Q&A
+        document.getElementById('questionInput').value = '';
+        document.getElementById('qaAnswer').style.display = 'none';
+        document.getElementById('qaLoading').style.display = 'none';
+    }
+
+    async function askQuestion() {
+        const question = document.getElementById('questionInput').value.trim();
+        if (!question || !currentJobId) return;
+
+        const btn = document.getElementById('askBtn');
+        btn.disabled = true;
+        document.getElementById('qaLoading').style.display = 'block';
+        document.getElementById('qaAnswer').style.display = 'none';
+
+        try {
+            const formData = new FormData();
+            formData.append('question', question);
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 180000);
+
+            const res = await fetch(`${API}/ask/${currentJobId}`, {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Q&A failed');
+            }
+
+            const data = await res.json();
+            document.getElementById('qaAnswerText').textContent = data.answer;
+            document.getElementById('qaAnswer').style.display = 'block';
+
+        } catch (err) {
+            let msg = err.name === 'AbortError'
+                ? 'Ollama timed out. Try a shorter question.'
+                : `Error: ${err.message}`;
+            document.getElementById('qaAnswerText').textContent = msg;
+            document.getElementById('qaAnswer').style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            document.getElementById('qaLoading').style.display = 'none';
+        }
     }
 
     function resetUI() {
         selectedFile = null;
+        currentJobId = null;
         document.getElementById('uploadSection').style.display = 'block';
         document.getElementById('resultsSection').style.display = 'none';
         document.getElementById('uploadZoneText').textContent = 'Drop your file here or click to browse';

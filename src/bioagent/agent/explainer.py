@@ -233,18 +233,25 @@ def _call_ollama(prompt: str) -> str:
     try:
         # Call ollama CLI directly — most reliable method on Windows
         result = subprocess.run(
-        ["ollama", "run", OLLAMA_MODEL, prompt],
-        capture_output=True,
-        text=True,
-        timeout=120,
-        encoding="utf-8",
-        errors="replace"  # handles Windows encoding issues
-)
+            ["ollama", "run", OLLAMA_MODEL, prompt],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            encoding="utf-8",
+            errors="replace"
+        )
 
         if result.returncode != 0:
             raise RuntimeError(f"Ollama error: {result.stderr}")
 
         response = result.stdout.strip()
+
+        # Remove ANSI escape codes — Ollama CLI outputs these for terminal
+        # animation which corrupt the text when captured via subprocess
+        import re
+        response = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', response)
+        response = re.sub(r'\[[0-9]+[A-Z]', '', response)
+        response = response.strip()
 
         if not response:
             raise RuntimeError("Ollama returned empty response.")
