@@ -351,140 +351,155 @@ def _generate_plots(
     variants: list[Variant],
     output_dir: Path
 ) -> list[str]:
-    """
-    Generate variant annotation visualisations.
+    """Generate variant plots as standalone HTML files using Chart.js."""
+    import json
+    from collections import Counter
 
-    Produces:
-    1. Variant quality distribution
-    2. Gene distribution of annotated variants
-    3. Clinical significance summary
-
-    Args:
-        result: VariantResult summary.
-        variants: List of annotated variants.
-        output_dir: Where to save plots.
-
-    Returns:
-        List of saved plot file paths.
-    """
-    sns.set_theme(style="whitegrid")
+    out_dir = Path(output_dir)
     plot_paths = []
 
-    # --- Plot 1: Quality Score Distribution ---
-    fig, ax = plt.subplots(figsize=(10, 6))
-    quals = [v.qual for v in variants]
-    colors = ["#4CAF50" if v.passes_quality else "#F44336" for v in variants]
+    # --- Plot 1: Quality Scores ---
+    labels = [v.variant_id[:12] for v in variants]
+    quals = [float(v.qual) for v in variants]
+    colors = ["rgba(76,175,80,0.8)" if v.passes_quality else "rgba(244,67,54,0.8)"
+              for v in variants]
 
-    bars = ax.bar(
-        range(len(variants)),
-        quals,
-        color=colors,
-        edgecolor="white",
-        alpha=0.85
-    )
+    quality_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="quality" width="800" height="400"></canvas>
+<script>
+const ctx = document.getElementById('quality').getContext('2d');
+new Chart(ctx, {{
+    type: 'bar',
+    data: {{
+        labels: {json.dumps(labels)},
+        datasets: [{{
+            label: 'Quality Score',
+            data: {json.dumps(quals)},
+            backgroundColor: {json.dumps(colors)},
+            borderColor: '#0a0e1a',
+            borderWidth: 1
+        }}]
+    }},
+    options:{{
+        responsive:true,
+        plugins:{{
+            legend:{{labels:{{color:'#e0e6f0'}}}},
+            title:{{display:true,text:'Variant Quality Scores — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}}
+        }},
+        scales:{{
+            x:{{ticks:{{color:'#94a3b8',maxRotation:45}},grid:{{color:'#1e293b'}}}},
+            y:{{
+                title:{{display:true,text:'Quality Score (PHRED)',color:'#94a3b8'}},
+                ticks:{{color:'#94a3b8'}},
+                grid:{{color:'#1e293b'}},
+                min:0
+            }}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-    ax.axhline(
-        MIN_QUALITY_THRESHOLD, color="black",
-        linestyle="--", linewidth=1.5,
-        label=f"Quality threshold ({MIN_QUALITY_THRESHOLD})"
-    )
+    p = str(out_dir / f"{result.file_name}_quality.html")
+    Path(p).write_text(quality_html, encoding="utf-8")
+    plot_paths.append(p)
+    logger.info(f"Saved quality plot: {p}")
 
-    # Label each bar with variant ID
-    for i, v in enumerate(variants):
-        ax.text(
-            i, v.qual + 1,
-            v.variant_id[:10],
-            ha="center", va="bottom",
-            fontsize=7, rotation=45
-        )
-
-    ax.set_xlabel("Variant", fontsize=12)
-    ax.set_ylabel("Quality Score (PHRED)", fontsize=12)
-    ax.set_title(
-        f"Variant Quality Scores\n{result.file_name}",
-        fontsize=14, fontweight="bold"
-    )
-    ax.legend(fontsize=10)
-    plt.tight_layout()
-
-    qual_path = output_dir / f"{result.file_name}_quality.png"
-    plt.savefig(qual_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    plot_paths.append(str(qual_path))
-
-    # --- Plot 2: Gene Distribution ---
+    # --- Plot 2: Genes ---
     annotated = [v for v in variants if v.is_annotated]
     if annotated:
-        fig, ax = plt.subplots(figsize=(10, 6))
         gene_counts = Counter(v.gene for v in annotated)
-
         genes = list(gene_counts.keys())
         counts = list(gene_counts.values())
-        colors_genes = sns.color_palette("muted", len(genes))
 
-        bars = ax.barh(genes, counts, color=colors_genes, edgecolor="white")
+        genes_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="genes" width="700" height="400"></canvas>
+<script>
+const ctx = document.getElementById('genes').getContext('2d');
+new Chart(ctx, {{
+    type: 'bar',
+    data: {{
+        labels: {json.dumps(genes)},
+        datasets: [{{
+            label: 'Variants',
+            data: {json.dumps(counts)},
+            backgroundColor: 'rgba(79,158,255,0.8)',
+            borderColor: '#0a0e1a',
+            borderWidth: 1
+        }}]
+    }},
+    options:{{
+        indexAxis: 'y',
+        responsive:true,
+        plugins:{{
+            legend:{{labels:{{color:'#e0e6f0'}}}},
+            title:{{display:true,text:'Variants per Gene — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}}
+        }},
+        scales:{{
+            x:{{title:{{display:true,text:'Number of Variants',color:'#94a3b8'}},ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}},
+            y:{{ticks:{{color:'#94a3b8'}},grid:{{color:'#1e293b'}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-        for bar, count in zip(bars, counts):
-            ax.text(
-                bar.get_width() + 0.05, bar.get_y() + bar.get_height()/2,
-                str(count), va="center", fontsize=11, fontweight="bold"
-            )
+        p = str(out_dir / f"{result.file_name}_genes.html")
+        Path(p).write_text(genes_html, encoding="utf-8")
+        plot_paths.append(p)
+        logger.info(f"Saved genes plot: {p}")
 
-        ax.set_xlabel("Number of Variants", fontsize=12)
-        ax.set_ylabel("Gene", fontsize=12)
-        ax.set_title(
-            f"Variants per Gene\n{result.file_name}",
-            fontsize=14, fontweight="bold"
-        )
-        plt.tight_layout()
+    # --- Plot 3: Clinical Significance Pie ---
+    sig_counts = Counter(v.clinical_significance for v in variants)
+    sig_labels = list(sig_counts.keys())
+    sig_values = list(sig_counts.values())
+    pie_colors = []
+    color_map = {
+        "Pathogenic": "rgba(244,67,54,0.8)",
+        "Likely pathogenic": "rgba(255,152,0,0.8)",
+        "Uncertain significance": "rgba(255,193,7,0.8)",
+        "Benign": "rgba(76,175,80,0.8)",
+        "Unknown": "rgba(158,158,158,0.8)"
+    }
+    for label in sig_labels:
+        pie_colors.append(color_map.get(label, "rgba(158,158,158,0.8)"))
 
-        gene_path = output_dir / f"{result.file_name}_genes.png"
-        plt.savefig(gene_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        plot_paths.append(str(gene_path))
-        logger.info(f"Saved gene distribution plot: {gene_path}")
+    sig_html = f"""<!DOCTYPE html>
+<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{{background:#1a1f35;margin:0;padding:16px;display:flex;justify-content:center;}} canvas{{background:#111827;}}</style>
+</head><body>
+<canvas id="sig" width="500" height="400"></canvas>
+<script>
+const ctx = document.getElementById('sig').getContext('2d');
+new Chart(ctx, {{
+    type: 'pie',
+    data: {{
+        labels: {json.dumps(sig_labels)},
+        datasets: [{{
+            data: {json.dumps(sig_values)},
+            backgroundColor: {json.dumps(pie_colors)},
+            borderColor: '#0a0e1a',
+            borderWidth: 2
+        }}]
+    }},
+    options:{{
+        responsive:true,
+        plugins:{{
+            legend:{{labels:{{color:'#e0e6f0'}}}},
+            title:{{display:true,text:'Clinical Significance — {result.file_name}',color:'#f1f5f9',font:{{size:16}}}}
+        }}
+    }}
+}});
+</script></body></html>"""
 
-    # --- Plot 3: Clinical Significance Pie Chart ---
-    if annotated:
-        fig, ax = plt.subplots(figsize=(8, 8))
-        sig_counts = Counter(v.clinical_significance for v in variants)
-
-        colors_sig = {
-            "Pathogenic": "#F44336",
-            "Likely pathogenic": "#FF9800",
-            "Uncertain significance": "#FFC107",
-            "Benign": "#4CAF50",
-            "Unknown": "#9E9E9E"
-        }
-
-        labels = list(sig_counts.keys())
-        sizes = list(sig_counts.values())
-        pie_colors = [colors_sig.get(l, "#9E9E9E") for l in labels]
-
-        wedges, texts, autotexts = ax.pie(
-            sizes,
-            labels=labels,
-            colors=pie_colors,
-            autopct="%1.1f%%",
-            startangle=90,
-            pctdistance=0.85
-        )
-
-        for text in autotexts:
-            text.set_fontsize(11)
-            text.set_fontweight("bold")
-
-        ax.set_title(
-            f"Clinical Significance of Variants\n{result.file_name}",
-            fontsize=14, fontweight="bold"
-        )
-        plt.tight_layout()
-
-        sig_path = output_dir / f"{result.file_name}_significance.png"
-        plt.savefig(sig_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        plot_paths.append(str(sig_path))
-        logger.info(f"Saved significance plot: {sig_path}")
+    p = str(out_dir / f"{result.file_name}_significance.html")
+    Path(p).write_text(sig_html, encoding="utf-8")
+    plot_paths.append(p)
+    logger.info(f"Saved significance plot: {p}")
 
     return plot_paths
 
