@@ -90,3 +90,107 @@ User Q&A also goes here
 - v0.3.0 — All three pipelines complete
 - v0.4.0 — Full-stack demo (frontend + backend)
 - v0.5.0 — Ollama LLM integration (IN PROGRESS)
+
+# BioAgent — Project Continuity Document
+
+**Last Updated:** May 2, 2026
+**Current Version:** v0.5.0 (COMPLETE ✅)
+**Next Version:** v0.6.0 (Deployment prep + polish)
+
+---
+
+## What's Built and Working
+
+### Core System
+- File auto-detection: FASTA/FASTQ (95%), VCF (99%), CSV/TSV (80%)
+- Pipeline router: routes to correct pipeline with reasoning
+- RAG system: 640 chunks, ChromaDB, sentence-transformers all-MiniLM-L6-v2
+- Ollama Q&A: llama3.2:3b running locally, ANSI codes cleaned
+- 23 tests passing
+
+### Three Pipelines
+- FASTA QC: GC content, length distribution, complexity, Chart.js plots
+- RNA-seq: CPM normalisation, t-test DE, volcano + heatmap (PCA disabled — Windows numpy segfault)
+- Variant Annotation: VCF parsing, clinical annotation, 8 known variants (BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA, NRAS, NRAS)
+
+### Frontend + Backend
+- FastAPI backend: /upload, /health, /ask/{job_id}, /jobs
+- Web frontend: drag-drop, interactive plots (iframes), Q&A box
+- Served at: http://localhost:8000/frontend/index.html
+- Plots: Chart.js HTML files written directly — no matplotlib (Windows segfault fix)
+
+---
+
+## How to Start the System
+
+```bash
+conda activate bioagent
+cd C:\Users\Invate\Downloads\Bioinformatics-Agent
+& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m uvicorn bioagent.api.main:app --host 0.0.0.0 --port 8000
+```
+
+Then open: `http://localhost:8000/frontend/index.html`
+
+### Run Tests
+```bash
+& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m pytest tests/ -v
+```
+
+### Sample Test Files
+- `data/sample/test.fasta` — 2 sequences, 45.84% GC
+- `data/sample/test.vcf` — 8 pathogenic variants
+- `data/sample/counts.csv` — 12 genes, healthy vs cancer (use labels: healthy / cancer)
+
+---
+
+## Key Files
+src/bioagent/
+├── agent/
+│   ├── detector.py       — file type detection
+│   ├── router.py         — pipeline routing
+│   └── explainer.py      — Ollama Q&A (ANSI fix applied)
+├── pipelines/
+│   ├── fasta_qc.py       — FASTA pipeline (Chart.js plots)
+│   ├── rnaseq.py         — RNA-seq pipeline (PCA disabled)
+│   └── variant_annotation.py — VCF pipeline (Chart.js plots)
+├── rag/
+│   ├── embedder.py, vector_store.py, ingestion.py, retriever.py
+├── api/
+│   └── main.py           — FastAPI (thread pool executor for pipeline)
+└── utils/
+├── logger.py
+├── plot_runner.py          — UNUSED (subprocess segfault)
+├── rnaseq_plot_runner.py   — UNUSED (subprocess segfault)
+└── variant_plot_runner.py  — UNUSED (subprocess segfault)
+frontend/
+└── index.html            — drag-drop UI + Q&A box
+
+---
+
+## Known Issues / Technical Debt
+- PCA disabled in rnaseq.py — np.linalg.eigh causes Windows segfault in uvicorn worker
+- matplotlib removed from all pipelines — same Windows segfault issue
+- plot_runner.py files unused — Plotly also segfaults in subprocess on Windows
+- All three issues resolve automatically when deployed to Linux
+- Ollama responses slightly repetitive — llama3.2:3b limitation, upgrade to 7b when hardware allows
+- RAG telemetry warnings (ChromaDB) — harmless, cosmetic only
+
+---
+
+## Version History
+- v0.0.1 — Project skeleton
+- v0.1.0 — FASTA QC pipeline
+- v0.2.0 — RNA-seq pipeline  
+- v0.3.0 — All three pipelines
+- v0.4.0 — Full-stack demo (frontend + backend)
+- v0.5.0 — Ollama LLM integration + Q&A ✅
+
+---
+
+## v0.6.0 Plan (Next Session)
+- Deploy to free Linux server (Render or Railway)
+- Re-enable PCA and matplotlib on Linux
+- Add error handling improvements
+- Add loading states and better UX feedback
+- Prepare portfolio writeup for job applications
+- README polish for GitHub visibility
