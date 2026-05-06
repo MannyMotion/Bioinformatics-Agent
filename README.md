@@ -32,7 +32,7 @@ You upload a file. The system does the rest:
 
 **Example result:** E. coli K-12 genome sequences — 47.37% GC content, median length 140bp, all QC metrics passing
 
-![FASTA QC](screenshots/fasta_qc.png)
+![FASTA QC](screenshots/fasta_qc.png.png)
 
 ---
 
@@ -45,7 +45,7 @@ You upload a file. The system does the rest:
 
 **Example result:** Breast cancer vs normal — identified ERBB2/HER2 (+4.05 log2FC), MKI67 (+4.84 log2FC) upregulated; FOXA1 (-2.55 log2FC), BRCA1 (-1.48 log2FC) downregulated. These are real clinically validated biomarkers.
 
-![RNA-seq Analysis](screenshots/rnaseq.png)
+![RNA-seq Analysis](screenshots/rnaseq.png.png)
 
 ---
 
@@ -58,7 +58,7 @@ You upload a file. The system does the rest:
 
 **Example result:** 12 variants analysed — 8 pathogenic variants identified including BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA
 
-![Variant Annotation](screenshots/variant.png)
+![Variant Annotation](screenshots/variant.png.png)
 
 ---
 
@@ -72,7 +72,7 @@ After every analysis, users can ask follow-up questions in plain English:
 
 Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base built from bioinformatics literature — grounded, not hallucinated.
 
-![Ollama Q&A](screenshots/qa.png)
+![Ollama Q&A](screenshots/variant_Q&A.png.png)
 
 ---
 
