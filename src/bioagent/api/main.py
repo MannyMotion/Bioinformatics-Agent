@@ -10,6 +10,7 @@ Purpose: FastAPI backend for the BioAgent system.
          POST /upload     — upload a bioinformatics file
          GET  /analyse/{job_id} — get analysis results
          GET  /health     — check server is running
+         POST /ask/{job_id} — ask Ollama a follow-up question
 
 Inputs:  Multipart file upload via HTTP POST
 Outputs: JSON responses with analysis results and plot paths
@@ -18,20 +19,32 @@ Author:  Emmanuel Ogbu (Manny)
 Date:    2026-04-28
 """
 
+import asyncio
 import uuid
 import shutil
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from bioagent.agent.router import route_file
 from bioagent.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+# Security constants
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB — reject anything larger
+ALLOWED_EXTENSIONS = {
+    '.fasta', '.fa', '.fna', '.fastq',
+    '.vcf', '.csv', '.tsv', '.txt'
+}
 
 # Directories for uploaded files and outputs
 UPLOAD_DIR = Path("uploads")
@@ -43,12 +56,24 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 # In production this would be a database (SQLite/PostgreSQL)
 job_store: dict[str, dict] = {}
 
+# Rate limiter — prevents abuse of the API
+# key_func=get_remote_address limits per IP address
+limiter = Limiter(key_func=get_remote_address)
+
+# Thread pool for running CPU-bound pipeline in background
+# Prevents matplotlib/numpy from crashing the async event loop on Windows
+executor = ThreadPoolExecutor(max_workers=2)
+
 # Initialise FastAPI app
 app = FastAPI(
     title="BioAgent API",
     description="Agentic Bioinformatics Analysis System",
-    version="0.3.0"
+    version="0.5.0"
 )
+
+# Wire rate limiter into FastAPI exception handling
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Allow frontend to talk to backend (CORS)
 app.add_middleware(
@@ -58,7 +83,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve output plots as static files
+# Serve output plots and frontend as static files
 app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
@@ -69,25 +94,50 @@ def health_check() -> dict:
     Health check endpoint.
     Returns server status — used by frontend to verify API is running.
     """
-    return {"status": "ok", "version": "0.3.0"}
+    return {"status": "ok", "version": "0.5.0"}
 
-
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
-
-executor = ThreadPoolExecutor(max_workers=2)
 
 @app.post("/upload")
+@limiter.limit("10/minute")  # max 10 uploads per minute per IP
 async def upload_file(
+    request: Request,  # required by slowapi for rate limiting
     file: UploadFile = File(...),
     control_label: str = Form(default="control"),
     treatment_label: str = Form(default="treatment")
 ) -> JSONResponse:
-    """Upload a bioinformatics file and run the appropriate pipeline."""
+    """
+    Upload a bioinformatics file and run the appropriate pipeline.
 
+    Security checks applied:
+    - Rate limited to 10 uploads per minute per IP
+    - File size capped at 50MB
+    - Only known bioinformatics extensions accepted
+
+    Args:
+        request: FastAPI request object (required by slowapi).
+        file: The uploaded bioinformatics file.
+        control_label: For CSV files — column prefix for control samples.
+        treatment_label: For CSV files — column prefix for treatment samples.
+
+    Returns:
+        JSON with job_id, detected file type, pipeline used, and results.
+    """
     job_id = str(uuid.uuid4())[:8]
     logger.info(f"New upload job: {job_id} — file: {file.filename}")
 
+    # Security check 1 — validate file extension before saving
+    file_extension = Path(file.filename).suffix.lower()
+    if file_extension not in ALLOWED_EXTENSIONS:
+        logger.warning(f"Rejected upload: disallowed extension '{file_extension}'")
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"File type '{file_extension}' not allowed. "
+                f"Supported formats: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+            )
+        )
+
+    # Save uploaded file to disk
     upload_path = UPLOAD_DIR / f"{job_id}_{file.filename}"
     try:
         with open(upload_path, "wb") as buffer:
@@ -97,8 +147,23 @@ async def upload_file(
         logger.error(f"Failed to save upload: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to save file: {e}")
 
-    # Run pipeline in thread pool — prevents matplotlib from crashing
-    # the async uvicorn event loop on Windows
+    # Security check 2 — validate file size after saving
+    file_size = upload_path.stat().st_size
+    if file_size > MAX_FILE_SIZE:
+        upload_path.unlink()  # delete the oversized file immediately
+        logger.warning(
+            f"Rejected upload: file too large "
+            f"({file_size / 1024 / 1024:.1f}MB > 50MB limit)"
+        )
+        raise HTTPException(
+            status_code=413,
+            detail=(
+                f"File too large ({file_size / 1024 / 1024:.1f}MB). "
+                f"Maximum allowed size is 50MB."
+            )
+        )
+
+    # Run pipeline in thread pool — prevents crashes on Windows
     try:
         loop = asyncio.get_event_loop()
         result, decision = await loop.run_in_executor(
@@ -124,11 +189,17 @@ async def upload_file(
 
 
 @app.post("/ask/{job_id}")
-async def ask_question(job_id: str, question: str = Form(...)) -> JSONResponse:
+@limiter.limit("20/minute")  # more generous limit for Q&A
+async def ask_question(
+    request: Request,
+    job_id: str,
+    question: str = Form(...)
+) -> JSONResponse:
     """
-    Answer a follow-up question about a completed analysis.
+    Answer a follow-up question about a completed analysis using Ollama.
 
     Args:
+        request: FastAPI request object (required by slowapi).
         job_id: The job ID from a previous /upload call.
         question: The user's follow-up question.
 
@@ -139,6 +210,13 @@ async def ask_question(job_id: str, question: str = Form(...)) -> JSONResponse:
         raise HTTPException(
             status_code=404,
             detail=f"Job {job_id} not found."
+        )
+
+    # Security: cap question length to prevent prompt injection
+    if len(question) > 500:
+        raise HTTPException(
+            status_code=400,
+            detail="Question too long. Maximum 500 characters."
         )
 
     job_data = job_store[job_id]
@@ -176,7 +254,7 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
     Returns:
         Dictionary safe to serialise as JSON.
     """
-    # Convert plot paths to URL paths for frontend access
+    # Convert Windows backslashes to forward slashes for URL paths
     plot_urls = [
         "/" + p.replace("\\", "/")
         for p in result.plot_paths
@@ -194,7 +272,7 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
         "plot_urls": plot_urls,
     }
 
-    # Add pipeline-specific stats FIRST
+    # Add pipeline-specific stats
     if hasattr(result, "mean_gc"):
         base["stats"] = {
             "total_sequences": result.total_sequences,
@@ -220,8 +298,4 @@ def _package_results(job_id: str, result: Any, decision: Any) -> dict:
             "pathogenic_count": result.pathogenic_count,
         }
 
-    # Ollama explanation is generated via /ask endpoint (async Q&A)
-    # Not called during upload to avoid browser timeout
-    # use_rag=True in router handles RAG context for basic interpretation
-    
     return base
