@@ -1,275 +1,272 @@
 # 🧬 BioAgent — Agentic Bioinformatics Analysis System
 
-![Version](https://img.shields.io/badge/version-0.4.0-blue)
-![Python](https://img.shields.io/badge/python-3.11-green)
-![License](https://img.shields.io/badge/license-MIT-orange)
-![Tests](https://img.shields.io/badge/tests-23%20passing-brightgreen)
+> Upload any bioinformatics file. BioAgent auto-detects the data type, selects the correct analysis pipeline, runs the full workflow, and explains the results in plain English — powered by a local LLM and a RAG knowledge base.
 
-> An AI-powered bioinformatics platform that automatically detects uploaded data files, selects the appropriate analysis pipeline, executes the full workflow, and explains every decision in plain English — backed by a RAG knowledge base trained on MSc-level bioinformatics notes.
+![FASTA QC Pipeline](screenshots/fasta_qc.png)
 
 ---
 
-## 🎯 What BioAgent Does
+## What It Does
 
-A researcher uploads any bioinformatics file. BioAgent:
+Most bioinformatics tools require you to already know which pipeline to run, which parameters to set, and how to interpret the output. BioAgent removes that barrier.
 
-1. **Auto-detects** the file type (FASTA, FASTQ, VCF, CSV) with confidence scoring
-2. **Selects** the correct pipeline and explains why in plain English
-3. **Executes** the full analysis automatically
-4. **Generates** publication-quality visualisations
-5. **Interprets** results using a RAG knowledge base of bioinformatics literature
+You upload a file. The system does the rest:
 
-No configuration. No pipeline selection. Just upload and analyse.
-
----
-
-## 🏗️ Architecture
-
-┌─────────────────────────────────────────────────────┐
-│                   Web Frontend                       │
-│         (Drag & drop upload, results display)        │
-└─────────────────────┬───────────────────────────────┘
-│ HTTP
-┌─────────────────────▼───────────────────────────────┐
-│                  FastAPI Backend                     │
-│              POST /upload  GET /health               │
-└──────────┬──────────────────────────────────────────┘
-│
-┌──────────▼──────────┐    ┌─────────────────────────┐
-│   File Detector     │    │     RAG Knowledge Base   │
-│  (auto-detects type)│    │  640 chunks from MSc     │
-└──────────┬──────────┘    │  bioinformatics notes    │
-│               │  ChromaDB + sentence-    │
-┌──────────▼──────────┐    │  transformers            │
-│   Pipeline Router   │◄───┘                          │
-│  (selects pipeline) │                               │
-└──────────┬──────────┘                               │
-│                                          │
-┌──────┴────────────────┐                        │
-│                       │                        │
-┌───▼────┐  ┌──────────┐  ┌▼──────────┐            │
-│FASTA QC│  │ RNA-seq  │  │  Variant  │            │
-│Pipeline│  │ Pipeline │  │Annotation │            │
-└───┬────┘  └────┬─────┘  └─────┬─────┘            │
-│            │              │                   │
-└────────────┴──────────────┘                   │
-│                                  │
-┌────────────▼──────────────┐                  │
-│   Visualisation Engine    │                  │
-│ Matplotlib + Seaborn +    │                  │
-│ Publication-quality plots │                  │
-└───────────────────────────┘                  │
+1. **Auto-detects** the file type (FASTA, FASTQ, VCF, CSV, TSV)
+2. **Selects** the correct pipeline and explains *why*
+3. **Runs** the full analysis — QC, normalisation, differential expression, variant annotation
+4. **Generates** interactive visualisations
+5. **Interprets** the results in plain biological English
+6. **Answers** follow-up questions via a local LLM (Ollama + RAG)
 
 ---
 
-## 🔬 Pipelines
+## Pipelines
 
-### Pipeline 1 — FASTA Quality Control
-**Triggered by:** `.fasta`, `.fa`, `.fna`, `.fastq` files
-
-Analyses:
-- GC content per sequence (flags AT-rich or GC-rich outliers)
+### 🔬 FASTA/FASTQ — Sequence Quality Control
+- GC content distribution
 - Sequence length distribution
-- Nucleotide composition (A/T/G/C/N ratios)
-- Low complexity sequence detection (k-mer diversity)
+- Low complexity sequence detection
+- Nucleotide composition analysis
+- Biological interpretation of QC results
 
-Outputs:
-- GC content distribution histogram
-- Sequence length distribution plot
-- Nucleotide composition bar chart
-- QC report with biological interpretation
+**Example result:** E. coli K-12 genome sequences — 47.37% GC content, median length 140bp, all QC metrics passing
 
----
-
-### Pipeline 2 — RNA-seq Differential Expression
-**Triggered by:** `.csv`, `.tsv` gene count matrices
-
-Analyses:
-- CPM normalisation (removes library size bias)
-- Differential expression (t-test, log2 fold change)
-- Significance filtering (p < 0.05, |log2FC| ≥ 1.0)
-
-Outputs:
-- Volcano plot (fold change vs significance, genes labelled)
-- PCA plot (sample clustering by condition)
-- Heatmap (top differentially expressed genes)
-- Full DE results with biological interpretation
+![FASTA QC](screenshots/fasta_qc.png)
 
 ---
 
-### Pipeline 3 — Variant Annotation
-**Triggered by:** `.vcf` files
+### 📊 RNA-seq — Differential Expression Analysis
+- CPM normalisation
+- Two-sample t-test for differential expression
+- Volcano plot (log2 fold change vs significance)
+- Heatmap of top differentially expressed genes
+- Biological interpretation of gene findings
 
-Analyses:
-- VCF parsing (CHROM, POS, REF, ALT, QUAL, INFO fields)
-- Quality filtering (PHRED score threshold)
-- Clinical annotation (gene name, consequence, condition)
-- Pathogenicity classification
+**Example result:** Breast cancer vs normal — identified ERBB2/HER2 (+4.05 log2FC), MKI67 (+4.84 log2FC) upregulated; FOXA1 (-2.55 log2FC), BRCA1 (-1.48 log2FC) downregulated. These are real clinically validated biomarkers.
 
-Outputs:
-- Variant quality score chart
-- Variants per gene bar chart
-- Clinical significance pie chart
-- Pathogenic variant report with gene-disease associations
+![RNA-seq Analysis](screenshots/rnaseq.png)
 
 ---
 
-## 🧠 RAG Knowledge Base
+### 🧬 Variant Annotation — Clinical VCF Analysis
+- VCF parsing and quality filtering
+- Clinical significance annotation (ClinVar rsIDs)
+- Gene-level variant mapping
+- Pathogenicity assessment
+- Clinical alert system for pathogenic findings
 
-The system includes a semantic knowledge base built from MSc Bioinformatics lecture notes covering:
+**Example result:** 12 variants analysed — 8 pathogenic variants identified including BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA
 
-- Genomics and sequence analysis
-- Transcriptomics and RNA-seq methods
-- Proteomics
-- Variant calling and annotation
-- FastQC quality control
-- Sequence alignment and phylogenetics
-- BioPython workflows
-
-**Technology:** ChromaDB vector database + sentence-transformers (`all-MiniLM-L6-v2`)
-**Size:** 640 chunks, queryable in <2 seconds
+![Variant Annotation](screenshots/variant.png)
 
 ---
 
-## 🚀 Installation & Setup
+## AI-Powered Q&A
 
-### Prerequisites
-- Python 3.11+
-- Anaconda or Miniconda
-- Git
+After every analysis, users can ask follow-up questions in plain English:
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/MannyMotion/Bioinformatics-Agent.git
-cd Bioinformatics-Agent
+> *"What does ERBB2 upregulation mean clinically?"*
+> *"Why is BRCA1 downregulated in cancer?"*
+> *"What should I do next with these variant findings?"*
+
+Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base built from bioinformatics literature — grounded, not hallucinated.
+
+![Ollama Q&A](screenshots/qa.png)
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    BioAgent System                       │
+├─────────────────────────────────────────────────────────┤
+│  Frontend (HTML/CSS/JS)                                  │
+│  └── Drag-drop upload, interactive plots, Q&A box        │
+├─────────────────────────────────────────────────────────┤
+│  FastAPI Backend                                         │
+│  ├── File Type Detector (FASTA/VCF/CSV — 95-99% conf.)  │
+│  ├── Pipeline Router (selects correct analysis)          │
+│  └── Security (rate limiting, file validation)           │
+├─────────────────────────────────────────────────────────┤
+│  Analysis Pipelines                                      │
+│  ├── FASTA QC Pipeline                                   │
+│  ├── RNA-seq Differential Expression Pipeline            │
+│  └── Variant Annotation Pipeline                         │
+├─────────────────────────────────────────────────────────┤
+│  AI Layer                                                │
+│  ├── RAG System (ChromaDB + sentence-transformers)       │
+│  │   └── 640 chunks from bioinformatics literature       │
+│  └── Ollama LLM (llama3.2:3b — runs 100% locally)       │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### 2. Create the conda environment
-```bash
-conda env create -f environment.yml
-conda activate bioagent
-```
-
-### 3. Install the package
-```bash
-pip install -e .
-```
-
-### 4. Start the backend server
-```bash
-python -m uvicorn bioagent.api.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 5. Open the frontend
-Open `frontend/index.html` in your browser. You should see **"Server Online"** in the top right.
-
 ---
 
-## 📁 Project Structure
-
-bioinformatics-agent/
-├── src/bioagent/
-│   ├── agent/
-│   │   ├── detector.py          # File type auto-detection
-│   │   └── router.py            # Pipeline routing logic
-│   ├── api/
-│   │   └── main.py              # FastAPI REST backend
-│   ├── parsers/
-│   │   └── fasta_parser.py      # FASTA file parser
-│   ├── pipelines/
-│   │   ├── fasta_qc.py          # FASTA QC pipeline
-│   │   ├── rnaseq.py            # RNA-seq pipeline
-│   │   └── variant_annotation.py # Variant annotation pipeline
-│   ├── rag/
-│   │   ├── embedder.py          # Text embedding (sentence-transformers)
-│   │   ├── ingestion.py         # Document chunking and indexing
-│   │   ├── retriever.py         # Semantic similarity search
-│   │   └── vector_store.py      # ChromaDB interface
-│   └── utils/
-│       └── logger.py            # Centralised logging
-├── frontend/
-│   └── index.html               # Web interface
-├── data/
-│   ├── sample/                  # Test files (FASTA, VCF, CSV)
-│   └── knowledge/               # Ingested lecture notes
-├── tests/                       # 23 unit tests
-├── environment.yml              # Conda environment
-└── requirements.txt             # Python dependencies
-
----
-
-## 🧪 Running Tests
-
-```bash
-python -m pytest tests/ -v
-```
-
-Expected output: **23 passed**
-
----
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | HTML5, CSS3, Vanilla JS |
-| Backend | FastAPI, Uvicorn |
-| RAG | ChromaDB, sentence-transformers |
-| Bioinformatics | BioPython, pandas, scipy |
-| Visualisation | Matplotlib, Seaborn |
-| ML | scikit-learn (PCA) |
-| Language | Python 3.11 |
-| Version Control | Git, GitHub |
+| Backend | FastAPI, Python 3.11 |
+| Frontend | HTML, CSS, JavaScript, Chart.js |
+| AI / LLM | Ollama (llama3.2:3b) — local, no API key |
+| RAG | ChromaDB, sentence-transformers (all-MiniLM-L6-v2) |
+| Data | pandas, NumPy, SciPy, BioPython |
+| Security | slowapi (rate limiting), file validation |
+| Version Control | Git / GitHub |
 
 ---
 
-## 📊 Test Results
+## Project Structure
 
-tests/test_detector.py          4 passed
-tests/test_fasta_qc.py          5 passed
-tests/test_retriever.py         4 passed
-tests/test_rnaseq.py            5 passed
-tests/test_variant_annotation.py 5 passed
-─────────────────────────────────────────
-TOTAL                          23 passed
-
----
-
-## 🗺️ Roadmap
-
-### v0.5.0 — LLM Integration (Ollama)
-- Integrate Ollama (llama3.2:3b) as reasoning engine
-- Natural language explanations of every analysis step
-- Interactive Q&A about results
-- Pipeline decision explanations grounded in RAG context
-
-### v0.6.0 — Additional Pipelines
-- Metagenomics pipeline (16S rRNA analysis)
-- Protein structure prediction pipeline
-- Epigenomics (ATAC-seq, ChIP-seq)
-
-### v1.0.0 — SaaS Launch
-- User authentication
-- Subscription tiers (Free / Pro / Enterprise)
-- Cloud deployment (AWS/GCP)
-- API access for programmatic use
-- Team collaboration features
-
----
-
-## 👤 Author
-
-**Emmanuel Ogbu (Manny)**
-MSc Bioinformatics — University of Bradford
-BSc Biomedical Science — Manchester Metropolitan University
-
-GitHub: [@MannyMotion](https://github.com/MannyMotion)
+```
+Bioinformatics-Agent/
+├── src/bioagent/
+│   ├── agent/
+│   │   ├── detector.py        # Auto file type detection
+│   │   ├── router.py          # Pipeline selection logic
+│   │   └── explainer.py       # Ollama Q&A integration
+│   ├── pipelines/
+│   │   ├── fasta_qc.py        # FASTA/FASTQ quality control
+│   │   ├── rnaseq.py          # RNA-seq differential expression
+│   │   └── variant_annotation.py  # VCF clinical annotation
+│   ├── rag/
+│   │   ├── embedder.py        # sentence-transformers embedding
+│   │   ├── vector_store.py    # ChromaDB vector database
+│   │   ├── ingestion.py       # Knowledge base ingestion
+│   │   └── retriever.py       # RAG context retrieval
+│   ├── api/
+│   │   └── main.py            # FastAPI application
+│   └── utils/
+│       └── logger.py          # Structured logging
+├── frontend/
+│   └── index.html             # Single-page web interface
+├── data/
+│   ├── knowledge/             # RAG knowledge base documents
+│   └── sample/                # Test datasets
+├── tests/                     # 23 passing unit tests
+├── scripts/                   # Utility scripts
+└── requirements.txt
+```
 
 ---
 
-## 📚 References
+## Getting Started
 
-- Andrews S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data. Babraham Bioinformatics.
-- Love MI, Huber W, Anders S. (2014). Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. *Genome Biology*, 15:550. https://doi.org/10.1186/s13059-014-0550-8
-- McLaren W, et al. (2016). The Ensembl Variant Effect Predictor. *Genome Biology*, 17:122. https://doi.org/10.1186/s13059-016-0974-4
-- Kim D, et al. (2019). Graph-based genome alignment and genotyping with HISAT2 and HISAT-genotype. *Nature Biotechnology*, 37:907–915. https://doi.org/10.1038/s41587-019-0201-4
+### Prerequisites
+- Python 3.11+
+- Conda (recommended)
+- [Ollama](https://ollama.com/download) installed
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/MannyMotion/Bioinformatics-Agent.git
+cd Bioinformatics-Agent
+
+# Create and activate conda environment
+conda create -n bioagent python=3.11
+conda activate bioagent
+
+# Install dependencies
+pip install -e .
+
+# Pull the Ollama model (2GB download)
+ollama pull llama3.2:3b
+```
+
+### Run the system
+
+```bash
+# Start the backend server
+python -m uvicorn bioagent.api.main:app --host 0.0.0.0 --port 8000
+
+# Open in browser
+# http://localhost:8000/frontend/index.html
+```
+
+### Run tests
+
+```bash
+pytest tests/ -v
+# Expected: 23 passed
+```
+
+---
+
+## Supported File Formats
+
+| Format | Pipeline | Use Case |
+|--------|----------|----------|
+| `.fasta`, `.fa`, `.fna` | FASTA QC | Genome sequences, assembled contigs |
+| `.fastq` | FASTA QC | Raw sequencing reads |
+| `.vcf` | Variant Annotation | SNPs, indels, clinical variants |
+| `.csv`, `.tsv` | RNA-seq DE | Gene expression count matrices |
+
+---
+
+## Validated Results
+
+System tested against real biological datasets:
+
+- **Breast cancer RNA-seq** — correctly identified HER2/ERBB2 overexpression (+4.05 log2FC), a known therapeutic target in breast cancer
+- **Clinical VCF** — detected 8 pathogenic variants including BRCA1, TP53, KRAS from ClinVar rsIDs
+- **E. coli K-12 FASTA** — GC content 47.37% (published value: 50.8%), no low-complexity sequences detected
+
+---
+
+## Security
+
+- Rate limiting: 10 uploads/minute per IP (slowapi)
+- File size cap: 50MB maximum
+- Extension whitelist: only known bioinformatics formats accepted
+- Question length cap: 500 characters (prevents prompt injection)
+- No API keys required — all AI runs locally via Ollama
+
+---
+
+## Version History
+
+| Version | Description |
+|---------|-------------|
+| v0.1.0 | FASTA QC pipeline |
+| v0.2.0 | RNA-seq differential expression pipeline |
+| v0.3.0 | Variant annotation pipeline |
+| v0.4.0 | Full-stack web interface |
+| v0.5.0 | Ollama LLM integration + RAG Q&A |
+| v0.5.1 | Security hardening (rate limiting, validation) |
+
+---
+
+## About
+
+Built by **Emmanuel Ogbu (Manny)** — MSc Bioinformatics (University of Bradford), BSc Biomedical Science (Manchester Metropolitan University).
+
+This project was built to demonstrate end-to-end agentic bioinformatics — combining classical computational biology pipelines with modern AI (RAG + LLM) to make genomic analysis accessible without requiring deep tool expertise.
+
+**GitHub:** [github.com/MannyMotion](https://github.com/MannyMotion)
+
+---
+
+## Roadmap
+
+- [ ] Deploy to cloud (Render/Railway) for live demo URL
+- [ ] Re-enable PCA on Linux deployment
+- [ ] FASTQ quality trimming (Trimmomatic integration)
+- [ ] Metagenomics pipeline
+- [ ] Proteomics pipeline (CSV mass spec data)
+- [ ] User accounts and job history (SQLite)
+- [ ] SaaS deployment
+
+---
+
+## Acknowledgements
+
+- [FastAPI](https://fastapi.tiangolo.com/) — backend framework
+- [Ollama](https://ollama.com/) — local LLM inference
+- [ChromaDB](https://www.trychroma.com/) — vector database
+- [Chart.js](https://www.chartjs.org/) — interactive visualisations
+- [sentence-transformers](https://www.sbert.net/) — text embeddings
+- BioPython, pandas, SciPy — bioinformatics data processing
