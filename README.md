@@ -2,7 +2,7 @@
 
 > Upload any bioinformatics file. BioAgent auto-detects the data type, selects the correct analysis pipeline, runs the full workflow, and explains the results in plain English — powered by a local LLM and a RAG knowledge base.
 
-![FASTA QC Pipeline](frontend-bioanalyser.png)
+![FASTA QC Pipeline](frontend-bioanalyser.png.png)
 
 ---
 
