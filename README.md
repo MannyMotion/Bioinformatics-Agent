@@ -2,7 +2,7 @@
 
 > Upload any bioinformatics file. BioAgent auto-detects the data type, selects the correct analysis pipeline, runs the full workflow, and explains the results in plain English — powered by a local LLM and a RAG knowledge base.
 
-![FASTA QC Pipeline](screenshots/fasta_qc.png.png)
+![FASTA QC Pipeline](screenshots/frontend_bioanalyser.png.png)
 
 ---
 
@@ -72,7 +72,7 @@ After every analysis, users can ask follow-up questions in plain English:
 
 Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base built from bioinformatics literature — grounded, not hallucinated.
 
-![Ollama Q&A](screenshots/variant_Q$A.png.png)
+![Ollama Q&A](screenshots/variant_Q&A.png.png)
 
 ---
 
