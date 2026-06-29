@@ -2,12 +2,17 @@
 explainer.py
 
 Purpose: Generate rich, natural language biological explanations of
-         pipeline results using Ollama (local LLM) grounded in the
+         pipeline results using Groq's hosted LLM API, grounded in the
          RAG knowledge base. This is the "brain" of the system —
          it turns raw statistics into bioinformatician-quality insights.
 
          Flow:
-         pipeline_result + RAG context → Ollama prompt → rich explanation
+         pipeline_result + RAG context → Groq prompt → rich explanation
+
+         Previously used Ollama (local LLM via subprocess). Swapped to
+         Groq's free tier so the explainer can run on memory-constrained
+         deployment hosts (e.g. Render free tier, 512MB RAM) where Ollama
+         cannot run. Groq's free tier: https://console.groq.com/keys
 
 Inputs:  Pipeline result object (QCResult, RNAseqResult, VariantResult)
          Optional: user follow-up question string
@@ -17,18 +22,22 @@ Author:  Emmanuel Ogbu (Manny)
 Date:    2026-05-01
 """
 
-import subprocess
 import json
+import os
 from typing import Any
+
+import requests
 
 from bioagent.rag.retriever import BioRetriever
 from bioagent.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-# Model to use — llama3.2:3b runs on your i5 with 16GB RAM
-# Responses take 10-30 seconds locally — acceptable for demo
-OLLAMA_MODEL = "llama3.2:3b"
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+# Free-tier model — fast (LPU hardware), good quality for this use case.
+# Override with the GROQ_MODEL env var if needed.
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 
 def explain_results(
@@ -39,10 +48,10 @@ def explain_results(
     use_rag: bool = True
 ) -> str:
     """
-    Generate a rich biological explanation of pipeline results using Ollama.
+    Generate a rich biological explanation of pipeline results using Groq.
 
     Queries the RAG knowledge base for relevant context, then passes
-    the results + context to Ollama to generate a natural language
+    the results + context to Groq to generate a natural language
     explanation that reads like a bioinformatician wrote it.
 
     Args:
@@ -53,10 +62,10 @@ def explain_results(
         use_rag: Whether to query RAG for additional context.
 
     Returns:
-        Rich natural language explanation string from Ollama.
-        Falls back to basic interpretation if Ollama unavailable.
+        Rich natural language explanation string from Groq.
+        Falls back to basic interpretation if Groq is unavailable.
     """
-    logger.info(f"Generating Ollama explanation for: {pipeline_name}")
+    logger.info(f"Generating Groq explanation for: {pipeline_name}")
 
     # Step 1 — Build RAG context
     rag_context = ""
@@ -73,13 +82,13 @@ def explain_results(
     # Step 2 — Build the prompt
     prompt = _build_prompt(pipeline_name, stats, warnings, rag_context)
 
-    # Step 3 — Call Ollama
+    # Step 3 — Call Groq
     try:
-        explanation = _call_ollama(prompt)
-        logger.info("Ollama explanation generated successfully.")
+        explanation = _call_groq(prompt)
+        logger.info("Groq explanation generated successfully.")
         return explanation
     except Exception as e:
-        logger.warning(f"Ollama unavailable: {e}. Using basic interpretation.")
+        logger.warning(f"Groq unavailable: {e}. Using basic interpretation.")
         return _fallback_explanation(pipeline_name, stats, warnings)
 
 
@@ -90,10 +99,10 @@ def answer_question(
     interpretation: str
 ) -> str:
     """
-    Answer a follow-up question about pipeline results using Ollama.
+    Answer a follow-up question about pipeline results using Groq.
 
     This enables the Q&A feature in the frontend — users can ask
-    "Why is BRCA1 downregulated?" and Ollama answers using the
+    "Why is BRCA1 downregulated?" and Groq answers using the
     pipeline context.
 
     Args:
@@ -103,7 +112,7 @@ def answer_question(
         interpretation: The original interpretation text.
 
     Returns:
-        Ollama's answer to the question as a string.
+        Groq's answer to the question as a string.
     """
     logger.info(f"Answering follow-up question: {question[:50]}...")
 
@@ -132,9 +141,9 @@ Answer clearly and concisely in plain English. Focus on the biology.
 Keep your answer under 150 words."""
 
     try:
-        return _call_ollama(prompt)
+        return _call_groq(prompt)
     except Exception as e:
-        return f"Unable to answer question (Ollama unavailable): {e}"
+        return f"Unable to answer question (Groq unavailable): {e}"
 
 
 def _build_rag_query(pipeline_name: str, stats: dict) -> str:
@@ -175,7 +184,7 @@ def _build_prompt(
     rag_context: str
 ) -> str:
     """
-    Build the Ollama prompt from pipeline results and RAG context.
+    Build the Groq prompt from pipeline results and RAG context.
 
     Args:
         pipeline_name: Name of the pipeline.
@@ -184,7 +193,7 @@ def _build_prompt(
         rag_context: Retrieved knowledge chunks.
 
     Returns:
-        Formatted prompt string for Ollama.
+        Formatted prompt string for Groq.
     """
     warnings_text = "\n".join(warnings) if warnings else "No warnings."
 
@@ -213,58 +222,57 @@ Keep your response under 200 words. Write as if explaining to a PhD student."""
     return prompt
 
 
-def _call_ollama(prompt: str) -> str:
+def _call_groq(prompt: str) -> str:
     """
-    Call Ollama locally via subprocess and return the response.
+    Call Groq's hosted chat-completions API and return the response.
 
-    Uses subprocess instead of HTTP to avoid dependency on Ollama's
-    Python client version. The ollama CLI is always available after
-    installation regardless of package version.
+    Groq serves open models (Llama 3.3, etc.) on custom LPU hardware,
+    with a free tier that needs no local install — this is what lets
+    the explainer run on a deployed server instead of only on a
+    laptop with Ollama installed.
 
     Args:
-        prompt: The full prompt string to send to Ollama.
+        prompt: The full prompt string to send to the model.
 
     Returns:
-        Ollama's response text.
+        The model's response text.
 
     Raises:
-        RuntimeError: If Ollama is not installed or model not found.
+        RuntimeError: If GROQ_API_KEY is missing or the request fails.
     """
-    try:
-        # Call ollama CLI directly — most reliable method on Windows
-        result = subprocess.run(
-            ["ollama", "run", OLLAMA_MODEL, prompt],
-            capture_output=True,
-            text=True,
-            timeout=120,
-            encoding="utf-8",
-            errors="replace"
-        )
-
-        if result.returncode != 0:
-            raise RuntimeError(f"Ollama error: {result.stderr}")
-
-        response = result.stdout.strip()
-
-        # Remove ANSI escape codes — Ollama CLI outputs these for terminal
-        # animation which corrupt the text when captured via subprocess
-        import re
-        response = re.sub(r'\x1b\[[0-9;]*[a-zA-Z]', '', response)
-        response = re.sub(r'\[[0-9]+[A-Z]', '', response)
-        response = response.strip()
-
-        if not response:
-            raise RuntimeError("Ollama returned empty response.")
-
-        return response
-
-    except FileNotFoundError:
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
         raise RuntimeError(
-            "Ollama not found. Install from https://ollama.com/download "
-            "and run: ollama pull llama3.2:3b"
+            "GROQ_API_KEY not set. Get a free key at "
+            "https://console.groq.com/keys and export it as an "
+            "environment variable."
         )
-    except subprocess.TimeoutExpired:
-        raise RuntimeError("Ollama timed out after 2 minutes.")
+
+    try:
+        response = requests.post(
+            GROQ_API_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "model": GROQ_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.3,
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Groq API request failed: {e}")
+
+    data = response.json()
+    try:
+        text = data["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError):
+        raise RuntimeError(f"Unexpected Groq response shape: {data}")
+
+    if not text:
+        raise RuntimeError("Groq returned empty response.")
+
+    return text
 
 
 def _fallback_explanation(
@@ -273,7 +281,7 @@ def _fallback_explanation(
     warnings: list[str]
 ) -> str:
     """
-    Generate a basic explanation when Ollama is unavailable.
+    Generate a basic explanation when Groq is unavailable.
 
     Args:
         pipeline_name: Name of the pipeline.
@@ -300,8 +308,8 @@ def _fallback_explanation(
 
     lines.append("")
     lines.append(
-        "Note: Install Ollama for AI-powered biological interpretation. "
-        "Visit https://ollama.com/download"
+        "Note: Set GROQ_API_KEY for AI-powered biological interpretation. "
+        "Get a free key at https://console.groq.com/keys"
     )
 
     return "\n".join(lines)

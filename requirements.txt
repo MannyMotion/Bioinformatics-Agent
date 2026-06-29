@@ -12,3 +12,4 @@ seaborn==0.13.2
 plotly==5.19.0
 pytest==8.0.0
 slowapi==0.1.9
+requests==2.33.1

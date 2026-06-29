@@ -17,7 +17,7 @@ You upload a file. The system does the rest:
 3. **Runs** the full analysis — QC, normalisation, differential expression, variant annotation
 4. **Generates** interactive visualisations
 5. **Interprets** the results in plain biological English
-6. **Answers** follow-up questions via a local LLM (Ollama + RAG)
+6. **Answers** follow-up questions via Groq's hosted LLM (Llama 3.3 + RAG)
 
 ---
 
@@ -70,9 +70,9 @@ After every analysis, users can ask follow-up questions in plain English:
 > *"Why is BRCA1 downregulated in cancer?"*
 > *"What should I do next with these variant findings?"*
 
-Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base built from bioinformatics literature — grounded, not hallucinated.
+Groq (Llama 3.3) answers using the pipeline results + a RAG knowledge base built from bioinformatics literature — grounded, not hallucinated.
 
-![Ollama Q&A](screenshots/variant_Q&A.png.png)
+![Q&A example](screenshots/variant_Q&A.png.png)
 
 ---
 
@@ -98,7 +98,7 @@ Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base b
 │  AI Layer                                                │
 │  ├── RAG System (ChromaDB + sentence-transformers)       │
 │  │   └── 640 chunks from bioinformatics literature       │
-│  └── Ollama LLM (llama3.2:3b — runs 100% locally)       │
+│  └── Groq LLM (Llama 3.3 — hosted, free tier)            │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -110,7 +110,7 @@ Ollama (llama3.2:3b) answers using the pipeline results + a RAG knowledge base b
 |-------|-----------|
 | Backend | FastAPI, Python 3.11 |
 | Frontend | HTML, CSS, JavaScript, Chart.js |
-| AI / LLM | Ollama (llama3.2:3b) — local, no API key |
+| AI / LLM | Groq (Llama 3.3 70B) — hosted, free-tier API key |
 | RAG | ChromaDB, sentence-transformers (all-MiniLM-L6-v2) |
 | Data | pandas, NumPy, SciPy, BioPython |
 | Security | slowapi (rate limiting), file validation |
@@ -126,7 +126,7 @@ Bioinformatics-Agent/
 │   ├── agent/
 │   │   ├── detector.py        # Auto file type detection
 │   │   ├── router.py          # Pipeline selection logic
-│   │   └── explainer.py       # Ollama Q&A integration
+│   │   └── explainer.py       # Groq Q&A integration
 │   ├── pipelines/
 │   │   ├── fasta_qc.py        # FASTA/FASTQ quality control
 │   │   ├── rnaseq.py          # RNA-seq differential expression
@@ -157,7 +157,7 @@ Bioinformatics-Agent/
 ### Prerequisites
 - Python 3.11+
 - Conda (recommended)
-- [Ollama](https://ollama.com/download) installed
+- A free [Groq API key](https://console.groq.com/keys)
 
 ### Installation
 
@@ -173,8 +173,8 @@ conda activate bioagent
 # Install dependencies
 pip install -e .
 
-# Pull the Ollama model (2GB download)
-ollama pull llama3.2:3b
+# Set your Groq API key
+export GROQ_API_KEY=your-key-here
 ```
 
 ### Run the system
@@ -223,7 +223,7 @@ System tested against real biological datasets:
 - File size cap: 50MB maximum
 - Extension whitelist: only known bioinformatics formats accepted
 - Question length cap: 500 characters (prevents prompt injection)
-- No API keys required — all AI runs locally via Ollama
+- LLM calls require a Groq API key (free tier) — keep it out of source control via env vars
 
 ---
 
@@ -237,6 +237,7 @@ System tested against real biological datasets:
 | v0.4.0 | Full-stack web interface |
 | v0.5.0 | Ollama LLM integration + RAG Q&A |
 | v0.5.1 | Security hardening (rate limiting, validation) |
+| v0.6.0 | Swapped Ollama for Groq (hosted LLM) to unblock cloud deployment |
 
 ---
 
@@ -265,7 +266,7 @@ This project was built to demonstrate end-to-end agentic bioinformatics — comb
 ## Acknowledgements
 
 - [FastAPI](https://fastapi.tiangolo.com/) — backend framework
-- [Ollama](https://ollama.com/) — local LLM inference
+- [Groq](https://groq.com/) — hosted LLM inference (free tier)
 - [ChromaDB](https://www.trychroma.com/) — vector database
 - [Chart.js](https://www.chartjs.org/) — interactive visualisations
 - [sentence-transformers](https://www.sbert.net/) — text embeddings

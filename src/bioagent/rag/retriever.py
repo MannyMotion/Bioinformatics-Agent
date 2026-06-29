@@ -125,7 +125,7 @@ class BioRetriever:
         """
         Retrieve relevant chunks and format them as a single context string.
 
-        This is what gets passed to the LLM (Ollama) when we need the AI
+        This is what gets passed to the LLM (Groq) when we need the AI
         to answer a question grounded in our knowledge base.
 
         Args:

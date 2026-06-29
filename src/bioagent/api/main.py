@@ -10,7 +10,7 @@ Purpose: FastAPI backend for the BioAgent system.
          POST /upload     — upload a bioinformatics file
          GET  /analyse/{job_id} — get analysis results
          GET  /health     — check server is running
-         POST /ask/{job_id} — ask Ollama a follow-up question
+         POST /ask/{job_id} — ask Groq a follow-up question
 
 Inputs:  Multipart file upload via HTTP POST
 Outputs: JSON responses with analysis results and plot paths
@@ -196,7 +196,7 @@ async def ask_question(
     question: str = Form(...)
 ) -> JSONResponse:
     """
-    Answer a follow-up question about a completed analysis using Ollama.
+    Answer a follow-up question about a completed analysis using Groq.
 
     Args:
         request: FastAPI request object (required by slowapi).
@@ -204,7 +204,7 @@ async def ask_question(
         question: The user's follow-up question.
 
     Returns:
-        JSON with Ollama's answer.
+        JSON with Groq's answer.
     """
     if job_id not in job_store:
         raise HTTPException(

@@ -32,7 +32,9 @@ via LLM.
   - Variant Annotation — clinical VCF, 8/12 pathogenic variants flagged
     (BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA)
 - FastAPI backend: `/upload`, `/analyse/{job_id}`, `/ask/{job_id}`, `/health`
-- Ollama Q&A: llama3.2:3b, local only, grounded via RAG (not hallucinated)
+- Groq Q&A: Llama 3.3 70B (hosted, free tier), grounded via RAG (not hallucinated)
+  — swapped from Ollama in v0.6.0 so it can run on a memory-constrained deploy
+  host. Requires `GROQ_API_KEY` env var (free key: console.groq.com/keys).
 - Web frontend: drag-drop upload, Chart.js plots, Q&A box
 - Security hardening (NEW in v0.5.1):
   - Rate limiting via slowapi — 10 uploads/min, 20 questions/min per IP
@@ -50,8 +52,6 @@ via LLM.
   `utils/` are unused dead code from the Plotly-subprocess approach (also
   segfaulted on Windows). Candidates for deletion once Linux deploy confirms
   they're not needed there either.
-- **Ollama can't run on Render free tier** (512MB RAM) — production LLM
-  replacement is unresolved. This blocks deployment.
 - **`use_rag=False` hardcoded** in `api/main.py` upload handler — `BioRetriever`
   is only imported inside functions, not wired into the main analyse flow yet.
 
@@ -92,7 +92,7 @@ working URL" (a job-hunting question), and those have different validation needs
 A live deployed demo makes any future interview land harder anyway.
 
 **Agreed order for v0.6.0:**
-1. Swap Ollama → Groq free-tier API (production LLM, unblocks deployment)
+1. ✅ Swap Ollama → Groq free-tier API (production LLM, unblocks deployment) — DONE
 2. Deploy to Render — live URL for CV
 3. User interviews (now backed by a real demo link)
 4. Additive pipeline modules (see below) — feature work, not urgent
@@ -110,10 +110,15 @@ for the existing architecture.
 
 ## v0.6.0 Build Plan
 
-1. Replace Ollama calls in `src/bioagent/agent/explainer.py` with Groq's free-tier
-   API (OpenAI-compatible). Keep RAG-grounding behaviour identical.
-2. Deploy to Render (or Railway) — confirm PCA and matplotlib can be re-enabled
-   on Linux now that the Windows segfault constraint no longer applies.
+1. ✅ Replace Ollama calls in `src/bioagent/agent/explainer.py` with Groq's
+   free-tier API (OpenAI-compatible chat-completions endpoint, called via
+   `requests`). RAG-grounding behaviour unchanged. Requires `GROQ_API_KEY`
+   env var — get one free at console.groq.com/keys. Model: `llama-3.3-70b-versatile`
+   (override with `GROQ_MODEL` env var). README and frontend Q&A copy updated
+   to match.
+2. Deploy to Render (or Railway) — set `GROQ_API_KEY` in the dashboard env vars.
+   Confirm PCA and matplotlib can be re-enabled on Linux now that the Windows
+   segfault constraint no longer applies.
 3. Re-enable PCA in `rnaseq.py` once confirmed stable on Linux.
 4. Wire `BioRetriever` into the main `/upload` → `/analyse` flow (`use_rag=True`)
    instead of leaving it hardcoded off.

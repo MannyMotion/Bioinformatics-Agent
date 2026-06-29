@@ -353,21 +353,21 @@
 
         <!-- Q&A Section -->
         <div class="qa-box">
-            <h3>🤖 Ask Ollama</h3>
-            <p>Ask a follow-up question about your results. Powered by llama3.2:3b running locally — may take 20-30 seconds.</p>
+            <h3>🤖 Ask BioAgent</h3>
+            <p>Ask a follow-up question about your results. Powered by Groq (Llama 3.3) — usually answers in a few seconds.</p>
             <div class="qa-input-row">
                 <input type="text" id="questionInput" class="qa-input"
                        placeholder="e.g. Why is BRCA1 downregulated? What does high TNF mean biologically?"
                        onkeydown="if(event.key==='Enter') askQuestion()">
                 <button class="qa-btn" id="askBtn" onclick="askQuestion()">
-                    Ask Ollama
+                    Ask
                 </button>
             </div>
             <div class="qa-loading" id="qaLoading">
-                ⏳ Ollama is thinking... (this may take 20-30 seconds)
+                ⏳ Thinking...
             </div>
             <div class="qa-answer" id="qaAnswer">
-                <div class="qa-answer-label">Ollama Response</div>
+                <div class="qa-answer-label">Response</div>
                 <div class="qa-answer-text" id="qaAnswerText"></div>
             </div>
         </div>
@@ -579,7 +579,7 @@
 
         } catch (err) {
             let msg = err.name === 'AbortError'
-                ? 'Ollama timed out. Try a shorter question.'
+                ? 'Request timed out. Try a shorter question.'
                 : `Error: ${err.message}`;
             document.getElementById('qaAnswerText').textContent = msg;
             document.getElementById('qaAnswer').style.display = 'block';
