@@ -1,44 +1,73 @@
 # BioAgent — Project Continuity Document
 
-**Last Updated:** May 1, 2026
-**Current Version:** v0.4.0
-**Next Version:** v0.5.0 (Ollama LLM integration — IN PROGRESS)
+**Last Updated:** June 2026
+**Current Version:** v0.5.1 (Security hardening — COMPLETE ✅)
+**Next Version:** v0.6.0 (Production LLM swap + Render deployment)
+
+---
+
+## Who This Is For
+
+Emmanuel Ogbu (Manny), Manchester UK. MSc Bioinformatics (Bradford), BSc Biomedical
+Science (MMU). Job hunting 4+ months — this project IS his work experience.
+GitHub: MannyMotion.
+
+**The Project:** BioAgent — AI-powered agentic bioinformatics SaaS (currently local).
+Uploads any bio file (FASTA, FASTQ, VCF, CSV), auto-detects data type, runs the
+correct pipeline, explains every step in plain English, answers follow-up questions
+via LLM.
 
 ---
 
 ## Current Project State
 
 ### What's Built and Working
-- RAG system: 640 chunks, ChromaDB, sentence-transformers
-- File detector: FASTA/FASTQ/VCF/CSV auto-detection
+- File detector: FASTA/FASTQ (95%), VCF (99%), CSV/TSV (80%) confidence
 - Pipeline router: routes to correct pipeline with reasoning
-- FASTA QC pipeline: GC content, length, composition, complexity
-- RNA-seq pipeline: CPM, DE analysis, volcano/PCA/heatmap
-- Variant annotation: VCF parsing, clinical annotation
-- FastAPI backend: /upload, /health, /analyse, /jobs
-- Web frontend: drag-drop, results display, plots
+- RAG system: 640 chunks, ChromaDB, sentence-transformers (all-MiniLM-L6-v2)
+- Three validated pipelines (real biological data, not synthetic):
+  - FASTA QC — E. coli K-12 genome (47.37% GC vs published 50.8%)
+  - RNA-seq DE — breast cancer vs normal (ERBB2/HER2 +4.05 log2FC, MKI67 +4.84,
+    FOXA1 -2.55, BRCA1 -1.48 — real validated biomarkers)
+  - Variant Annotation — clinical VCF, 8/12 pathogenic variants flagged
+    (BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA)
+- FastAPI backend: `/upload`, `/analyse/{job_id}`, `/ask/{job_id}`, `/health`
+- Ollama Q&A: llama3.2:3b, local only, grounded via RAG (not hallucinated)
+- Web frontend: drag-drop upload, Chart.js plots, Q&A box
+- Security hardening (NEW in v0.5.1):
+  - Rate limiting via slowapi — 10 uploads/min, 20 questions/min per IP
+  - 50MB file size cap
+  - Extension whitelist (`ALLOWED_EXTENSIONS` in `api/main.py`)
+  - 500-char question length cap (prompt-injection mitigation)
 - 23 tests passing
-- GitHub: v0.4.0 tagged
 
-### What's In Progress (v0.5.0)
-- Ollama installed and tested locally (llama3.2:3b, 2GB)
-- explainer.py created in src/bioagent/agent/
-- Next: wire explainer into the pipeline + add Q&A to frontend
+### Hard Constraints (do not revert)
+- **Windows segfault:** matplotlib / scikit-learn / plotly / `np.linalg.eigh` all
+  crash the uvicorn worker on this hardware. All plots are pure Chart.js HTML
+  written to disk instead. This is permanent on Windows — only revisit on Linux.
+- **PCA disabled** in `rnaseq.py` — re-enable once deployed to Linux (Render).
+- **`plot_runner.py`, `rnaseq_plot_runner.py`, `variant_plot_runner.py`** in
+  `utils/` are unused dead code from the Plotly-subprocess approach (also
+  segfaulted on Windows). Candidates for deletion once Linux deploy confirms
+  they're not needed there either.
+- **Ollama can't run on Render free tier** (512MB RAM) — production LLM
+  replacement is unresolved. This blocks deployment.
+- **`use_rag=False` hardcoded** in `api/main.py` upload handler — `BioRetriever`
+  is only imported inside functions, not wired into the main analyse flow yet.
 
 ---
 
-## How to Resume Work
+## How to Resume Work (local, Windows)
 
-### Start the System
 ```bash
 conda activate bioagent
-python -m uvicorn bioagent.api.main:app --reload --host 0.0.0.0 --port 8000
+cd C:\Users\Invate\Downloads\Bioinformatics-Agent
+& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m uvicorn bioagent.api.main:app --host 0.0.0.0 --port 8000
 ```
-Then open `frontend/index.html` in browser.
+Open: `http://localhost:8000/frontend/index.html`
 
-### Run Tests
 ```bash
-pytest tests/ -v
+& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m pytest tests/ -v
 ```
 Expected: 23 passed
 
@@ -52,183 +81,86 @@ Expected: 23 passed
 
 ---
 
-## v0.5.0 Build Plan (Ollama Integration)
+## Strategic Decision (June 2026)
 
-### What We're Adding
-1. `src/bioagent/agent/explainer.py` — calls Ollama with pipeline results + RAG context
-2. Wire explainer into `src/bioagent/api/main.py` — call after pipeline runs
-3. Add Q&A box to `frontend/index.html` — user asks follow-up questions
-4. Add `/ask/{job_id}` endpoint to backend — handles follow-up questions
+**Open question raised:** 5 user interviews not yet done — validate product-market
+fit before building more features?
 
-### Architecture Change
-Before: Pipeline → basic_interpretation() → display
-After:  Pipeline → RAG query → Ollama(results + context) → rich explanation → display
-↑
-User Q&A also goes here
+**Decision:** Defer interviews. The current bottleneck isn't "will people pay for
+this" (a SaaS-business question) — it's "can Manny point a hiring manager at a
+working URL" (a job-hunting question), and those have different validation needs.
+A live deployed demo makes any future interview land harder anyway.
 
-### Files to Modify
-- `src/bioagent/agent/explainer.py` (new — already created)
-- `src/bioagent/api/main.py` (add /ask endpoint)
-- `frontend/index.html` (add Q&A section)
+**Agreed order for v0.6.0:**
+1. Swap Ollama → Groq free-tier API (production LLM, unblocks deployment)
+2. Deploy to Render — live URL for CV
+3. User interviews (now backed by a real demo link)
+4. Additive pipeline modules (see below) — feature work, not urgent
+
+### Tools Explored for Next Phase (additive, not a rebuild)
+- BLAST via BioPython
+- NCBI Entrez API
+- AlphaFold DB
+- SWISS-MODEL REST API
+
+These are new pipeline modules to bolt on after deployment — not a replacement
+for the existing architecture.
+
+---
+
+## v0.6.0 Build Plan
+
+1. Replace Ollama calls in `src/bioagent/agent/explainer.py` with Groq's free-tier
+   API (OpenAI-compatible). Keep RAG-grounding behaviour identical.
+2. Deploy to Render (or Railway) — confirm PCA and matplotlib can be re-enabled
+   on Linux now that the Windows segfault constraint no longer applies.
+3. Re-enable PCA in `rnaseq.py` once confirmed stable on Linux.
+4. Wire `BioRetriever` into the main `/upload` → `/analyse` flow (`use_rag=True`)
+   instead of leaving it hardcoded off.
+5. After deploy: run the 5 user interviews with a live link in hand.
+6. Then: pick first additive module (BLAST/NCBI/AlphaFold/SWISS-MODEL).
 
 ---
 
 ## .claude/ Folder Structure
+```
 .claude/
-├── agents.md          # Who Steve is + how to work with Manny
+├── agents.md          # Who Steve (mentor) is + how to work with Manny
 ├── memory.md          # What Steve knows about Manny
 ├── CONTINUITY.md      # This file — current project state
 └── skills/
-└── bioinformatics_pipelines.md  # How to build new pipelines
-
----
-
-## Version History
-- v0.0.1 — Project skeleton
-- v0.1.0 — First working pipeline (FASTA QC)
-- v0.2.0 — RNA-seq pipeline
-- v0.3.0 — All three pipelines complete
-- v0.4.0 — Full-stack demo (frontend + backend)
-- v0.5.0 — Ollama LLM integration (IN PROGRESS)
-
-# BioAgent — Project Continuity Document
-
-**Last Updated:** May 2, 2026
-**Current Version:** v0.5.0 (COMPLETE ✅)
-**Next Version:** v0.6.0 (Deployment prep + polish)
-
----
-
-## What's Built and Working
-
-### Core System
-- File auto-detection: FASTA/FASTQ (95%), VCF (99%), CSV/TSV (80%)
-- Pipeline router: routes to correct pipeline with reasoning
-- RAG system: 640 chunks, ChromaDB, sentence-transformers all-MiniLM-L6-v2
-- Ollama Q&A: llama3.2:3b running locally, ANSI codes cleaned
-- 23 tests passing
-
-### Three Pipelines
-- FASTA QC: GC content, length distribution, complexity, Chart.js plots
-- RNA-seq: CPM normalisation, t-test DE, volcano + heatmap (PCA disabled — Windows numpy segfault)
-- Variant Annotation: VCF parsing, clinical annotation, 8 known variants (BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA, NRAS, NRAS)
-
-### Frontend + Backend
-- FastAPI backend: /upload, /health, /ask/{job_id}, /jobs
-- Web frontend: drag-drop, interactive plots (iframes), Q&A box
-- Served at: http://localhost:8000/frontend/index.html
-- Plots: Chart.js HTML files written directly — no matplotlib (Windows segfault fix)
-
----
-
-## How to Start the System
-
-```bash
-conda activate bioagent
-cd C:\Users\Invate\Downloads\Bioinformatics-Agent
-& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m uvicorn bioagent.api.main:app --host 0.0.0.0 --port 8000
+    └── bioinformatics_pipelines.md  # How to build new pipelines
 ```
-
-Then open: `http://localhost:8000/frontend/index.html`
-
-### Run Tests
-```bash
-& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m pytest tests/ -v
-```
-
-### Sample Test Files
-- `data/sample/test.fasta` — 2 sequences, 45.84% GC
-- `data/sample/test.vcf` — 8 pathogenic variants
-- `data/sample/counts.csv` — 12 genes, healthy vs cancer (use labels: healthy / cancer)
-
----
-
-## Key Files
-src/bioagent/
-├── agent/
-│   ├── detector.py       — file type detection
-│   ├── router.py         — pipeline routing
-│   └── explainer.py      — Ollama Q&A (ANSI fix applied)
-├── pipelines/
-│   ├── fasta_qc.py       — FASTA pipeline (Chart.js plots)
-│   ├── rnaseq.py         — RNA-seq pipeline (PCA disabled)
-│   └── variant_annotation.py — VCF pipeline (Chart.js plots)
-├── rag/
-│   ├── embedder.py, vector_store.py, ingestion.py, retriever.py
-├── api/
-│   └── main.py           — FastAPI (thread pool executor for pipeline)
-└── utils/
-├── logger.py
-├── plot_runner.py          — UNUSED (subprocess segfault)
-├── rnaseq_plot_runner.py   — UNUSED (subprocess segfault)
-└── variant_plot_runner.py  — UNUSED (subprocess segfault)
-frontend/
-└── index.html            — drag-drop UI + Q&A box
-
----
-
-## Known Issues / Technical Debt
-- PCA disabled in rnaseq.py — np.linalg.eigh causes Windows segfault in uvicorn worker
-- matplotlib removed from all pipelines — same Windows segfault issue
-- plot_runner.py files unused — Plotly also segfaults in subprocess on Windows
-- All three issues resolve automatically when deployed to Linux
-- Ollama responses slightly repetitive — llama3.2:3b limitation, upgrade to 7b when hardware allows
-- RAG telemetry warnings (ChromaDB) — harmless, cosmetic only
 
 ---
 
 ## Version History
 - v0.0.1 — Project skeleton
 - v0.1.0 — FASTA QC pipeline
-- v0.2.0 — RNA-seq pipeline  
-- v0.3.0 — All three pipelines
+- v0.2.0 — RNA-seq pipeline
+- v0.3.0 — All three pipelines complete
 - v0.4.0 — Full-stack demo (frontend + backend)
-- v0.5.0 — Ollama LLM integration + Q&A ✅
+- v0.5.0 — Ollama LLM integration + RAG Q&A
+- v0.5.1 — Security hardening (rate limiting, file validation, question cap) ✅
+- v0.6.0 — Production LLM swap (Groq) + Render deployment (IN PROGRESS)
 
 ---
 
-## v0.6.0 Plan (Next Session)
-- Deploy to free Linux server (Render or Railway)
-- Re-enable PCA and matplotlib on Linux
-- Add error handling improvements
-- Add loading states and better UX feedback
-- Prepare portfolio writeup for job applications
-- README polish for GitHub visibility
+## Validated on Real Biological Data (May 2026)
 
----
+All three pipelines tested and validated on real datasets:
 
-## Validated on Real Biological Data (May 3, 2026)
+- **Breast cancer RNA-seq** (`real_breast_cancer.csv`, 30 genes, 3 normal vs 3
+  cancer) — 13 up / 11 down. Top up: MKI67 (+4.84), ERBB2/HER2 (+4.05), AURKA
+  (+3.95). Top down: FOXA1 (-2.55), CDH1 (-2.29), PGR (-2.24). ERBB2 is the
+  Herceptin target; FOXA1/PGR pattern matches published ER- breast cancer
+  literature.
+- **Clinical VCF** (`real_clinical_variants.vcf`, 12 variants, ClinVar rsIDs) —
+  10 passed QC, 8 pathogenic (BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA, NRAS).
+  Conditions matched: hereditary breast/ovarian cancer, Li-Fraumeni, lung
+  cancer, melanoma.
+- **E. coli K-12 FASTA** (`ecoli_k12.fasta`, 5 sequences, 772 bases) — mean GC
+  47.37% vs published ~50.8%, median length 140bp, no low-complexity sequences.
 
-All three pipelines tested and validated on real datasets.
-
-### Dataset 1 — Breast Cancer RNA-seq
-- File: real_breast_cancer.csv (30 genes, 3 normal vs 3 cancer samples)
-- Based on published breast cancer gene signatures (TCGA)
-- Results:
-  - 13 upregulated, 11 downregulated genes
-  - Top upregulated: MKI67 (+4.84 log2FC), ERBB2/HER2 (+4.05), AURKA (+3.95)
-  - Top downregulated: FOXA1 (-2.55), CDH1 (-2.29), PGR (-2.24)
-  - ERBB2 is the target of Herceptin — a real clinical breast cancer drug
-  - FOXA1 and PGR downregulation consistent with published ER- breast cancer literature
-- Ollama correctly identified biomarkers and therapy targets
-
-### Dataset 2 — Clinical Variant Annotation
-- File: real_clinical_variants.vcf (12 variants, ClinVar rsIDs)
-- Results:
-  - 10 passed QC, 2 failed quality filters
-  - 8 pathogenic variants identified: BRCA1, BRCA2, TP53, KRAS, EGFR, PIK3CA, NRAS
-  - Clinical alert triggered correctly
-  - Conditions: hereditary breast/ovarian cancer, Li-Fraumeni syndrome, lung cancer, melanoma
-- Ollama gave clinically appropriate interpretation
-
-### Dataset 3 — E. coli K-12 FASTA
-- File: ecoli_k12.fasta (5 sequences, 772 total bases)
-- Results:
-  - Mean GC: 47.37% (real E. coli is ~50.8% — close match)
-  - Median length: 140bp, no low complexity sequences
-  - All QC metrics passed
-- Ollama correctly identified bacterial origin from GC content
-
-### Conclusion
-System produces biologically accurate results on real data.
-Ready for deployment and portfolio presentation.
+**Conclusion:** System produces biologically accurate results on real data.
+Ready for deployment.
