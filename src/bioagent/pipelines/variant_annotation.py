@@ -28,7 +28,6 @@ from collections import Counter
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib
 matplotlib.rcParams['figure.max_open_warning'] = 0
 import matplotlib.pyplot as plt
 plt.switch_backend("Agg")
@@ -365,7 +364,7 @@ def _generate_plots(
               for v in variants]
 
     quality_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="quality" width="800" height="400"></canvas>
@@ -415,7 +414,7 @@ new Chart(ctx, {{
         counts = list(gene_counts.values())
 
         genes_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="genes" width="700" height="400"></canvas>
@@ -469,7 +468,7 @@ new Chart(ctx, {{
         pie_colors.append(color_map.get(label, "rgba(158,158,158,0.8)"))
 
     sig_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;display:flex;justify-content:center;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="sig" width="500" height="400"></canvas>

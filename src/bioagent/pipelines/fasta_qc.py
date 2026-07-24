@@ -30,7 +30,6 @@ from dataclasses import dataclass, field
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")  # non-interactive backend — no display needed on server
-import matplotlib
 matplotlib.rcParams['figure.max_open_warning'] = 0
 import matplotlib.pyplot as plt
 plt.switch_backend("Agg")
@@ -335,7 +334,7 @@ def _generate_plots_html(
 
     # --- Plot 1: GC Content ---
     gc_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="gc" width="800" height="400"></canvas>
@@ -375,7 +374,7 @@ new Chart(ctx, {{
 
     # --- Plot 2: Length Distribution ---
     len_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="len" width="800" height="400"></canvas>
@@ -419,7 +418,7 @@ new Chart(ctx, {{
     nuc_colors = ["rgba(76,175,80,0.8)","rgba(244,67,54,0.8)","rgba(255,152,0,0.8)","rgba(33,150,243,0.8)","rgba(158,158,158,0.8)"]
 
     comp_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="comp" width="700" height="400"></canvas>

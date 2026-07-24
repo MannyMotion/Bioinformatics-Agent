@@ -81,24 +81,35 @@ def run_rnaseq_pipeline(
     control_label: str,
     treatment_label: str,
     output_dir: str | Path = "outputs",
-    use_rag: bool = False
+    use_rag: bool = False,
+    control_cols: list[str] | None = None,
+    treatment_cols: list[str] | None = None
 ) -> RNAseqResult:
     """
     Run the full RNA-seq differential expression pipeline.
 
+    Sample-to-group assignment can be given in two ways:
+      - Explicitly, via `control_cols` / `treatment_cols` (the exact column
+        names for each group). This is what the analyst agent supplies after
+        inferring or confirming groups, and works with ANY column naming.
+      - By prefix, via `control_label` / `treatment_label` (legacy behaviour,
+        e.g. columns starting with "control"/"treatment").
+
     Args:
-        counts_file: Path to CSV file with gene counts.
-        control_label: Prefix for control sample columns (e.g. "healthy").
-        treatment_label: Prefix for treatment sample columns (e.g. "cancer").
+        counts_file: Path to the count matrix (CSV or TSV).
+        control_label: Name/prefix for the control group.
+        treatment_label: Name/prefix for the treatment group.
         output_dir: Directory to save output plots.
         use_rag: Whether to query RAG for biological interpretation.
+        control_cols: Explicit control column names (overrides prefix match).
+        treatment_cols: Explicit treatment column names (overrides prefix match).
 
     Returns:
         RNAseqResult with full statistics, plots, and interpretation.
 
     Raises:
         FileNotFoundError: If the counts file does not exist.
-        ValueError: If control or treatment columns not found.
+        ValueError: If control or treatment columns cannot be resolved.
     """
     path = Path(counts_file)
     out_dir = Path(output_dir)
@@ -112,7 +123,13 @@ def run_rnaseq_pipeline(
 
     # Step 1 — Load and validate count matrix
     logger.info("Step 1: Loading count matrix...")
-    counts_df = _load_counts(path, control_label, treatment_label)
+    counts_df = _load_counts(
+        path, control_label, treatment_label, control_cols, treatment_cols
+    )
+
+    # Resolve the actual group columns (explicit lists win over prefixes).
+    control_cols = _resolve_group_cols(counts_df, control_label, control_cols)
+    treatment_cols = _resolve_group_cols(counts_df, treatment_label, treatment_cols)
 
     # Step 2 — Filter low count genes
     logger.info("Step 2: Filtering low-count genes...")
@@ -128,8 +145,6 @@ def run_rnaseq_pipeline(
 
     # Step 4 — Differential expression analysis
     logger.info("Step 4: Running differential expression analysis...")
-    control_cols = [c for c in filtered_df.columns if c.startswith(control_label)]
-    treatment_cols = [c for c in filtered_df.columns if c.startswith(treatment_label)]
     gene_results = _differential_expression(
         filtered_df, control_cols, treatment_cols
     )
@@ -157,8 +172,8 @@ def run_rnaseq_pipeline(
 
     # Step 6 — Generate visualisations
     logger.info("Step 5: Generating visualisations...")
-    control_cols_cpm = [c for c in cpm_df.columns if c.startswith(control_label)]
-    treatment_cols_cpm = [c for c in cpm_df.columns if c.startswith(treatment_label)]
+    control_cols_cpm = [c for c in control_cols if c in cpm_df.columns]
+    treatment_cols_cpm = [c for c in treatment_cols if c in cpm_df.columns]
     plot_paths = _generate_plots(
         result, gene_results, cpm_df,
         control_cols_cpm, treatment_cols_cpm, out_dir
@@ -185,46 +200,82 @@ def run_rnaseq_pipeline(
 def _load_counts(
     path: Path,
     control_label: str,
-    treatment_label: str
+    treatment_label: str,
+    control_cols: list[str] | None = None,
+    treatment_cols: list[str] | None = None
 ) -> pd.DataFrame:
     """
-    Load and validate the count matrix CSV.
+    Load and validate the count matrix (CSV or TSV).
 
     Args:
-        path: Path to CSV file.
-        control_label: Column prefix for control samples.
-        treatment_label: Column prefix for treatment samples.
+        path: Path to the count matrix.
+        control_label: Column prefix for control samples (legacy fallback).
+        treatment_label: Column prefix for treatment samples (legacy fallback).
+        control_cols: Explicit control column names (preferred).
+        treatment_cols: Explicit treatment column names (preferred).
 
     Returns:
         DataFrame with gene_id as index.
 
     Raises:
-        ValueError: If expected columns are missing.
+        ValueError: If group columns cannot be resolved.
     """
-    # Read CSV with gene_id as the index column
-    df = pd.read_csv(path, index_col=0)
+    # Read the count matrix with gene_id as the index column.
+    # sep=None + engine="python" sniffs the delimiter, so both comma-separated
+    # (.csv) and tab-separated (.tsv) files load correctly.
+    df = pd.read_csv(path, index_col=0, sep=None, engine="python")
 
-    # Validate that we have columns for both conditions
-    control_cols = [c for c in df.columns if c.startswith(control_label)]
-    treatment_cols = [c for c in df.columns if c.startswith(treatment_label)]
-
-    if not control_cols:
-        raise ValueError(
-            f"No columns found starting with '{control_label}'. "
-            f"Available columns: {list(df.columns)}"
-        )
-    if not treatment_cols:
-        raise ValueError(
-            f"No columns found starting with '{treatment_label}'. "
-            f"Available columns: {list(df.columns)}"
-        )
+    # Validate that both groups resolve to at least one real column. This
+    # raises a clear error if the explicit lists or prefixes don't match.
+    resolved_control = _resolve_group_cols(df, control_label, control_cols)
+    resolved_treatment = _resolve_group_cols(df, treatment_label, treatment_cols)
 
     logger.info(
         f"Loaded {len(df)} genes. "
-        f"Control samples: {control_cols}. "
-        f"Treatment samples: {treatment_cols}."
+        f"Control samples: {resolved_control}. "
+        f"Treatment samples: {resolved_treatment}."
     )
     return df
+
+
+def _resolve_group_cols(
+    df: pd.DataFrame,
+    label: str,
+    explicit: list[str] | None
+) -> list[str]:
+    """
+    Resolve which DataFrame columns belong to a group.
+
+    Prefers an explicit list of column names (keeping only those that exist);
+    falls back to prefix matching on `label` when no explicit list is given.
+
+    Args:
+        df: The count matrix.
+        label: Group name/prefix used for the fallback and error messages.
+        explicit: Explicit column names for this group, or None.
+
+    Returns:
+        The resolved list of column names.
+
+    Raises:
+        ValueError: If no columns can be resolved for the group.
+    """
+    if explicit:
+        cols = [c for c in explicit if c in df.columns]
+        if not cols:
+            raise ValueError(
+                f"None of the specified '{label}' columns exist in the file. "
+                f"Requested: {explicit}. Available: {list(df.columns)[:20]}"
+            )
+        return cols
+
+    cols = [c for c in df.columns if str(c).startswith(label)]
+    if not cols:
+        raise ValueError(
+            f"No columns found for group '{label}'. "
+            f"Available columns: {list(df.columns)[:20]}"
+        )
+    return cols
 
 
 def _filter_low_counts(df: pd.DataFrame, min_count: int) -> pd.DataFrame:
@@ -364,8 +415,7 @@ def _generate_plots(
             ns_points.append(point)
 
     volcano_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="volcano" width="800" height="500"></canvas>
@@ -425,7 +475,7 @@ new Chart(ctx, {{
                 })
 
             heatmap_html = f"""<!DOCTYPE html>
-<html><head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html><head><script src="/static/chart.umd.min.js"></script>
 <style>body{{background:#1a1f35;margin:0;padding:16px;}} canvas{{background:#111827;}}</style>
 </head><body>
 <canvas id="heatmap" width="800" height="450"></canvas>

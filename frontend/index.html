@@ -5,331 +5,672 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BioAgent — Agentic Bioinformatics Analysis</title>
     <style>
+        :root {
+            --bg:      #070b16;
+            --bg-2:    #0c1322;
+            --bg-3:    #111a2e;
+            --border:  #1e293b;
+            --border-2:#223049;
+            --text:    #e6edf7;
+            --muted:   #8394b0;
+            --dim:     #566484;
+            --blue:    #4f9eff;
+            --violet:  #a78bfa;
+            --teal:    #2dd4bf;
+            --green:   #22c55e;
+            --amber:   #f59e0b;
+            --red:     #ef4444;
+            --brand: linear-gradient(135deg, #4f9eff, #a78bfa);
+            --radius: 14px;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #0a0e1a;
-            color: #e0e6f0;
+            color: var(--text);
             min-height: 100vh;
+            background:
+                radial-gradient(900px 500px at 12% -8%, rgba(79,158,255,0.12), transparent 60%),
+                radial-gradient(800px 500px at 92% 4%, rgba(167,139,250,0.12), transparent 60%),
+                radial-gradient(700px 600px at 70% 110%, rgba(45,212,191,0.08), transparent 60%),
+                var(--bg);
+            background-attachment: fixed;
         }
 
+        /* faint base-pair dot grid over everything */
+        body::before {
+            content: "";
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: radial-gradient(rgba(120,150,200,0.06) 1px, transparent 1px);
+            background-size: 26px 26px;
+        }
+
+        header, main, footer { position: relative; z-index: 1; }
+
+        code, .mono { font-family: 'JetBrains Mono', 'Consolas', monospace; }
+
+        /* ---------- NAV ---------- */
         header {
-            background: linear-gradient(135deg, #1a1f35 0%, #0d1220 100%);
-            border-bottom: 1px solid #2a3550;
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            position: sticky; top: 0; z-index: 20;
+            background: rgba(8,12,22,0.82);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex; align-items: center; gap: 14px;
         }
-
+        .brandmark { display: flex; align-items: center; gap: 10px; }
+        .helix { font-size: 24px; filter: drop-shadow(0 0 8px rgba(79,158,255,0.5)); }
         .logo {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4f9eff, #a78bfa);
-            -webkit-background-clip: text;
+            font-size: 21px; font-weight: 800; letter-spacing: -0.3px;
+            background: var(--brand); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .logo-badge {
+            font-size: 10px; font-weight: 700; color: var(--teal);
+            border: 1px solid rgba(45,212,191,0.4); border-radius: 5px;
+            padding: 2px 6px; margin-left: 2px; letter-spacing: 0.5px;
+        }
+        nav.links { display: flex; gap: 22px; margin-left: 28px; }
+        nav.links a {
+            color: var(--muted); text-decoration: none; font-size: 13.5px; font-weight: 500;
+            transition: color 0.15s;
+        }
+        nav.links a:hover { color: var(--text); }
+        .status-pill {
+            margin-left: auto; display: flex; align-items: center; gap: 8px;
+            background: var(--bg-3); border: 1px solid var(--border-2);
+            border-radius: 999px; padding: 6px 14px;
+        }
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .status-text { font-size: 12.5px; color: var(--green); font-weight: 600; }
+
+        main { max-width: 1180px; margin: 0 auto; padding: 44px 22px 20px; }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            display: grid; grid-template-columns: 1.05fr 0.95fr;
+            gap: 40px; align-items: center; margin-bottom: 64px;
+        }
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--teal); margin-bottom: 18px;
+        }
+        .eyebrow::before {
+            content: ""; width: 22px; height: 2px; border-radius: 2px;
+            background: linear-gradient(90deg, var(--teal), transparent);
+        }
+        .hero h1 {
+            font-size: 44px; line-height: 1.08; font-weight: 800; letter-spacing: -1px;
+            color: #f4f8ff; margin-bottom: 18px;
+        }
+        .hero h1 .grad {
+            background: var(--brand); -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .tagline { font-size: 14px; color: #6b7a99; margin-top: 2px; }
-
-        .status-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: #22c55e;
-            margin-left: auto;
-            animation: pulse 2s infinite;
+        .hero .lede { font-size: 16.5px; line-height: 1.65; color: var(--muted); max-width: 560px; margin-bottom: 26px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 30px; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--bg-3); border: 1px solid var(--border-2);
+            border-radius: 999px; padding: 7px 14px; font-size: 13px; color: var(--text);
         }
+        .chip .ic { font-size: 14px; }
+        .hero-cta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--brand); border: none; border-radius: 11px;
+            color: white; font-size: 15px; font-weight: 700; padding: 13px 24px;
+            cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 8px 24px -8px rgba(79,158,255,0.5);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 30px -8px rgba(79,158,255,0.6); }
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--muted); text-decoration: none; font-size: 14.5px; font-weight: 600;
+            padding: 13px 6px; transition: color 0.15s;
+        }
+        .btn-ghost:hover { color: var(--text); }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .status-text { font-size: 13px; color: #22c55e; }
-
-        main { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
-
+        /* ---------- UPLOAD CARD (hero right) ---------- */
         .upload-section {
-            background: #111827;
-            border: 1px solid #1e293b;
-            border-radius: 16px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 32px;
+            background: linear-gradient(160deg, var(--bg-2), var(--bg-3));
+            border: 1px solid var(--border-2);
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 24px 60px -30px rgba(0,0,0,0.9);
+            position: relative; overflow: hidden;
         }
-
-        .upload-section h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; color: #f1f5f9; }
-        .upload-section p { color: #64748b; font-size: 14px; margin-bottom: 28px; }
+        .upload-section::before {
+            content: ""; position: absolute; inset: 0; border-radius: 20px; padding: 1px;
+            background: linear-gradient(160deg, rgba(79,158,255,0.5), rgba(167,139,250,0.15), transparent);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+        }
+        .upload-eyebrow {
+            font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--violet); margin-bottom: 6px;
+        }
+        .upload-section h2 { font-size: 19px; font-weight: 700; margin-bottom: 6px; color: #f4f8ff; }
+        .upload-section > p { color: var(--dim); font-size: 13.5px; margin-bottom: 20px; line-height: 1.5; }
 
         .upload-zone {
-            border: 2px dashed #2a3550;
-            border-radius: 12px;
-            padding: 48px 32px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #0d1220;
-            position: relative;
+            border: 1.5px dashed var(--border-2); border-radius: 14px;
+            padding: 38px 24px; cursor: pointer; transition: all 0.25s;
+            background: rgba(7,11,22,0.6); position: relative; text-align: center;
         }
-
-        .upload-zone:hover, .upload-zone.dragover { border-color: #4f9eff; background: #0d1830; }
-
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--blue); background: rgba(79,158,255,0.06);
+        }
         .upload-zone input[type="file"] {
-            position: absolute; inset: 0; opacity: 0;
-            cursor: pointer; width: 100%; height: 100%;
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
         }
+        .upload-icon { font-size: 40px; margin-bottom: 12px; }
+        .upload-zone h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+        .upload-zone p { font-size: 12.5px; color: var(--dim); }
 
-        .upload-icon { font-size: 48px; margin-bottom: 16px; }
-        .upload-zone h3 { font-size: 16px; font-weight: 500; color: #94a3b8; margin-bottom: 8px; }
-        .upload-zone p { font-size: 13px; color: #475569; margin-bottom: 0; }
-
-        .supported-formats {
-            display: flex; gap: 8px; justify-content: center;
-            margin-top: 20px; flex-wrap: wrap;
-        }
-
+        .supported-formats { display: flex; gap: 7px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
         .format-badge {
-            background: #1e293b; border: 1px solid #2a3550;
-            border-radius: 6px; padding: 4px 12px;
-            font-size: 12px; font-weight: 600; color: #4f9eff; font-family: monospace;
+            background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 6px;
+            padding: 4px 11px; font-size: 12px; font-weight: 600; color: var(--blue); font-family: monospace;
         }
-
-        .rnaseq-options {
-            display: none; background: #111827; border: 1px solid #1e293b;
-            border-radius: 12px; padding: 20px; margin-top: 16px; text-align: left;
-        }
-
-        .rnaseq-options h4 { font-size: 14px; font-weight: 600; color: #94a3b8; margin-bottom: 12px; }
-        .input-row { display: flex; gap: 12px; }
-        .input-group { flex: 1; }
-        .input-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; }
-
-        .input-group input {
-            width: 100%; background: #0d1220; border: 1px solid #2a3550;
-            border-radius: 8px; padding: 8px 12px; color: #e0e6f0; font-size: 14px;
-        }
-
         .analyse-btn {
             display: none; width: 100%; padding: 14px; margin-top: 16px;
-            background: linear-gradient(135deg, #4f9eff, #7c3aed);
-            border: none; border-radius: 10px; color: white;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+            background: var(--brand); border: none; border-radius: 11px; color: white;
+            font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
         }
-
-        .analyse-btn:hover { opacity: 0.9; }
+        .analyse-btn:hover { opacity: 0.92; }
         .analyse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .progress-section {
-            display: none; background: #111827; border: 1px solid #1e293b;
-            border-radius: 16px; padding: 32px; margin-bottom: 32px; text-align: center;
+        .privacy-note {
+            margin-top: 14px; font-size: 12px; color: var(--dim);
+            display: flex; align-items: center; gap: 7px; justify-content: center;
         }
 
+        /* ---------- SECTION SCAFFOLD ---------- */
+        .section { margin-bottom: 62px; scroll-margin-top: 80px; }
+        .section-head { text-align: center; max-width: 640px; margin: 0 auto 34px; }
+        .section-head .kicker {
+            font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--teal); margin-bottom: 10px;
+        }
+        .section-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; color: #f4f8ff; margin-bottom: 10px; }
+        .section-head p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+        /* ---------- HOW IT WORKS ---------- */
+        .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .flow-step {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 22px 20px; position: relative;
+        }
+        .flow-step .num {
+            font-family: monospace; font-size: 12px; font-weight: 700; color: var(--blue);
+            border: 1px solid rgba(79,158,255,0.35); border-radius: 6px;
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+        }
+        .flow-step h3 { font-size: 15.5px; font-weight: 700; color: #f4f8ff; margin-bottom: 7px; }
+        .flow-step p { font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+        .flow-step .tech { margin-top: 12px; font-size: 11.5px; color: var(--dim); font-family: monospace; }
+        .flow-step::after {
+            content: "→"; position: absolute; right: -13px; top: 50%; transform: translateY(-50%);
+            color: var(--border-2); font-size: 18px; font-weight: 700; z-index: 2;
+        }
+        .flow-step:last-child::after { display: none; }
+
+        /* ---------- PIPELINE CARDS ---------- */
+        .pipe-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .pipe-card {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 26px; transition: border-color 0.2s, transform 0.2s;
+        }
+        .pipe-card:hover { border-color: var(--border-2); transform: translateY(-3px); }
+        .pipe-icon {
+            width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 22px; margin-bottom: 16px;
+        }
+        .pipe-card.fasta  .pipe-icon { background: rgba(45,212,191,0.12); border: 1px solid rgba(45,212,191,0.3); }
+        .pipe-card.rnaseq .pipe-icon { background: rgba(79,158,255,0.12); border: 1px solid rgba(79,158,255,0.3); }
+        .pipe-card.vcf    .pipe-icon { background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.3); }
+        .pipe-card h3 { font-size: 17px; font-weight: 700; color: #f4f8ff; margin-bottom: 4px; }
+        .pipe-card .formats { font-size: 12px; font-family: monospace; color: var(--dim); margin-bottom: 14px; }
+        .pipe-card ul { list-style: none; margin-bottom: 16px; }
+        .pipe-card li {
+            font-size: 13.5px; color: var(--muted); padding: 5px 0 5px 22px; position: relative; line-height: 1.4;
+        }
+        .pipe-card li::before {
+            content: ""; position: absolute; left: 4px; top: 11px;
+            width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+        }
+        .pipe-card.rnaseq li::before { background: var(--blue); }
+        .pipe-card.vcf li::before { background: var(--violet); }
+        .pipe-eg {
+            font-size: 12.5px; line-height: 1.55; color: var(--muted);
+            border-top: 1px solid var(--border); padding-top: 14px;
+        }
+        .pipe-eg .eg-label {
+            display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.6px;
+            text-transform: uppercase; color: var(--dim); margin-bottom: 5px;
+        }
+        .pipe-eg b { color: var(--text); }
+
+        /* ---------- CREDIBILITY STRIP ---------- */
+        .cred-strip {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+            background: var(--border); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden; margin-bottom: 62px;
+        }
+        .cred-item { background: var(--bg-2); padding: 24px 20px; text-align: center; }
+        .cred-item .big {
+            font-size: 26px; font-weight: 800; color: #f4f8ff; margin-bottom: 4px;
+            background: var(--brand); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .cred-item .cap { font-size: 12.5px; color: var(--muted); }
+
+        /* ---------- AGENT SECTION ---------- */
+        .agent-section { display: none; margin-bottom: 32px; }
+        .profile-box {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-left: 4px solid var(--violet); border-radius: 12px;
+            padding: 20px; margin-bottom: 20px; font-size: 14px; line-height: 1.6; color: #cbd5e1;
+        }
+        .profile-box h4 {
+            color: var(--violet); font-size: 12px; font-weight: 700;
+            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.6px;
+        }
+        .agent-card {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-radius: 14px; padding: 24px; margin-bottom: 20px;
+        }
+        .agent-card h3 { font-size: 16px; font-weight: 700; color: #f4f8ff; margin-bottom: 6px; }
+        .agent-card .sub { color: var(--dim); font-size: 13px; margin-bottom: 16px; }
+        .question-option {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 14px; border: 1px solid var(--border-2); border-radius: 10px;
+            margin-bottom: 10px; cursor: pointer; transition: all 0.15s; background: var(--bg-3);
+        }
+        .question-option:hover { border-color: var(--blue); }
+        .question-option.selected { border-color: var(--blue); background: rgba(79,158,255,0.06); }
+        .question-option input { margin-top: 3px; accent-color: var(--blue); }
+        .question-option .q-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+        .question-option .q-tag { font-size: 11px; color: var(--violet); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .custom-q-input {
+            width: 100%; background: var(--bg-3); border: 1px solid var(--border-2);
+            border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 14px; margin-top: 6px;
+        }
+        .custom-q-input:focus { outline: none; border-color: var(--blue); }
+        .group-editor { margin-bottom: 20px; }
+        .group-editor .warn-note {
+            background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.4); color: #fde68a;
+            border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px;
+        }
+        .group-editor label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 6px; margin-top: 10px; }
+        .group-editor textarea {
+            width: 100%; background: var(--bg-3); border: 1px solid var(--border-2);
+            border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px;
+            font-family: monospace; resize: vertical; min-height: 46px;
+        }
+        .group-editor textarea:focus { outline: none; border-color: var(--blue); }
+        .col-hint { font-size: 11px; color: var(--dim); margin-top: 4px; word-break: break-all; }
+
+        /* ---------- PROGRESS ---------- */
+        .progress-section {
+            display: none; background: var(--bg-2); border: 1px solid var(--border);
+            border-radius: 16px; padding: 36px; margin-bottom: 32px; text-align: center;
+        }
         .spinner {
-            width: 48px; height: 48px; border: 3px solid #1e293b;
-            border-top-color: #4f9eff; border-radius: 50%;
+            width: 48px; height: 48px; border: 3px solid var(--border);
+            border-top-color: var(--blue); border-radius: 50%;
             animation: spin 1s linear infinite; margin: 0 auto 16px;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .progress-steps { text-align: left; max-width: 400px; margin: 20px auto 0; }
-
-        .step { display: flex; align-items: center; gap: 12px; padding: 8px 0; color: #475569; font-size: 14px; }
-        .step.active { color: #4f9eff; }
-        .step.done { color: #22c55e; }
+        .progress-steps { text-align: left; max-width: 460px; margin: 20px auto 0; }
+        .step { display: flex; align-items: center; gap: 12px; padding: 8px 0; color: var(--dim); font-size: 14px; }
+        .step.active { color: var(--blue); }
+        .step.done { color: var(--green); }
         .step-icon { font-size: 16px; width: 20px; }
 
+        /* ---------- RESULTS ---------- */
         .results-section { display: none; }
-
-        .results-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-
+        .results-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
         .pipeline-badge {
-            background: linear-gradient(135deg, #1e3a5f, #2d1b69);
-            border: 1px solid #4f9eff; border-radius: 8px;
-            padding: 6px 16px; font-size: 13px; font-weight: 600; color: #4f9eff;
+            background: linear-gradient(135deg, rgba(30,58,95,0.8), rgba(45,27,105,0.8));
+            border: 1px solid var(--blue); border-radius: 8px;
+            padding: 6px 16px; font-size: 13px; font-weight: 700; color: var(--blue);
         }
-
         .confidence-badge {
-            background: #1a2a1a; border: 1px solid #22c55e;
-            border-radius: 8px; padding: 6px 16px;
-            font-size: 13px; font-weight: 600; color: #22c55e;
+            background: rgba(34,197,94,0.1); border: 1px solid var(--green);
+            border-radius: 8px; padding: 6px 16px; font-size: 13px; font-weight: 700; color: var(--green);
         }
-
-        .cards-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px; margin-bottom: 24px;
+        .asked-box {
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-left: 4px solid var(--violet); border-radius: 8px;
+            padding: 14px 18px; margin-bottom: 24px; font-size: 14px; color: #cbd5e1;
         }
-
-        .stat-card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 20px; }
-        .stat-card .label { font-size: 12px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card .value { font-size: 28px; font-weight: 700; color: #f1f5f9; }
-
+        .asked-box .q-label {
+            color: var(--violet); font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+        }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .stat-card .label { font-size: 12px; color: var(--dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 28px; font-weight: 800; color: #f4f8ff; }
         .reasoning-box {
-            background: #0d1220; border: 1px solid #1e3a5f;
-            border-left: 4px solid #4f9eff; border-radius: 8px;
-            padding: 20px; margin-bottom: 24px;
-            font-size: 14px; line-height: 1.6; color: #94a3b8;
+            background: var(--bg-2); border: 1px solid var(--border);
+            border-left: 4px solid var(--blue); border-radius: 8px;
+            padding: 20px; margin-bottom: 24px; font-size: 14px; line-height: 1.6; color: var(--muted);
         }
-
         .reasoning-box h4 {
-            color: #4f9eff; font-size: 13px; font-weight: 600;
+            color: var(--blue); font-size: 12px; font-weight: 700;
             margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-
         .warnings-box { margin-bottom: 24px; }
-
-        .warning-item {
-            display: flex; gap: 12px; align-items: flex-start;
-            padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-size: 14px;
-        }
-
-        .warning-item.pass { background: #0f2a1a; border: 1px solid #166534; color: #86efac; }
-        .warning-item.warn { background: #2a1a0a; border: 1px solid #854d0e; color: #fde68a; }
-        .warning-item.alert { background: #2a0a0a; border: 1px solid #991b1b; color: #fca5a5; }
-
+        .warning-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+        .warning-item.pass { background: rgba(34,197,94,0.08); border: 1px solid rgba(22,101,52,0.9); color: #86efac; }
+        .warning-item.warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(133,77,14,0.9); color: #fde68a; }
+        .warning-item.alert { background: rgba(239,68,68,0.08); border: 1px solid rgba(153,27,27,0.9); color: #fca5a5; }
         .plots-section { margin-bottom: 24px; }
-        .plots-section h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 16px; }
-
+        .plots-section h3 { font-size: 16px; font-weight: 700; color: #f4f8ff; margin-bottom: 16px; }
         .plots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
-
-        .plot-card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; }
+        .plot-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .plot-card img { width: 100%; display: block; }
-
         .interpretation-box {
-            background: #111827; border: 1px solid #1e293b;
+            background: var(--bg-2); border: 1px solid var(--border);
             border-radius: 12px; padding: 24px; margin-bottom: 24px;
         }
-
-        .interpretation-box h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 16px; }
-
+        .interpretation-box h3 { font-size: 16px; font-weight: 700; color: #f4f8ff; margin-bottom: 16px; }
         .interpretation-box pre {
             font-family: 'Segoe UI', sans-serif; font-size: 14px;
-            line-height: 1.7; color: #94a3b8; white-space: pre-wrap; word-wrap: break-word;
+            line-height: 1.7; color: var(--muted); white-space: pre-wrap; word-wrap: break-word;
         }
-
-        .qa-box {
-            background: #111827; border: 1px solid #1e293b;
-            border-radius: 12px; padding: 24px; margin-bottom: 24px;
-        }
-
-        .qa-box h3 { font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
-        .qa-box p { color: #64748b; font-size: 13px; margin-bottom: 16px; }
-
+        .qa-box { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+        .qa-box h3 { font-size: 16px; font-weight: 700; color: #f4f8ff; margin-bottom: 8px; }
+        .qa-box > p { color: var(--dim); font-size: 13px; margin-bottom: 16px; }
         .qa-input-row { display: flex; gap: 12px; margin-bottom: 16px; }
-
         .qa-input {
-            flex: 1; background: #0d1220; border: 1px solid #2a3550;
-            border-radius: 8px; padding: 10px 14px;
-            color: #e0e6f0; font-size: 14px;
+            flex: 1; background: var(--bg-3); border: 1px solid var(--border-2);
+            border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 14px;
         }
-
-        .qa-input:focus { outline: none; border-color: #4f9eff; }
-
-        .qa-btn {
-            background: linear-gradient(135deg, #4f9eff, #7c3aed);
-            border: none; border-radius: 8px; color: white;
-            padding: 10px 20px; font-size: 14px; font-weight: 600;
-            cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+        .qa-input:focus { outline: none; border-color: var(--blue); }
+        .qa-btn, .run-btn {
+            background: var(--brand); border: none; border-radius: 8px; color: white;
+            padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+            white-space: nowrap; transition: opacity 0.2s;
         }
-
-        .qa-btn:hover { opacity: 0.9; }
-        .qa-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
+        .run-btn { width: 100%; padding: 14px; font-size: 15px; }
+        .qa-btn:hover, .run-btn:hover { opacity: 0.92; }
+        .qa-btn:disabled, .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .qa-answer {
-            display: none;
-            background: #0d1220; border: 1px solid #1e3a5f;
-            border-left: 4px solid #4f9eff; border-radius: 8px; padding: 16px;
+            display: none; background: var(--bg-3); border: 1px solid var(--border-2);
+            border-left: 4px solid var(--blue); border-radius: 8px; padding: 16px;
         }
-
-        .qa-answer-label {
-            font-size: 12px; color: #4f9eff; font-weight: 600;
-            margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        .qa-answer-text { font-size: 14px; line-height: 1.7; color: #94a3b8; }
-
-        .qa-loading { display: none; color: #64748b; font-size: 14px; padding: 8px 0; }
-
+        .qa-answer-label { font-size: 12px; color: var(--blue); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .qa-answer-text { font-size: 14px; line-height: 1.7; color: var(--muted); }
+        .qa-loading { display: none; color: var(--dim); font-size: 14px; padding: 8px 0; }
         .new-analysis-btn {
-            background: #1e293b; border: 1px solid #2a3550;
-            border-radius: 10px; color: #94a3b8;
-            padding: 12px 24px; font-size: 14px; cursor: pointer;
+            background: var(--bg-3); border: 1px solid var(--border-2); border-radius: 10px;
+            color: var(--muted); padding: 12px 24px; font-size: 14px; cursor: pointer;
             transition: all 0.2s; margin-bottom: 40px;
         }
+        .new-analysis-btn:hover { background: var(--border); color: #f4f8ff; }
 
-        .new-analysis-btn:hover { background: #2a3550; color: #f1f5f9; }
+        /* ---------- FOOTER ---------- */
+        footer {
+            border-top: 1px solid var(--border); margin-top: 40px;
+            padding: 28px 22px; text-align: center; color: var(--dim); font-size: 13px;
+        }
+        footer .fl { color: var(--muted); }
+        footer a { color: var(--blue); text-decoration: none; }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 28px; }
+            .hero h1 { font-size: 34px; }
+            nav.links { display: none; }
+            .flow { grid-template-columns: repeat(2, 1fr); }
+            .flow-step::after { display: none; }
+            .pipe-grid { grid-template-columns: 1fr; }
+            .cred-strip { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 520px) {
+            .flow { grid-template-columns: 1fr; }
+            .cred-strip { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 29px; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div>
-        <div class="logo">🧬 BioAgent</div>
-        <div class="tagline">Agentic Bioinformatics Analysis System</div>
+    <div class="brandmark">
+        <span class="helix">🧬</span>
+        <span class="logo">BioAgent</span>
+        <span class="logo-badge">v0.6</span>
     </div>
-    <div class="status-dot"></div>
-    <div class="status-text" id="serverStatus">Connecting...</div>
+    <nav class="links">
+        <a href="#how">How it works</a>
+        <a href="#pipelines">Pipelines</a>
+        <a href="#upload">Analyse a file</a>
+    </nav>
+    <div class="status-pill">
+        <span class="status-dot"></span>
+        <span class="status-text" id="serverStatus">Connecting...</span>
+    </div>
 </header>
 
 <main>
 
-    <!-- Upload Section -->
-    <div class="upload-section" id="uploadSection">
-        <h2>Upload Your Bioinformatics File</h2>
-        <p>BioAgent will automatically detect the file type, select the appropriate pipeline, and run the full analysis.</p>
+    <!-- ============ LANDING VIEW (intro + upload) ============ -->
+    <div id="landingView">
 
-        <div class="upload-zone" id="uploadZone">
-            <input type="file" id="fileInput" accept=".fasta,.fa,.fna,.fastq,.vcf,.csv,.tsv,.txt">
-            <div class="upload-icon">📁</div>
-            <h3 id="uploadZoneText">Drop your file here or click to browse</h3>
-            <p id="uploadZoneSubtext">Supported formats shown below</p>
-        </div>
-
-        <div class="supported-formats">
-            <span class="format-badge">.fasta</span>
-            <span class="format-badge">.fastq</span>
-            <span class="format-badge">.vcf</span>
-            <span class="format-badge">.csv</span>
-            <span class="format-badge">.tsv</span>
-        </div>
-
-        <div class="rnaseq-options" id="rnaseqOptions">
-            <h4>RNA-seq Options (CSV file detected)</h4>
-            <div class="input-row">
-                <div class="input-group">
-                    <label>Control label (column prefix)</label>
-                    <input type="text" id="controlLabel" value="control" placeholder="e.g. healthy">
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">Agentic Bioinformatics</span>
+                <h1>From raw sequence file to <span class="grad">biological insight</span> — automatically.</h1>
+                <p class="lede">
+                    Upload a FASTA, FASTQ, VCF or expression matrix. BioAgent reads it,
+                    works out what biological questions it can answer, runs the right
+                    analysis pipeline, and explains the results in plain English —
+                    powered by a local LLM grounded in a bioinformatics knowledge base.
+                </p>
+                <div class="chips">
+                    <span class="chip"><span class="ic">🧠</span> Reasons about your data</span>
+                    <span class="chip"><span class="ic">🔒</span> Runs 100% locally</span>
+                    <span class="chip"><span class="ic">📚</span> RAG-grounded, not hallucinated</span>
                 </div>
-                <div class="input-group">
-                    <label>Treatment label (column prefix)</label>
-                    <input type="text" id="treatmentLabel" value="treatment" placeholder="e.g. cancer">
+                <div class="hero-cta">
+                    <a href="#upload" class="btn-primary">Analyse a file →</a>
+                    <a href="#how" class="btn-ghost">See how it works</a>
                 </div>
             </div>
+
+            <!-- Upload Section (primary action, lives in the hero) -->
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-eyebrow">🔬 Start an analysis</div>
+                <h2>Upload your bioinformatics file</h2>
+                <p>BioAgent reads your data, tells you what it found, and proposes questions it can answer — then runs the analysis.</p>
+
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" accept=".fasta,.fa,.fna,.fastq,.vcf,.csv,.tsv,.txt">
+                    <div class="upload-icon">📁</div>
+                    <h3 id="uploadZoneText">Drop your file here or click to browse</h3>
+                    <p id="uploadZoneSubtext">Supported formats shown below</p>
+                </div>
+
+                <div class="supported-formats">
+                    <span class="format-badge">.fasta</span>
+                    <span class="format-badge">.fastq</span>
+                    <span class="format-badge">.vcf</span>
+                    <span class="format-badge">.csv</span>
+                    <span class="format-badge">.tsv</span>
+                </div>
+
+                <button class="analyse-btn" id="profileBtn" onclick="runProfile()">
+                    🔍 Read My Data
+                </button>
+
+                <div class="privacy-note">🔒 Your file never leaves this machine — all analysis runs locally.</div>
+            </div>
+        </section>
+
+        <!-- CREDIBILITY STRIP -->
+        <div class="cred-strip">
+            <div class="cred-item"><div class="big">3</div><div class="cap">Analysis pipelines</div></div>
+            <div class="cred-item"><div class="big">640</div><div class="cap">Knowledge-base chunks</div></div>
+            <div class="cred-item"><div class="big">100%</div><div class="cap">Local — no API keys</div></div>
+            <div class="cred-item"><div class="big">ClinVar</div><div class="cap">Validated variant calls</div></div>
         </div>
 
-        <button class="analyse-btn" id="analyseBtn" onclick="runAnalysis()">
-            🔬 Run Analysis
-        </button>
+        <!-- HOW IT WORKS -->
+        <section class="section" id="how">
+            <div class="section-head">
+                <div class="kicker">The workflow</div>
+                <h2>An agent, not just a script</h2>
+                <p>Most tools make you already know which pipeline to run. BioAgent figures that out for you — in four steps.</p>
+            </div>
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="num">01</div>
+                    <h3>Detect</h3>
+                    <p>Identifies the file type — FASTA, FASTQ, VCF or expression matrix — with a confidence score.</p>
+                    <div class="tech">detector.py</div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">02</div>
+                    <h3>Reason</h3>
+                    <p>Profiles the data, infers sample groups from column names, and proposes biological questions it can actually answer.</p>
+                    <div class="tech">analyst.py</div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">03</div>
+                    <h3>Analyse</h3>
+                    <p>Runs the correct pipeline — QC, differential expression or variant annotation — and builds interactive plots.</p>
+                    <div class="tech">pipelines/</div>
+                </div>
+                <div class="flow-step">
+                    <div class="num">04</div>
+                    <h3>Interpret</h3>
+                    <p>A local LLM explains the findings in plain biological English, grounded in a RAG knowledge base. Ask follow-ups.</p>
+                    <div class="tech">explainer.py · Ollama + RAG</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PIPELINES -->
+        <section class="section" id="pipelines">
+            <div class="section-head">
+                <div class="kicker">What it can analyse</div>
+                <h2>Three biology pipelines</h2>
+                <p>Each one runs a real computational-biology workflow and returns interpretable, publication-style output.</p>
+            </div>
+            <div class="pipe-grid">
+
+                <div class="pipe-card fasta">
+                    <div class="pipe-icon">🧫</div>
+                    <h3>Sequence QC</h3>
+                    <div class="formats">.fasta · .fastq · .fa · .fna</div>
+                    <ul>
+                        <li>GC-content distribution</li>
+                        <li>Sequence-length profiling</li>
+                        <li>Low-complexity detection</li>
+                        <li>Nucleotide composition</li>
+                    </ul>
+                    <div class="pipe-eg">
+                        <span class="eg-label">Example result</span>
+                        <i>E. coli</i> K-12 — <b>47.4% GC</b>, median length 140 bp, all QC metrics passing.
+                    </div>
+                </div>
+
+                <div class="pipe-card rnaseq">
+                    <div class="pipe-icon">📊</div>
+                    <h3>RNA-seq Expression</h3>
+                    <div class="formats">.csv · .tsv (count matrix)</div>
+                    <ul>
+                        <li>CPM normalisation</li>
+                        <li>Differential-expression testing</li>
+                        <li>Volcano plot (log2FC vs significance)</li>
+                        <li>Top-gene heatmap</li>
+                    </ul>
+                    <div class="pipe-eg">
+                        <span class="eg-label">Example result</span>
+                        Breast cancer vs normal — flagged <b>ERBB2/HER2</b> (+4.05 log2FC) and <b>MKI67</b> upregulated; real clinical biomarkers.
+                    </div>
+                </div>
+
+                <div class="pipe-card vcf">
+                    <div class="pipe-icon">🧬</div>
+                    <h3>Variant Annotation</h3>
+                    <div class="formats">.vcf (SNPs · indels)</div>
+                    <ul>
+                        <li>VCF parsing &amp; quality filtering</li>
+                        <li>Clinical significance (ClinVar rsIDs)</li>
+                        <li>Gene-level variant mapping</li>
+                        <li>Pathogenicity alerts</li>
+                    </ul>
+                    <div class="pipe-eg">
+                        <span class="eg-label">Example result</span>
+                        Clinical VCF — <b>8 pathogenic variants</b> incl. BRCA1, BRCA2, TP53, KRAS, EGFR.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+    <!-- ============ /LANDING VIEW ============ -->
+
+    <!-- Anchor target for #upload nav link -->
+    <span id="upload" style="position:absolute;"></span>
+
+    <!-- Agent Section (profile + question choice) -->
+    <div class="agent-section" id="agentSection">
+        <div class="profile-box">
+            <h4>🤖 What the agent found</h4>
+            <div id="profileSummary"></div>
+        </div>
+
+        <div class="agent-card" id="groupCard" style="display:none;">
+            <h3>🧬 Sample groups</h3>
+            <div class="sub">The agent inferred these groups from your column names. Edit them if needed (comma-separated column names).</div>
+            <div class="group-editor" id="groupEditor"></div>
+        </div>
+
+        <div class="agent-card">
+            <h3>💬 What should the agent answer?</h3>
+            <div class="sub">Pick one of the agent's questions, let it decide, or type your own.</div>
+            <div id="questionList"></div>
+            <button class="run-btn" id="runBtn" onclick="runAnalysis()" style="margin-top:8px;">
+                🔬 Run Analysis
+            </button>
+        </div>
     </div>
 
     <!-- Progress Section -->
     <div class="progress-section" id="progressSection">
         <div class="spinner"></div>
         <h3 style="font-size:18px; margin-bottom:8px;">Analysing your file...</h3>
-        <p style="color:#64748b; font-size:14px;">This may take 30-60 seconds</p>
-        <div class="progress-steps">
-            <div class="step active" id="step1"><span class="step-icon">🔍</span> Detecting file type</div>
-            <div class="step" id="step2"><span class="step-icon">🧠</span> Selecting pipeline</div>
-            <div class="step" id="step3"><span class="step-icon">⚙️</span> Running analysis</div>
-            <div class="step" id="step4"><span class="step-icon">📊</span> Generating visualisations</div>
-            <div class="step" id="step5"><span class="step-icon">📝</span> Building interpretation</div>
-        </div>
+        <p style="color:#64748b; font-size:14px;">This may take 30–60 seconds (the local LLM is interpreting the result)</p>
+        <div class="progress-steps" id="progressSteps"></div>
     </div>
 
     <!-- Results Section -->
     <div class="results-section" id="resultsSection">
 
         <div class="results-header">
-            <h2 style="font-size:22px; font-weight:700; color:#f1f5f9;">Analysis Complete</h2>
+            <h2 style="font-size:22px; font-weight:800; color:#f4f8ff;">Analysis Complete</h2>
             <div class="pipeline-badge" id="pipelineBadge">—</div>
             <div class="confidence-badge" id="confidenceBadge">—</div>
+        </div>
+
+        <div class="asked-box">
+            <div class="q-label">Question answered</div>
+            <div id="askedQuestion"></div>
         </div>
 
         <div class="cards-grid" id="statsGrid"></div>
@@ -353,37 +694,40 @@
 
         <!-- Q&A Section -->
         <div class="qa-box">
-            <h3>🤖 Ask Ollama</h3>
-            <p>Ask a follow-up question about your results. Powered by llama3.2:3b running locally — may take 20-30 seconds.</p>
+            <h3>🤖 Ask a follow-up</h3>
+            <p>Ask another question about your results. Powered by llama3.2:3b running locally — may take 20–30 seconds.</p>
             <div class="qa-input-row">
                 <input type="text" id="questionInput" class="qa-input"
                        placeholder="e.g. Why is BRCA1 downregulated? What does high TNF mean biologically?"
                        onkeydown="if(event.key==='Enter') askQuestion()">
-                <button class="qa-btn" id="askBtn" onclick="askQuestion()">
-                    Ask Ollama
-                </button>
+                <button class="qa-btn" id="askBtn" onclick="askQuestion()">Ask</button>
             </div>
-            <div class="qa-loading" id="qaLoading">
-                ⏳ Ollama is thinking... (this may take 20-30 seconds)
-            </div>
+            <div class="qa-loading" id="qaLoading">⏳ Ollama is thinking... (this may take 20–30 seconds)</div>
             <div class="qa-answer" id="qaAnswer">
                 <div class="qa-answer-label">Ollama Response</div>
                 <div class="qa-answer-text" id="qaAnswerText"></div>
             </div>
         </div>
 
-        <button class="new-analysis-btn" onclick="resetUI()">
-            ← Run Another Analysis
-        </button>
+        <button class="new-analysis-btn" onclick="resetUI()">← Run Another Analysis</button>
 
     </div>
 
 </main>
 
+<footer>
+    <div class="fl">🧬 <b>BioAgent</b> — Agentic Bioinformatics Analysis System</div>
+    <div style="margin-top:6px;">
+        Built by Emmanuel Ogbu (Manny) · MSc Bioinformatics ·
+        <a href="https://github.com/MannyMotion/Bioinformatics-Agent" target="_blank">GitHub</a>
+    </div>
+</footer>
+
 <script>
     const API = 'http://localhost:8000';
     let selectedFile = null;
     let currentJobId = null;
+    let currentProfile = null;
 
     async function checkHealth() {
         try {
@@ -398,7 +742,6 @@
             document.querySelector('.status-dot').style.background = '#ef4444';
         }
     }
-
     checkHealth();
 
     document.getElementById('fileInput').addEventListener('change', function(e) {
@@ -407,10 +750,8 @@
         selectedFile = file;
         document.getElementById('uploadZoneText').textContent = `✅ ${file.name}`;
         document.getElementById('uploadZoneSubtext').textContent =
-            `${(file.size / 1024).toFixed(1)} KB — ready to analyse`;
-        const isCSV = file.name.endsWith('.csv') || file.name.endsWith('.tsv');
-        document.getElementById('rnaseqOptions').style.display = isCSV ? 'block' : 'none';
-        document.getElementById('analyseBtn').style.display = 'block';
+            `${(file.size / 1024).toFixed(1)} KB — ready to read`;
+        document.getElementById('profileBtn').style.display = 'block';
     });
 
     const zone = document.getElementById('uploadZone');
@@ -426,39 +767,158 @@
         }
     });
 
-    function animateSteps() {
-        const steps = ['step1','step2','step3','step4','step5'];
-        let i = 0;
-        const interval = setInterval(() => {
-            if (i > 0) document.getElementById(steps[i-1]).className = 'step done';
-            if (i < steps.length) {
-                document.getElementById(steps[i]).className = 'step active';
-                i++;
-            } else {
-                clearInterval(interval);
-            }
-        }, 4000);
-        return interval;
-    }
-
-    async function runAnalysis() {
+    // --- PHASE 1: upload + profile ---
+    async function runProfile() {
         if (!selectedFile) return;
-        const btn = document.getElementById('analyseBtn');
+        const btn = document.getElementById('profileBtn');
         btn.disabled = true;
-        document.getElementById('uploadSection').style.display = 'none';
-        document.getElementById('progressSection').style.display = 'block';
-        const stepInterval = animateSteps();
+        btn.textContent = '🔍 Reading your data...';
+
         const formData = new FormData();
         formData.append('file', selectedFile);
-        formData.append('control_label', document.getElementById('controlLabel').value || 'control');
-        formData.append('treatment_label', document.getElementById('treatmentLabel').value || 'treatment');
+        try {
+            const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Upload failed');
+            }
+            const data = await res.json();
+            currentJobId = data.job_id;
+            currentProfile = data.profile;
+            showAgent(data);
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '🔍 Read My Data';
+        }
+    }
+
+    function showAgent(data) {
+        document.getElementById('landingView').style.display = 'none';
+        document.getElementById('agentSection').style.display = 'block';
+        document.getElementById('profileSummary').textContent = data.profile.summary;
+
+        // Group editor — only for expression matrices with inferred groups
+        const groupCard = document.getElementById('groupCard');
+        const groupEditor = document.getElementById('groupEditor');
+        groupEditor.innerHTML = '';
+        const groups = data.profile.groups || {};
+        const groupNames = Object.keys(groups);
+        const isExpression = (data.file_type === 'CSV' || data.file_type === 'TSV');
+
+        if (isExpression) {
+            groupCard.style.display = 'block';
+            if (data.profile.needs_group_confirmation) {
+                groupEditor.innerHTML =
+                    `<div class="warn-note">⚠️ I wasn't fully sure how to split your samples — please confirm the two groups below before running.</div>`;
+            }
+            const g1 = groupNames[0] || 'control';
+            const g2 = groupNames[1] || 'treatment';
+            const cols1 = (groups[g1] || []).join(', ');
+            const cols2 = (groups[g2] || []).join(', ');
+            const allCols = (data.profile.details && data.profile.details.columns) || [];
+
+            groupEditor.innerHTML += `
+                <label>Control group name</label>
+                <input class="custom-q-input" id="ctrlName" value="${g1}">
+                <label>Control columns</label>
+                <textarea id="ctrlCols">${cols1}</textarea>
+                <label>Treatment group name</label>
+                <input class="custom-q-input" id="treatName" value="${g2}">
+                <label>Treatment columns</label>
+                <textarea id="treatCols">${cols2}</textarea>
+                <div class="col-hint">All columns: ${allCols.slice(0, 60).join(', ')}${allCols.length > 60 ? ' …' : ''}</div>`;
+        } else {
+            groupCard.style.display = 'none';
+        }
+
+        // Question options
+        const qList = document.getElementById('questionList');
+        qList.innerHTML = '';
+        const questions = data.profile.suggested_questions || [];
+        questions.forEach((q, i) => {
+            qList.innerHTML += questionOption(`sq${i}`, q, q, i === 0);
+        });
+        // "Let the agent decide"
+        qList.innerHTML += questionOption('auto', '__auto__', "Let the agent decide for me", false, "Agent picks");
+        // "Type my own"
+        qList.innerHTML += `
+            <label class="question-option" onclick="selectQuestion('custom')">
+                <input type="radio" name="question" value="__custom__" id="q_custom">
+                <div style="flex:1;">
+                    <div class="q-tag">Your own</div>
+                    <div class="q-text">Type a custom question</div>
+                    <input type="text" class="custom-q-input" id="customQuestion"
+                           placeholder="e.g. Which pathways are most affected?"
+                           onclick="event.stopPropagation(); selectQuestion('custom');">
+                </div>
+            </label>`;
+
+        bindQuestionOptions();
+    }
+
+    function questionOption(id, value, text, checked, tag) {
+        return `
+            <label class="question-option ${checked ? 'selected' : ''}" onclick="selectQuestion('${id}')">
+                <input type="radio" name="question" value="${encodeURIComponent(value)}" id="q_${id}" ${checked ? 'checked' : ''}>
+                <div>
+                    ${tag ? `<div class="q-tag">${tag}</div>` : ''}
+                    <div class="q-text">${text}</div>
+                </div>
+            </label>`;
+    }
+
+    function bindQuestionOptions() {
+        document.querySelectorAll('.question-option input[type=radio]').forEach(r => {
+            r.addEventListener('change', () => {
+                document.querySelectorAll('.question-option').forEach(o => o.classList.remove('selected'));
+                r.closest('.question-option').classList.add('selected');
+            });
+        });
+    }
+
+    function selectQuestion(id) {
+        const radio = document.getElementById('q_' + id);
+        if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
+    }
+
+    // --- PHASE 2: run analysis ---
+    async function runAnalysis() {
+        const btn = document.getElementById('runBtn');
+        btn.disabled = true;
+
+        // Resolve chosen question
+        const checked = document.querySelector('.question-option input[type=radio]:checked');
+        let question = '';
+        if (checked) {
+            const val = decodeURIComponent(checked.value);
+            if (val === '__auto__') question = '';
+            else if (val === '__custom__') question = document.getElementById('customQuestion').value.trim();
+            else question = val;
+        }
+
+        const formData = new FormData();
+        formData.append('question', question);
+
+        // Group override (expression only)
+        const ctrlCols = document.getElementById('ctrlCols');
+        if (ctrlCols) {
+            formData.append('control_label', document.getElementById('ctrlName').value || 'control');
+            formData.append('treatment_label', document.getElementById('treatName').value || 'treatment');
+            formData.append('control_cols', ctrlCols.value);
+            formData.append('treatment_cols', document.getElementById('treatCols').value);
+        }
+
+        document.getElementById('agentSection').style.display = 'none';
+        document.getElementById('progressSection').style.display = 'block';
+        const stepInterval = animateSteps();
+
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 300000);
-            const res = await fetch(`${API}/upload`, {
-                method: 'POST',
-                body: formData,
-                signal: controller.signal
+            const res = await fetch(`${API}/analyze/${currentJobId}`, {
+                method: 'POST', body: formData, signal: controller.signal
             });
             clearTimeout(timeoutId);
             if (!res.ok) {
@@ -472,14 +932,24 @@
         } catch (err) {
             clearInterval(stepInterval);
             document.getElementById('progressSection').style.display = 'none';
-            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('agentSection').style.display = 'block';
             btn.disabled = false;
-            if (err.name === 'AbortError') {
-                alert('Analysis timed out. Please try again.');
-            } else {
-                alert(`Error: ${err.message}`);
-            }
+            alert(err.name === 'AbortError' ? 'Analysis timed out. Please try again.' : `Error: ${err.message}`);
         }
+    }
+
+    function animateSteps() {
+        const steps = ['Detecting & routing', 'Cleaning & filtering', 'Running analysis',
+                       'Generating plots', 'Interpreting results'];
+        const container = document.getElementById('progressSteps');
+        const icons = ['🔍','🧹','⚙️','📊','📝'];
+        container.innerHTML = steps.map((s, i) =>
+            `<div class="step ${i===0?'active':''}" id="pstep${i}"><span class="step-icon">${icons[i]}</span> ${s}</div>`).join('');
+        let i = 0;
+        return setInterval(() => {
+            if (i > 0) document.getElementById('pstep' + (i-1)).className = 'step done';
+            if (i < steps.length) { document.getElementById('pstep' + i).className = 'step active'; i++; }
+        }, 5000);
     }
 
     function showResults(data) {
@@ -488,6 +958,7 @@
         document.getElementById('pipelineBadge').textContent = data.pipeline;
         document.getElementById('confidenceBadge').textContent =
             `${(data.confidence * 100).toFixed(0)}% confidence`;
+        document.getElementById('askedQuestion').textContent = data.question || '—';
 
         const statsGrid = document.getElementById('statsGrid');
         statsGrid.innerHTML = '';
@@ -506,39 +977,32 @@
 
         const warningsBox = document.getElementById('warningsBox');
         warningsBox.innerHTML = '';
-        data.warnings.forEach(w => {
+        (data.warnings || []).forEach(w => {
             let cls = 'pass';
-            if (w.startsWith('WARNING')) cls = 'warn';
+            if (w.startsWith('WARNING') || w.startsWith('NOTE')) cls = 'warn';
             if (w.startsWith('CLINICAL')) cls = 'alert';
             const icon = cls === 'pass' ? '✅' : cls === 'warn' ? '⚠️' : '🚨';
-            warningsBox.innerHTML += `
-                <div class="warning-item ${cls}">
-                    <span>${icon}</span><span>${w}</span>
-                </div>`;
+            warningsBox.innerHTML += `<div class="warning-item ${cls}"><span>${icon}</span><span>${w}</span></div>`;
         });
 
         const plotsGrid = document.getElementById('plotsGrid');
         plotsGrid.innerHTML = '';
-        data.plot_urls.forEach(url => {
+        (data.plot_urls || []).forEach(url => {
             if (url.endsWith('.html')) {
                 plotsGrid.innerHTML += `
                     <div class="plot-card">
-                        <iframe src="${API}${url}"
-                            style="width:100%;height:420px;border:none;border-radius:12px;">
-                        </iframe>
+                        <iframe src="${API}${url}" style="width:100%;height:420px;border:none;border-radius:12px;"></iframe>
                     </div>`;
             } else {
                 plotsGrid.innerHTML += `
                     <div class="plot-card">
-                        <img src="${API}${url}" alt="Analysis plot"
-                            onerror="this.style.display='none'">
+                        <img src="${API}${url}" alt="Analysis plot" onerror="this.style.display='none'">
                     </div>`;
             }
         });
 
         document.getElementById('interpretationText').textContent = data.interpretation;
 
-        // Reset Q&A
         document.getElementById('questionInput').value = '';
         document.getElementById('qaAnswer').style.display = 'none';
         document.getElementById('qaLoading').style.display = 'none';
@@ -547,40 +1011,28 @@
     async function askQuestion() {
         const question = document.getElementById('questionInput').value.trim();
         if (!question || !currentJobId) return;
-
         const btn = document.getElementById('askBtn');
         btn.disabled = true;
         document.getElementById('qaLoading').style.display = 'block';
         document.getElementById('qaAnswer').style.display = 'none';
-
         try {
             const formData = new FormData();
             formData.append('question', question);
-
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 180000);
-
             const res = await fetch(`${API}/ask/${currentJobId}`, {
-                method: 'POST',
-                body: formData,
-                signal: controller.signal
+                method: 'POST', body: formData, signal: controller.signal
             });
-
             clearTimeout(timeoutId);
-
             if (!res.ok) {
                 const err = await res.json();
                 throw new Error(err.detail || 'Q&A failed');
             }
-
             const data = await res.json();
             document.getElementById('qaAnswerText').textContent = data.answer;
             document.getElementById('qaAnswer').style.display = 'block';
-
         } catch (err) {
-            let msg = err.name === 'AbortError'
-                ? 'Ollama timed out. Try a shorter question.'
-                : `Error: ${err.message}`;
+            const msg = err.name === 'AbortError' ? 'Ollama timed out. Try a shorter question.' : `Error: ${err.message}`;
             document.getElementById('qaAnswerText').textContent = msg;
             document.getElementById('qaAnswer').style.display = 'block';
         } finally {
@@ -592,19 +1044,22 @@
     function resetUI() {
         selectedFile = null;
         currentJobId = null;
-        document.getElementById('uploadSection').style.display = 'block';
+        currentProfile = null;
+        document.getElementById('landingView').style.display = 'block';
+        document.getElementById('agentSection').style.display = 'none';
         document.getElementById('resultsSection').style.display = 'none';
         document.getElementById('uploadZoneText').textContent = 'Drop your file here or click to browse';
         document.getElementById('uploadZoneSubtext').textContent = 'Supported formats shown below';
-        document.getElementById('analyseBtn').style.display = 'none';
-        document.getElementById('analyseBtn').disabled = false;
-        document.getElementById('rnaseqOptions').style.display = 'none';
+        document.getElementById('profileBtn').style.display = 'none';
+        document.getElementById('profileBtn').disabled = false;
         document.getElementById('fileInput').value = '';
-        ['step1','step2','step3','step4','step5'].forEach((id, i) => {
-            document.getElementById(id).className = i === 0 ? 'step active' : 'step';
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
 </body>
 </html>
+
+#conda activate bioagent
+#cd C:\Users\Invate\Downloads\Bioinformatics-Agent
+#python -m uvicorn bioagent.api.main:app --host 0.0.0.0 --port 8000

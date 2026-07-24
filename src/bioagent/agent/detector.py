@@ -119,9 +119,13 @@ def _read_sample_lines(path: Path, n: int) -> list[str]:
     # Open with UTF-8 encoding — standard for modern bioinformatics files
     with open(path, "r", encoding="utf-8", errors="strict") as f:
         for line in f:
-            stripped = line.strip()
-            if stripped:  # skip blank lines
-                lines.append(stripped)
+            # Strip the line terminator only — NOT leading/trailing tabs or
+            # spaces. Real count matrices (from R/pandas/GEO) have an empty
+            # top-left cell, so the header begins with a delimiter; stripping
+            # it away would corrupt the delimiter count and break detection.
+            line = line.rstrip("\r\n")
+            if line.strip():  # skip truly blank lines
+                lines.append(line)
             if len(lines) >= n:
                 break
     return lines
@@ -308,27 +312,35 @@ def _detect_csv(lines: list[str]) -> DetectionResult | None:
     if not lines:
         return None
 
-    # Check comma-separated
-    comma_counts = [line.count(",") for line in lines[:5]]
-    if min(comma_counts) > 0 and max(comma_counts) == min(comma_counts):
-        return DetectionResult(
-            file_type="CSV",
-            confidence=0.80,
-            explanation=f"Consistent comma-separated columns detected ({comma_counts[0]+1} columns).",
-            metadata={"delimiter": ",", "columns": comma_counts[0] + 1}
-        )
+    sample = lines[:6]
 
-    # Check tab-separated
-    tab_counts = [line.count("\t") for line in lines[:5]]
-    if min(tab_counts) > 0 and max(tab_counts) == min(tab_counts):
-        return DetectionResult(
-            file_type="TSV",
-            confidence=0.80,
-            explanation=f"Consistent tab-separated columns detected ({tab_counts[0]+1} columns).",
-            metadata={"delimiter": "\t", "columns": tab_counts[0] + 1}
-        )
+    # Check comma- then tab-separated. We use a tolerant "majority" check
+    # rather than demanding every line have an identical delimiter count:
+    # a header row can legitimately have one fewer field than the data rows
+    # (e.g. an empty top-left cell in a gene x sample count matrix).
+    for delimiter, name in ((",", "CSV"), ("\t", "TSV")):
+        counts = [line.count(delimiter) for line in sample]
+        modal = _modal_count(counts)
+        # Need a real delimiter present and the count stable across most rows.
+        if modal > 0 and counts.count(modal) >= max(2, len(counts) - 1):
+            return DetectionResult(
+                file_type=name,
+                confidence=0.80,
+                explanation=(
+                    f"Consistent {'comma' if delimiter == ',' else 'tab'}"
+                    f"-separated columns detected ({modal + 1} columns)."
+                ),
+                metadata={"delimiter": delimiter, "columns": modal + 1}
+            )
 
     return None
+
+
+def _modal_count(counts: list[int]) -> int:
+    """Return the most common value in a list of delimiter counts."""
+    if not counts:
+        return 0
+    return max(set(counts), key=counts.count)
 
 
 def _unknown() -> DetectionResult:

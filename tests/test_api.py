@@ -1,92 +1,83 @@
 """
 test_api.py
 
-Tests the FastAPI backend endpoints.
-Run with the server already running on port 8000.
+Tests the FastAPI backend endpoints for the two-phase agentic flow:
+    Phase 1  POST /upload         -> detect + profile + propose questions
+    Phase 2  POST /analyze/{id}   -> run the pipeline for a question
+
+Run with the server already running on port 8000:
+    python -m uvicorn bioagent.api.main:app --port 8000
+
+Note: /analyze invokes the local Ollama model, so each test can take
+30-60 seconds.
+
 Author: Emmanuel Ogbu (Manny)
-Date:   2026-04-28
+Date:   2026-07-02
 """
 
-import urllib.request
-import json
+import requests
+
+API = "http://localhost:8000"
 
 
 def test_health():
-    """Test health endpoint."""
-    response = urllib.request.urlopen("http://localhost:8000/health")
-    result = json.loads(response.read())
-    print(f"Health: {result}")
-    assert result["status"] == "ok"
-    print("PASS: health check")
+    """Health endpoint returns ok."""
+    r = requests.get(f"{API}/health")
+    assert r.status_code == 200
+    assert r.json()["status"] == "ok"
 
 
-def test_upload_fasta():
-    """Test uploading a FASTA file."""
+def test_fasta_flow():
+    """Phase 1 profiles a FASTA file; Phase 2 runs the QC pipeline."""
     with open("data/sample/test.fasta", "rb") as f:
-        file_data = f.read()
+        up = requests.post(f"{API}/upload", files={"file": ("test.fasta", f)})
+    assert up.status_code == 200
+    data = up.json()
+    assert data["file_type"] == "FASTA"
+    assert data["profile"]["suggested_questions"], "agent should propose questions"
 
-    boundary = "boundary123"
-    body = (
-        b"--" + boundary.encode() + b"\r\n"
-        b"Content-Disposition: form-data; name=\"file\"; filename=\"test.fasta\"\r\n"
-        b"Content-Type: text/plain\r\n\r\n"
-        + file_data + b"\r\n"
-        b"--" + boundary.encode() + b"--\r\n"
-    )
-
-    req = urllib.request.Request(
-        "http://localhost:8000/upload",
-        data=body,
-        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}
-    )
-
-    response = urllib.request.urlopen(req)
-    result = json.loads(response.read())
-
-    print(f"Job ID: {result['job_id']}")
-    print(f"Pipeline: {result['pipeline']}")
-    print(f"File type: {result['file_type']}")
-    print(f"Stats: {result['stats']}")
-    print(f"Plots: {result['plot_urls']}")
+    an = requests.post(f"{API}/analyze/{data['job_id']}",
+                       data={"question": ""}, timeout=600)  # "" = agent decides
+    assert an.status_code == 200
+    result = an.json()
     assert result["pipeline"] == "FASTA QC Pipeline"
-    print("PASS: FASTA upload")
+    assert "stats" in result
+    assert result["question"], "the answered question should be recorded"
 
 
-def test_upload_vcf():
-    """Test uploading a VCF file."""
+def test_vcf_flow():
+    """Phase 1 profiles a VCF; Phase 2 runs the variant pipeline."""
     with open("data/sample/test.vcf", "rb") as f:
-        file_data = f.read()
+        up = requests.post(f"{API}/upload", files={"file": ("test.vcf", f)})
+    assert up.status_code == 200
+    job_id = up.json()["job_id"]
 
-    boundary = "boundary456"
-    body = (
-        b"--" + boundary.encode() + b"\r\n"
-        b"Content-Disposition: form-data; name=\"file\"; filename=\"test.vcf\"\r\n"
-        b"Content-Type: text/plain\r\n\r\n"
-        + file_data + b"\r\n"
-        b"--" + boundary.encode() + b"--\r\n"
-    )
-
-    req = urllib.request.Request(
-        "http://localhost:8000/upload",
-        data=body,
-        headers={"Content-Type": f"multipart/form-data; boundary={boundary}"}
-    )
-
-    response = urllib.request.urlopen(req)
-    result = json.loads(response.read())
-
-    print(f"Job ID: {result['job_id']}")
-    print(f"Pipeline: {result['pipeline']}")
-    print(f"Pathogenic variants: {result['stats']['pathogenic_count']}")
+    an = requests.post(f"{API}/analyze/{job_id}",
+                       data={"question": "Are there pathogenic variants?"}, timeout=600)
+    assert an.status_code == 200
+    result = an.json()
     assert result["pipeline"] == "Variant Annotation Pipeline"
-    print("PASS: VCF upload")
+    assert result["stats"]["pathogenic_count"] >= 0
+
+
+def test_csv_group_inference():
+    """Phase 1 auto-infers control/treatment groups from column names."""
+    with open("data/sample/counts.csv", "rb") as f:
+        up = requests.post(f"{API}/upload", files={"file": ("counts.csv", f)})
+    assert up.status_code == 200
+    profile = up.json()["profile"]
+    # counts.csv columns are healthy_* / cancer_* — should map to two groups.
+    assert len(profile["groups"]) == 2
+    assert not profile["needs_group_confirmation"]
 
 
 if __name__ == "__main__":
     test_health()
-    print()
-    test_upload_fasta()
-    print()
-    test_upload_vcf()
-    print()
+    print("PASS: health")
+    test_csv_group_inference()
+    print("PASS: CSV group inference")
+    test_fasta_flow()
+    print("PASS: FASTA flow")
+    test_vcf_flow()
+    print("PASS: VCF flow")
     print("All API tests passed.")

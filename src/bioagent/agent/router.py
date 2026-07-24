@@ -48,7 +48,9 @@ def route_file(
     output_dir: str | Path = "outputs",
     use_rag: bool = False,
     rnaseq_control: str = "control",
-    rnaseq_treatment: str = "treatment"
+    rnaseq_treatment: str = "treatment",
+    rnaseq_control_cols: list[str] | None = None,
+    rnaseq_treatment_cols: list[str] | None = None
 ) -> tuple[Any, RoutingDecision]:
     """
     Auto-detect a file's type and route it to the correct pipeline.
@@ -95,7 +97,9 @@ def route_file(
             path, detection, output_dir,
             use_rag=use_rag,
             rnaseq_control=rnaseq_control,
-            rnaseq_treatment=rnaseq_treatment
+            rnaseq_treatment=rnaseq_treatment,
+            rnaseq_control_cols=rnaseq_control_cols,
+            rnaseq_treatment_cols=rnaseq_treatment_cols
         )
 
     elif file_type == "UNKNOWN":
@@ -178,7 +182,9 @@ def _run_rnaseq_pipeline(
     output_dir: str | Path,
     use_rag: bool,
     rnaseq_control: str,
-    rnaseq_treatment: str
+    rnaseq_treatment: str,
+    rnaseq_control_cols: list[str] | None = None,
+    rnaseq_treatment_cols: list[str] | None = None
 ) -> tuple[Any, RoutingDecision]:
     """Route CSV/TSV files to the RNA-seq pipeline."""
 
@@ -205,6 +211,8 @@ def _run_rnaseq_pipeline(
         control_label=rnaseq_control,
         treatment_label=rnaseq_treatment,
         output_dir=output_dir,
-        use_rag=use_rag
+        use_rag=use_rag,
+        control_cols=rnaseq_control_cols,
+        treatment_cols=rnaseq_treatment_cols
     )
     return result, decision
