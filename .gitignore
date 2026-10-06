@@ -24,3 +24,8 @@ bioagent.log
 uploads/
 outputs/
 jobs.db
+
+# Claude Code local files (keep only the project skills)
+.claude/*
+!.claude/skills/
+*.log

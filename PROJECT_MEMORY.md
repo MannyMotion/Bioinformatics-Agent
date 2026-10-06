@@ -7,9 +7,11 @@
 **Owner:** Emmanuel Ogbu (Manny) — MSc Bioinformatics (Bradford), BSc Biomedical Science (MMU)
 **Repo:** github.com/MannyMotion/Bioinformatics-Agent
 **Local path:** `C:\Users\Invate\Downloads\Bioinformatics-Agent`
-**Last updated:** 2026-07-07
-**Latest committed version:** v0.5.1
-**Working (uncommitted) version:** v0.6.0-dev — *the agentic reasoning layer*
+**Last updated:** 2026-10-06
+**Latest committed version:** the agentic layer is committed (7099cdf); README and version strings (0.5.0) still lag behind it
+**Working mode (since 2026-10-06): TEACHING MODE.** Manny types all core code; Claude teaches and reviews. Rules: [CLAUDE.md](CLAUDE.md). Lessons: [ROADMAP.md](ROADMAP.md). Start at [START_HERE.md](START_HERE.md).
+
+**Doc map:** CLAUDE.md (rules) · START_HERE.md (tour) · ROADMAP.md (lessons) · LEARNING_LOG.md (skills earned) · DECISIONS.md (design log) · IDEAS.md · DATA_SOURCES.md · docs/concepts/ (method notes) · docs/interview/INTERVIEW_BANK.md · .claude/skills/tutor and bioagent-map.
 
 ---
 
@@ -121,6 +123,13 @@ Tests: `& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m pytest tests/ 
 - **DE method is a two-sample t-test on CPM.** Works, gives biologically
   sensible results on the test data, but is *not* what production RNA-seq uses
   (see §7 — this is the #1 credibility item for a bioinformatics interviewer).
+- **(Found 2026-10-06) The t-test runs on RAW counts, not CPM.** `_differential_expression` is passed `filtered_df`; CPM is only used for the heatmap. It is also Student's (equal-variance) with no FDR correction. Earlier notes saying "t-test on CPM" were wrong.
+- **(Found 2026-10-06) Low-complexity check flags every sequence over about 860 bp.** Unique 4-mers can't exceed 256, so ratio < 0.30 is forced. Confirmed: random 900 bp DNA is flagged. Hidden on sample data because those sequences are short.
+- **(Found 2026-10-06) "ClinVar" annotation is a hardcoded 8-rsID dict** with every entry labelled `missense_variant`, unverified against ClinVar.
+- **(Found 2026-10-06) Sample data provenance:** `real_breast_cancer.csv` (30 genes, 3 vs 3) looks hand-made; `ecoli_k12.fasta` is a ~1 KB excerpt, so the README's "47.37% vs published 50.8%" comparison is invalid. Mean GC is also unweighted by length.
+- **(Found 2026-10-06) LLM sees only summary counts**, not gene lists, so "grounded, not hallucinated" in the README over-claims.
+- Tests are smoke tests (23 pass): none checks a numerical result against a known answer. No tests for analyst, job_store, gene_ids.
+- Repo hygiene: 21 `outputs/*.png` are tracked despite `outputs/` being ignored; `.claude/*.md` files are tracked; `utils/*_plot_runner.py` unused; `pydeseq2` not installed (`statsmodels` is).
 - Ollama `3b` answers can be slightly repetitive — upgrade to 7b when hardware allows.
 - ChromaDB telemetry warnings — cosmetic, ignore.
 
@@ -158,6 +167,12 @@ Tests: `& "C:\Users\Invate\anaconda3\envs\bioagent\python.exe" -m pytest tests/ 
 ---
 
 ## 8. Session log (newest first — append one block per session)
+
+### 2026-10-06 — Claude — Project operating system + teaching mode
+- Read the whole repo, ran tests (23 pass), reported weaknesses (see §5 new items).
+- Created CLAUDE.md, START_HERE.md, DECISIONS.md, LEARNING_LOG.md, ROADMAP.md, IDEAS.md, DATA_SOURCES.md, docs/concepts/ (11 notes), docs/interview/INTERVIEW_BANK.md, skills `tutor` and `bioagent-map`, .gitignore update. No code, tests or data touched.
+- Note: §7 above predates this and is superseded by ROADMAP.md for ordering; §7's "commit the agentic layer" is already done.
+- **Next:** Lesson W1 (file detection), or L1 (FDR) if Manny wants to jump ahead.
 
 ### 2026-07-07 (later) — Fable — Dashboard redesign
 - Rebuilt `frontend/index.html` into a real product landing page while keeping
